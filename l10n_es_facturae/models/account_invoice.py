@@ -165,13 +165,13 @@ class AccountInvoice(models.Model):
         if not euro_rate and not currency_rate:
             return fields.Datetime.now().strftime('%Y-%m-%d')
         if not currency_rate:
-            return fields.Datetime.from_string(euro_rate.name
+            return fields.Datetime.to_datetime(euro_rate.name
                                                ).strftime('%Y-%m-%d')
         if not euro_rate:
-            return fields.Datetime.from_string(currency_rate.name
+            return fields.Datetime.to_datetime(currency_rate.name
                                                ).strftime('%Y-%m-%d')
-        currency_date = fields.Datetime.from_string(currency_rate.name)
-        euro_date = fields.Datetime.from_string(currency_rate.name)
+        currency_date = fields.Datetime.to_datetime(currency_rate.name)
+        euro_date = fields.Datetime.to_datetime(currency_rate.name)
         if currency_date < euro_date:
             return currency_date.strftime('%Y-%m-%d')
         return euro_date.strftime('%Y-%m-%d')
@@ -481,6 +481,20 @@ class AccountInvoice(models.Model):
                   "is the error, which may give you an idea on the cause "
                   "of the problem : %s") % str(e))
         return True
+
+    @api.model
+    def _prepare_refund(self, invoice, date_invoice=None, date=None,
+                        description=None, journal_id=None):
+        """Update here the refund values dictionary with the FacturaE values
+        injected on the wizard.
+        """
+        values = super()._prepare_refund(
+            invoice, date_invoice=date_invoice, date=date,
+            description=description, journal_id=journal_id)
+        for key in ('correction_method', 'facturae_refund_reason'):
+            if self.env.context.get(key):
+                values[key] = self.env.context[key]
+        return values
 
 
 class AccountInvoiceLine(models.Model):

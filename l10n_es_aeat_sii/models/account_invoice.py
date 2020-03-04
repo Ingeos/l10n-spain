@@ -49,6 +49,7 @@ SII_COUNTRY_CODE_MAPPING = {
     'GF': 'FR',
 }
 SII_MACRODATA_LIMIT = 100000000.0
+SII_VALID_INVOICE_STATES = ['open', 'in_payment', 'paid']
 
 
 def round_by_keys(elem, search_keys, prec=2):
@@ -356,7 +357,7 @@ class AccountInvoice(models.Model):
 
     @api.multi
     def _change_date_format(self, date):
-        datetimeobject = fields.Date.from_string(date)
+        datetimeobject = fields.Date.to_date(date)
         new_date = datetimeobject.strftime('%d-%m-%Y')
         return new_date
 
@@ -709,8 +710,8 @@ class AccountInvoice(models.Model):
         invoice_date = self._change_date_format(self.date_invoice)
         partner = self.partner_id.commercial_partner_id
         company = self.company_id
-        ejercicio = fields.Date.from_string(self.date).year
-        periodo = '%02d' % fields.Date.from_string(self.date).month
+        ejercicio = fields.Date.to_date(self.date).year
+        periodo = '%02d' % fields.Date.to_date(self.date).month
         inv_dict = {
             "IDFactura": {
                 "IDEmisorFactura": {
@@ -803,8 +804,8 @@ class AccountInvoice(models.Model):
         invoice_date = self._change_date_format(self.date_invoice)
         reg_date = self._change_date_format(
             self._get_account_registration_date())
-        ejercicio = fields.Date.from_string(self.date).year
-        periodo = '%02d' % fields.Date.from_string(self.date).month
+        ejercicio = fields.Date.to_date(self.date).year
+        periodo = '%02d' % fields.Date.to_date(self.date).month
         desglose_factura, tax_amount = self._get_sii_in_taxes()
         inv_dict = {
             "IDFactura": {
@@ -997,7 +998,9 @@ class AccountInvoice(models.Model):
 
     @api.multi
     def _send_invoice_to_sii(self):
-        for invoice in self.filtered(lambda i: i.state in ['open', 'paid']):
+        for invoice in self.filtered(
+            lambda i: i.state in SII_VALID_INVOICE_STATES
+        ):
             serv = invoice._connect_sii(invoice.type)
             if invoice.sii_state == 'not_sent':
                 tipo_comunicacion = 'A0'
@@ -1095,7 +1098,7 @@ class AccountInvoice(models.Model):
     def send_sii(self):
         invoices = self.filtered(
             lambda i: (
-                i.sii_enabled and i.state in ['open', 'paid'] and
+                i.sii_enabled and i.state in SII_VALID_INVOICE_STATES and
                 i.sii_state not in ['sent', 'cancelled']
             )
         )
