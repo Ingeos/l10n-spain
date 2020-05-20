@@ -232,9 +232,9 @@ class TestL10nEsAeatMod303Base(TestL10nEsAeatModBase):
         # Entregas intra. de bienes y servicios - Base ventas
         '59': (2 * 2400) + (2 * 2500),  # S_IVA0_IC, S_IVA0_SP_I
         # Exportaciones y operaciones asimiladas - Base ventas
-        '60': (2 * 2000),  # S_IVA0_E
+        '60': (2 * 2000) + (2 * 2200),  # S_IVA0_E + S_IVA_NS
         # Op. no sujetas o con inv. del sujeto pasivo - Base ventas
-        '61': ((2 * 2100) + (2 * 2200) +   # S_IVA_SP_E, S_IVA_NS
+        '61': ((2 * 2100) +   # S_IVA_SP_E
                (2 * 2300)),                # S_IVA0_ISP
         # Importes de las entregas de bienes y prestaciones de servicios
         # a las que habiéndoles sido aplicado el régimen especial del
@@ -399,7 +399,7 @@ class TestL10nEsAeatMod303(TestL10nEsAeatMod303Base):
             ).amount, 14280.0,
         )
         self.assertAlmostEqual(
-            self.model303_4t.casilla_88, 38280.0,
+            self.model303_4t.casilla_88, 34680.0,
         )
         # Check change of period type
         self.model303_4t.period_type = '1T'
