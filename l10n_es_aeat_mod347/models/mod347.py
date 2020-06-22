@@ -238,7 +238,7 @@ class L10nEsAeatMod347Report(models.Model):
                 'partner_id': partner.id,
                 'representative_vat': '',
                 'operation_key': key,
-                'amount': abs(group['balance']),
+                'amount': (-1 if key == 'B' else 1) * group['balance'],
             }
             vals.update(self._get_partner_347_identification(partner))
             move_groups = self.env['account.move.line'].read_group(
@@ -289,7 +289,8 @@ class L10nEsAeatMod347Report(models.Model):
                 move_lines = move_line_obj.search(cash_group['__domain'])
                 partner_record = partner_record_obj.search([
                     ('partner_id', '=', partner.id),
-                    ('operation_key', '=', 'B')
+                    ('operation_key', '=', 'B'),
+                    ('report_id', '=', self.id)
                 ])
                 if partner_record:
                     partner_record.write({
@@ -717,6 +718,7 @@ class L10nEsAeatMod347RealStateRecord(models.Model):
             )
             del vals['community_vat']
             del vals['partner_country_code']
+            vals.update({'state_code': vals.pop('partner_state_code')})
             self.update(vals)
 
 
