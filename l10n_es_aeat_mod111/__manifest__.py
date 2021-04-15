@@ -4,7 +4,7 @@
 
 {
     'name': 'AEAT modelo 111',
-    'version': '12.0.1.3.0',
+    'version': '12.0.1.4.0',
     'category': "Localisation/Accounting",
     'author': "AvanzOSC,"
               "RGB Consulting SL,"
