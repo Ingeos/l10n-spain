@@ -1,7 +1,8 @@
-# Copyright 2018 Tecnativa - Pedro M. Baeza
+# Copyright 2018-2021 Tecnativa - Pedro M. Baeza
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl
 
 from collections import OrderedDict
+from odoo import exceptions
 from odoo.addons.l10n_es_aeat.tests.test_l10n_es_aeat_mod_base import \
     TestL10nEsAeatModBase
 
@@ -116,7 +117,7 @@ class TestL10nEsAeatMod390Base(TestL10nEsAeatModBase):
         ('99', 14280.0),
         # Operaciones realizadas por sujetos pasivos acogidos al régimen
         # especial del recargo de equivalencia
-        ('102', -16200.0),
+        ('102', 0.0),
         # Entregas intracomunitarias exentas
         ('103', 9800.0),
         # Exportaciones y otras operaciones exentas con derecho a deducción
@@ -124,7 +125,7 @@ class TestL10nEsAeatMod390Base(TestL10nEsAeatModBase):
         # Operaciones exentas sin derecho a deducción
         ('105', 5200),
         # Adquisiciones intracomunitarias exentas
-        ('109', 6300.0),
+        ('109', 0.0),
         # IVA deducible en oper. corrientes de bienes y servicios - Base 4%
         ('190', 2100.0),
         # IVA deducible en oper. corrientes de bienes y servicios - Cuota 4%
@@ -142,7 +143,7 @@ class TestL10nEsAeatMod390Base(TestL10nEsAeatModBase):
         # Adquisiciones interiores exentas
         ('230', 1200),
         # Importaciones exentas
-        ('231', -3150.0),
+        ('231', 0.0),
         # Bases imponibles del IVA soportado no deducible
         ('232', 1260),
         # Adquisiciones intracomunitarias de servicios - Base 4%
@@ -273,7 +274,12 @@ class TestL10nEsAeatMod390(TestL10nEsAeatMod390Base):
         self.assertAlmostEqual(self.model390.casilla_64, 2408.45, 2)
         self.assertAlmostEqual(self.model390.casilla_65, 108.55, 2)
         self.assertAlmostEqual(self.model390.casilla_86, 108.55, 2)
-        self.assertAlmostEqual(self.model390.casilla_108, 21280.0, 2)
+        self.assertAlmostEqual(self.model390.casilla_108, 37480.0, 2)
+        # It's not possible to confirm without entering manual 303 summary
+        with self.assertRaises(exceptions.UserError):
+            self.model390.button_confirm()
+        self.model390.casilla_95 = 108.55
+        self.model390.button_confirm()
         # Export to BOE
         export_to_boe = self.env['l10n.es.aeat.report.export_to_boe'].create({
             'name': 'test_export_to_boe.txt',
