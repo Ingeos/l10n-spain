@@ -1,15 +1,12 @@
 # Copyright 2019-2020 Tecnativa - Pedro M. Baeza
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import api, models, fields
+from odoo import api, models
 from odoo.tools import ormcache
 
 
 class ResCompany(models.Model):
     _inherit = "res.company"
-
-    tax_agency_id = fields.Many2one(
-        'aeat.tax.agency', string='Tax Agency')
 
     @api.model
     def create(self, values):

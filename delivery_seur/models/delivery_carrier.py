@@ -426,7 +426,7 @@ class DeliveryCarrier(models.Model):
             )
         )
 
-    def seur_rate_shipment(self, order):
+    def seur_rate_shipment(self):
         """There's no public API so another price method should be used"""
         raise NotImplementedError(_("""
             SEUR API doesn't provide methods to compute delivery rates, so

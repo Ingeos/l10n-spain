@@ -8,4 +8,3 @@
 
     * Pedro M. Baeza
     * David Vidal
-    * Víctor Martínez
