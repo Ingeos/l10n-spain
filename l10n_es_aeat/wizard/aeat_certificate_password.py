@@ -15,26 +15,34 @@ from odoo.tools import config
 _logger = logging.getLogger(__name__)
 
 try:
-    import OpenSSL.crypto
+    import cryptography
+    from cryptography import x509
+    from cryptography.hazmat.primitives.serialization import (
+        Encoding,
+        NoEncryption,
+        PrivateFormat,
+        pkcs12,
+    )
 except (ImportError, IOError) as err:
     _logger.debug(err)
 
-if tuple(map(int, OpenSSL.__version__.split("."))) < (0, 15):
-    _logger.warning("OpenSSL version is not supported. Upgrade to 0.15 or greater.")
+if tuple(map(int, cryptography.__version__.split("."))) < (3, 0):
+    _logger.warning(
+        "Cryptography version is not supported. Upgrade to 3.0.0 or greater."
+    )
 
 
 @contextlib.contextmanager
-def pfx_to_pem(file, pfx_password, directory=None):
-    if isinstance(pfx_password, str):
-        pfx_password = bytes(pfx_password, "utf-8")
+def pfx_to_pem(p12, directory=None):
     with tempfile.NamedTemporaryFile(
         prefix="private_", suffix=".pem", delete=False, dir=directory
     ) as t_pem:
         with open(t_pem.name, "wb") as f_pem:
-            p12 = OpenSSL.crypto.load_pkcs12(file, pfx_password)
             f_pem.write(
-                OpenSSL.crypto.dump_privatekey(
-                    OpenSSL.crypto.FILETYPE_PEM, p12.get_privatekey()
+                p12[0].private_bytes(
+                    Encoding.PEM,
+                    format=PrivateFormat.TraditionalOpenSSL,
+                    encryption_algorithm=NoEncryption(),
                 )
             )
             f_pem.close()
@@ -42,19 +50,12 @@ def pfx_to_pem(file, pfx_password, directory=None):
 
 
 @contextlib.contextmanager
-def pfx_to_crt(file, pfx_password, directory=None):
-    if isinstance(pfx_password, str):
-        pfx_password = bytes(pfx_password, "utf-8")
+def pfx_to_crt(p12, directory=None):
     with tempfile.NamedTemporaryFile(
         prefix="public_", suffix=".crt", delete=False, dir=directory
     ) as t_crt:
         with open(t_crt.name, "wb") as f_crt:
-            p12 = OpenSSL.crypto.load_pkcs12(file, pfx_password)
-            f_crt.write(
-                OpenSSL.crypto.dump_certificate(
-                    OpenSSL.crypto.FILETYPE_PEM, p12.get_certificate()
-                )
-            )
+            f_crt.write(p12[1].public_bytes(Encoding.PEM))
             f_crt.close()
         yield t_crt.name
 
@@ -77,18 +78,35 @@ class L10nEsAeatCertificatePassword(models.TransientModel):
             record.folder,
         )
         file = base64.decodebytes(record.file)
-        if tuple(map(int, OpenSSL.__version__.split("."))) < (0, 15):
-            raise exceptions.Warning(
-                _("OpenSSL version is not supported. Upgrade to 0.15 or greater.")
+        if tuple(map(int, cryptography.__version__.split("."))) < (3, 0):
+            raise exceptions.UserError(
+                _("Cryptography version is not supported. Upgrade to 3.0.0 or greater.")
             )
         try:
             if directory and not os.path.exists(directory):
                 os.makedirs(directory)
-            with pfx_to_pem(file, self.password, directory) as private_key:
-                record.private_key = private_key
-            with pfx_to_crt(file, self.password, directory) as public_key:
-                record.public_key = public_key
+            pfx_password = self.password
+            if isinstance(pfx_password, str):
+                pfx_password = bytes(pfx_password, "utf-8")
+            p12 = pkcs12.load_key_and_certificates(file, pfx_password)
+            vals = self._process_certificate_vals(record, p12, directory)
+            record.write(vals)
         except Exception as e:
             if e.args:
                 args = list(e.args)
             raise ValidationError(args[-1])
+
+    def _process_certificate_vals(self, record, p12, directory):
+        vals = {}
+        with pfx_to_pem(p12, directory) as private_key:
+            vals["private_key"] = private_key
+        with pfx_to_crt(p12, directory) as public_key:
+            vals["public_key"] = public_key
+        certificate = p12[1]
+        vals["date_start"] = certificate.not_valid_before
+        vals["date_end"] = certificate.not_valid_after
+        if not record.name:
+            name = certificate.subject.get_attributes_for_oid(x509.NameOID.COMMON_NAME)
+            if name:
+                vals["name"] = name[0].value
+        return vals
