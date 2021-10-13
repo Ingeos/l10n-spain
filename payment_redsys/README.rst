@@ -25,7 +25,9 @@ Pasarela de pago Redsys
 
 |badge1| |badge2| |badge3| |badge4| |badge5| 
 
-Este módulo añade la opción de pago a través de la pasarela de Redsys.
+Este módulo añade la opción de pago a través de la pasarela de Redsys pudiendo
+seleccionar entre los métodos de pago: pago con tarjeta, pago por transferencia,
+domiciliación y Bizum.
 
 **Table of contents**
 
@@ -65,6 +67,9 @@ Parámetros
 
 * **Idioma TPV**: Indicaremos el idioma en el TPV.
 
+* **Método de pago**: Indicaremos que tipo de pago se debe aceptar, pago con
+  tarjeta, Bizum u otro de los disponibles.
+
 * **URL_OK/URL_KO**: Durante el proceso del pago, y una vez que
   se muestra al cliente la pantalla con el resultado del mismo, es
   posible redirigir su navegador a una URL para las transacciones
@@ -86,6 +91,27 @@ En caso de que exista más de una base de datos en la instalación, cuando la
 pasarela de pago envía el formulario a "/payment/redsys/return" odoo no sabe
 con que base de datos procesar esta información, por lo que hay que establecer
 los parametros **dbfilter** y **dbname** en el archivo de configuración.
+
+Para mostrar simultáneamente en el comercio electrónico varios de los métodos
+de pago que proporciona Redsys, como pago con tarjeta y Bizum por ejemplo,
+debemos duplicar el medio de pago y escoger en el campo método de pago el que
+corresponda en cada caso.
+
+En el caso de Bizum, el titular del TPV deberá solicitar al banco su activación.
+
+
+Known issues / Roadmap
+======================
+
+De acuerdo a los requisitos de Redsys, el tamaño máximo del número de pedido
+resultante (``Ds_Order``) es de 12 caracteres. Este addon trunca dicho
+dato en el comienzo de la transacción, con el resultado de que, aunque Redsys
+la aceptará, no se finalizará el pedido pedido en Odoo al retornar y entregará
+un Error 500 a Redsys.
+Para evitar esto, es recomendable seleccionar secuencias de pedido que se 
+ajusten a esta limitación, en particular de 10 o menos caracteres, al ser la
+referencia un número extendido a partir del pedido, que incluye un guion y un
+número secuencial para posibles repeticiones de pago.
 
 Bug Tracker
 ===========
