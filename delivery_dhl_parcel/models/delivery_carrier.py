@@ -14,6 +14,12 @@ from .dhl_parcel_request import (
 class DeliveryCarrier(models.Model):
     _inherit = "delivery.carrier"
 
+    def _compute_can_generate_return(self):
+        super()._compute_can_generate_return()
+        for carrier in self:
+            if carrier.delivery_type == "dhl_parcel":
+                carrier.can_generate_return = True
+
     delivery_type = fields.Selection(
         selection_add=[("dhl_parcel", "DHL Parcel")],
         ondelete={"dhl_parcel": "set default"},
@@ -22,14 +28,13 @@ class DeliveryCarrier(models.Model):
     dhl_parcel_incoterm = fields.Selection(
         string="DHL Parcel incoterms", selection=DHL_PARCEL_INCOTERMS_STATIC
     )
+    dhl_parcel_product = fields.Selection(
+        string="DHL Product",
+        selection=[("B2B", "B2B Product"), ("B2C", "B2C Product")],
+        help="If the product is not specified, it is considered B2B",
+    )
     dhl_parcel_uid = fields.Char(string="DHL Parcel UID")
     dhl_parcel_password = fields.Char(string="DHL Parcel Password")
-    dhl_parcel_last_request = fields.Text(
-        string="Last DHL Parcel API request", help="Used for debugging", readonly=True
-    )
-    dhl_parcel_last_response = fields.Text(
-        string="Last DHL Parcel API response", help="Used for debugging", readonly=True
-    )
     dhl_parcel_last_end_day_report = fields.Binary(
         string="DHL Parcel last manual end day report"
     )
@@ -72,6 +77,12 @@ class DeliveryCarrier(models.Model):
             "Email": partner.email or "",
         }
 
+    def _get_dhl_parcel_product(self, picking):
+        product = self.dhl_parcel_product
+        if product == "B2C" and picking.is_return_picking:
+            product = "R2C"
+        return product or "B2B"
+
     def _prepare_dhl_parcel_shipping(self, picking):
         """Convert picking values for dhl parcel api
         :param picking record with picking to send
@@ -97,6 +108,7 @@ class DeliveryCarrier(models.Model):
             "Remarks1": "",  # [optional]
             "Remarks2": "",  # [optional]
             "Incoterms": self.dhl_parcel_incoterm,  # CPT paid, EXW owed
+            "Product": self._get_dhl_parcel_product(picking),
             "ContactName": "",  # [optional]
             "GoodsDescription": "",  # [optional]
             "CustomsValue": "",  # [optional]
