@@ -154,6 +154,16 @@ msgid "AnulaTicketBai"
 msgstr ""
 
 #. module: l10n_es_ticketbai_api
+#: model:ir.model.fields,field_description:l10n_es_ticketbai_api.field_res_company__tbai_pro_available
+msgid "Are Production URLs Available"
+msgstr ""
+
+#. module: l10n_es_ticketbai_api
+#: model:ir.model.fields,field_description:l10n_es_ticketbai_api.field_res_company__tbai_test_available
+msgid "Are Tests URLs Available"
+msgstr ""
+
+#. module: l10n_es_ticketbai_api
 #: model:ir.model.fields.selection,name:l10n_es_ticketbai_api.selection__tbai_invoice__refund_code__r4
 msgid "Art. 80 - other"
 msgstr "Art. 80 - otros"
@@ -573,12 +583,6 @@ msgid "Name"
 msgstr "Nombre"
 
 #. module: l10n_es_ticketbai_api
-#: code:addons/l10n_es_ticketbai_api/models/res_partner.py:0
-#, python-format
-msgid "Name %s too long. Should be 120 characters max.!"
-msgstr "Nombre %s demasiado largo. Debería tener un máximo de 120 caracteres."
-
-#. module: l10n_es_ticketbai_api
 #: model:ir.model.fields,help:l10n_es_ticketbai_api.field_tbai_invoice_customer__name
 msgid "Name and surname, or business name."
 msgstr "Nombre y apellidos o razón social"
@@ -813,6 +817,16 @@ msgstr "Enviada"
 #: model:ir.model.fields.selection,name:l10n_es_ticketbai_api.selection__tbai_invoice_tax__type__service
 msgid "Service"
 msgstr "Servicios"
+
+#. module: l10n_es_ticketbai_api
+#: model:ir.model.fields,field_description:l10n_es_ticketbai_api.field_tbai_tax_agency__sign_file_hash
+msgid "Sign File HASH"
+msgstr ""
+
+#. module: l10n_es_ticketbai_api
+#: model:ir.model.fields,field_description:l10n_es_ticketbai_api.field_tbai_tax_agency__sign_file_url
+msgid "Sign File URL"
+msgstr ""
 
 #. module: l10n_es_ticketbai_api
 #: model:ir.model.fields,field_description:l10n_es_ticketbai_api.field_tbai_invoice__signature_value
@@ -1767,3 +1781,7 @@ msgstr "XML Respuesta"
 #: model:ir.model.fields,field_description:l10n_es_ticketbai_api.field_tbai_invoice_customer__zip
 msgid "ZIP Code"
 msgstr "Código postal"
+
+#~ msgid "Name %s too long. Should be 120 characters max.!"
+#~ msgstr ""
+#~ "Nombre %s demasiado largo. Debería tener un máximo de 120 caracteres."

@@ -7,7 +7,7 @@
 
 {
     "name": "Creación de Factura-e",
-    "version": "14.0.1.0.0",
+    "version": "14.0.1.0.1",
     "author": "ASR-OSS, "
     "FactorLibre, "
     "Tecon, "
@@ -47,6 +47,8 @@
         "views/edi_exchange_record.xml",
         "data/edi_output.xml",
     ],
-    "external_dependencies": {"python": ["cryptography", "xmlsig", "pycountry"]},
+    "external_dependencies": {
+        "python": ["cryptography", "pyOpenSSL", "pycountry", "xmlsig"]
+    },
     "installable": True,
 }

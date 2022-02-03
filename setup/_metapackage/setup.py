@@ -9,6 +9,7 @@ setuptools.setup(
     version=version,
     install_requires=[
         'odoo14-addon-delivery_dhl_parcel',
+        'odoo14-addon-delivery_gls_asm',
         'odoo14-addon-l10n_es_account_asset',
         'odoo14-addon-l10n_es_account_banking_sepa_fsdd',
         'odoo14-addon-l10n_es_account_statement_import_n43',
@@ -23,6 +24,7 @@ setuptools.setup(
         'odoo14-addon-l10n_es_aeat_mod390',
         'odoo14-addon-l10n_es_aeat_partner_check',
         'odoo14-addon-l10n_es_aeat_sii_oca',
+        'odoo14-addon-l10n_es_aeat_sii_oss',
         'odoo14-addon-l10n_es_aeat_vat_prorrate',
         'odoo14-addon-l10n_es_aeat_vat_prorrate_asset',
         'odoo14-addon-l10n_es_dua',
@@ -30,6 +32,7 @@ setuptools.setup(
         'odoo14-addon-l10n_es_facturae',
         'odoo14-addon-l10n_es_intrastat_report',
         'odoo14-addon-l10n_es_irnr',
+        'odoo14-addon-l10n_es_location_nuts',
         'odoo14-addon-l10n_es_mis_report',
         'odoo14-addon-l10n_es_partner',
         'odoo14-addon-l10n_es_partner_mercantil',

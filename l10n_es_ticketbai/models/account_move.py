@@ -47,7 +47,11 @@ class AccountMove(models.Model):
     )
     tbai_date_operation = fields.Datetime("Operation Date", copy=False)
     tbai_description_operation = fields.Text(
-        "Operation Description", default="/", copy=False
+        "Operation Description",
+        default="/",
+        copy=False,
+        compute="_compute_tbai_description",
+        store=True,
     )
     tbai_substitute_simplified_invoice = fields.Boolean(
         "Substitute Simplified Invoice", copy=False
@@ -230,16 +234,23 @@ class AccountMove(models.Model):
         gipuzkoa_tax_agency = self.env.ref(
             "l10n_es_ticketbai_api.tbai_tax_agency_gipuzkoa"
         )
+        araba_tax_agency = self.env.ref("l10n_es_ticketbai_api.tbai_tax_agency_araba")
         tax_agency = self.company_id.tbai_tax_agency_id
-        if tax_agency == gipuzkoa_tax_agency:
+        if tax_agency in (gipuzkoa_tax_agency, araba_tax_agency):
             lines = []
             for line in self.invoice_line_ids:
+                description_line = line.name[:250]
+                if (
+                    self.company_id.tbai_protected_data
+                    and self.company_id.tbai_protected_data_txt
+                ):
+                    description_line = self.company_id.tbai_protected_data_txt[:250]
                 lines.append(
                     (
                         0,
                         0,
                         {
-                            "description": line.name[:250],
+                            "description": description_line,
                             "quantity": line.tbai_get_value_cantidad(),
                             "price_unit": "%.8f" % line.price_unit,
                             "discount_amount": line.tbai_get_value_descuento(),
@@ -511,6 +522,32 @@ class AccountMove(models.Model):
         res[0].update({"company_id": self.company_id.id})
 
         return res
+
+    @api.depends(
+        "invoice_line_ids",
+        "invoice_line_ids.name",
+        "company_id",
+    )
+    def _compute_tbai_description(self):
+        default_description = self.default_get(["tbai_description_operation"])[
+            "tbai_description_operation"
+        ]
+        for invoice in self.filtered(lambda inv: not inv.tbai_invoice_id):
+            description = ""
+            method = invoice.company_id.tbai_description_method
+            if method == "fixed":
+                description = invoice.company_id.tbai_description or default_description
+            elif method == "manual":
+                if invoice.tbai_description_operation != default_description:
+                    # keep current content if not default
+                    description = invoice.tbai_description_operation
+            else:  # auto method
+                if invoice.invoice_line_ids:
+                    names = invoice.mapped("invoice_line_ids.name") or invoice.mapped(
+                        "invoice_line_ids.ref"
+                    )
+                    description += " - ".join(filter(None, names))
+            invoice.tbai_description_operation = (description or "")[:250] or "/"
 
 
 class AccountMoveLine(models.Model):
