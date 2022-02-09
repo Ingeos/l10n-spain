@@ -28,11 +28,13 @@ setuptools.setup(
         'odoo12-addon-l10n_es_aeat_mod216',
         'odoo12-addon-l10n_es_aeat_mod296',
         'odoo12-addon-l10n_es_aeat_mod303',
+        'odoo12-addon-l10n_es_aeat_mod303_oss',
         'odoo12-addon-l10n_es_aeat_mod347',
         'odoo12-addon-l10n_es_aeat_mod349',
         'odoo12-addon-l10n_es_aeat_mod390',
         'odoo12-addon-l10n_es_aeat_partner_check',
         'odoo12-addon-l10n_es_aeat_sii',
+        'odoo12-addon-l10n_es_aeat_sii_oss',
         'odoo12-addon-l10n_es_aeat_vat_prorrate',
         'odoo12-addon-l10n_es_aeat_vat_prorrate_asset',
         'odoo12-addon-l10n_es_dua',
@@ -48,6 +50,7 @@ setuptools.setup(
         'odoo12-addon-l10n_es_partner_mercantil',
         'odoo12-addon-l10n_es_pos',
         'odoo12-addon-l10n_es_subcontractor_certificate',
+        'odoo12-addon-l10n_es_ticketbai',
         'odoo12-addon-l10n_es_ticketbai_api',
         'odoo12-addon-l10n_es_toponyms',
         'odoo12-addon-l10n_es_vat_book',
@@ -56,5 +59,6 @@ setuptools.setup(
     classifiers=[
         'Programming Language :: Python',
         'Framework :: Odoo',
+        'Framework :: Odoo :: 12.0',
     ]
 )

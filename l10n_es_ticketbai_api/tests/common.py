@@ -6,7 +6,6 @@ import json
 import base64
 from random import randrange
 from lxml import etree
-from urllib.request import pathname2url
 from ..models.ticketbai_invoice import RefundCode, RefundType
 from ..models.ticketbai_invoice_tax import ExemptedCause, NotExemptedType, \
     NotSubjectToCause, VATRegimeKey, SurchargeOrSimplifiedRegimeType
@@ -18,6 +17,12 @@ from odoo.tests import common
 @common.at_install(False)
 @common.post_install(True)
 class TestL10nEsTicketBAIAPI(common.TransactionCase):
+
+    catalogs = [
+        'file:' + (os.path.join(
+            os.path.abspath(
+                os.path.dirname(__file__)), 'schemas/catalog.xml'))
+    ]
 
     def _send_to_tax_agency(self, invoice):
         pending_invoices = self.env['tbai.invoice'].get_next_pending_invoice(
@@ -439,6 +444,38 @@ class TestL10nEsTicketBAIAPI(common.TransactionCase):
         })
         return certificate
 
+    def _prepare_gipuzkoa_company(self, company):
+        test_dir_path = os.path.abspath(os.path.dirname(__file__))
+        self.company_values_json_filepath = os.path.join(test_dir_path,
+                                                         'company.json')
+        with open(self.company_values_json_filepath) as fp:
+            vals = json.load(fp)
+        if 'invoice_number' in vals:
+            vals.pop('invoice_number')
+        if 'refund_invoice_number' in vals:
+            vals.pop('refund_invoice_number')
+        vals.update({
+            'tbai_tax_agency_id': self.env.ref(
+                'l10n_es_ticketbai_api.tbai_tax_agency_gipuzkoa').id,
+        })
+        company.write(vals)
+
+    def _prepare_araba_company(self, company):
+        test_dir_path = os.path.abspath(os.path.dirname(__file__))
+        self.company_values_json_filepath = os.path.join(test_dir_path,
+                                                         'company-araba.json')
+        with open(self.company_values_json_filepath) as fp:
+            vals = json.load(fp)
+        if 'invoice_number' in vals:
+            vals.pop('invoice_number')
+        if 'refund_invoice_number' in vals:
+            vals.pop('refund_invoice_number')
+        vals.update({
+            'tbai_tax_agency_id': self.env.ref(
+                'l10n_es_ticketbai_api.tbai_tax_agency_araba').id,
+        })
+        company.write(vals)
+
     def _prepare_company(self, company):
         test_dir_path = os.path.abspath(os.path.dirname(__file__))
         json_filepath = self.company_values_json_filepath
@@ -489,6 +526,11 @@ class TestL10nEsTicketBAIAPI(common.TransactionCase):
 
     def setUp(self):
         super().setUp()
+        # can only set this environment variable once because lxml
+        # loads it only at startup. Luckily having several catalogs is
+        # supported so we provide the catalogs variable for related
+        # addons to plug any required additional catalog.
+        os.environ['XML_CATALOG_FILES'] = ' '.join(self.catalogs)
         test_dir_path = os.path.abspath(os.path.dirname(__file__))
         self.company_values_json_filepath = os.path.join(test_dir_path, 'company.json')
         # Disabled by default for automatic tests
@@ -497,10 +539,7 @@ class TestL10nEsTicketBAIAPI(common.TransactionCase):
         self.refund_number_prefix = '%d/' % randrange(1, 10 ** 19)
         schemas_version_dirname = XMLSchema.schemas_version_dirname
         script_dirpath = os.path.abspath(os.path.dirname(__file__))
-        schemas_dirpath = os.path.join(script_dirpath, '../ticketbai/schemas')
-        url = pathname2url(os.path.join(schemas_dirpath, 'catalog.xml'))
-        catalog_path = "file:%s" % url
-        os.environ['XML_CATALOG_FILES'] = catalog_path
+        schemas_dirpath = os.path.join(script_dirpath, 'schemas')
         # Load XSD file with XADES imports
         test_xml_invoice_filepath = os.path.abspath(
             os.path.join(schemas_dirpath,
@@ -515,13 +554,86 @@ class TestL10nEsTicketBAIAPI(common.TransactionCase):
             test_xml_cancellation_filepath, parser=etree.ETCompatXMLParser())
         self.main_company = self.env.ref('base.main_company')
         self._prepare_company(self.main_company)
-        self.partner = self.env.ref("l10n_es_ticketbai_api.res_partner_binovo")
-        self.partner_extracommunity = self.env.ref(
-            'l10n_es_ticketbai_api.res_partner_yamaha_jp')
-        self.partner_intracommunity = self.env.ref(
-            'l10n_es_ticketbai_api.res_partner_oca')
-        self.group_system = self.env.ref('base.group_system')  # Settings
-        self.group_user = self.env.ref('base.group_user')  # Employee
+
         # Contact creation
-        self.demo_user = self.env.ref('base.user_demo')  # Demo user
-        self.tech_user = self.env.ref('l10n_es_ticketbai_api.user_tech')  # Root user
+        self.partner = self.env['res.partner'].create(
+            {
+                'name': 'Binovo IT Human Project S.L.',
+                'supplier': True,
+                'customer': True,
+                'is_company': True,
+                'city': 'Oiartzun',
+                'zip': '20180',
+                'country_id': self.env.ref('base.es').id,
+                'vat': 'ESB20990602',
+                'street': 'Astigarraga bidea 2, 2ª Izquierda, Oficina 10-11',
+                'email': 'sales@binovo.es',
+                'phone': '+34 943569206',
+                'website': 'https://www.binovo.es/',
+
+            }
+        )
+
+        self.partner_extracommunity = self.env['res.partner'].create(
+            {
+                'name': 'Yamaha Motor Co., Ltd.',
+                'supplier': True,
+                'customer': True,
+                'is_company': True,
+                'city': 'Iwata',
+                'zip': '438-8501',
+                'country_id': self.env.ref('base.jp').id,
+                'street': '2500 Shingai, Iwata-shi',
+                'tbai_partner_idtype': '06',
+                'tbai_partner_identification_number': 'JP3942800008',
+                'phone': '+81 03-5713-3820',
+                'website': 'https://global.yamaha-motor.com',
+            }
+        )
+
+        self.partner_intracommunity = self.env['res.partner'].create(
+            {
+                'name': 'SA PSA AUTOMOBILES SA',
+                'supplier': True,
+                'customer': True,
+                'is_company': True,
+                'city': 'POISSY',
+                'zip': '78300',
+                'country_id': self.env.ref('base.fr').id,
+                'vat': 'FR82542065479',
+                'street': '2 BD DE L EUROPE',
+                'tbai_partner_idtype': '02',
+                'website': 'www.groupe-psa.com',
+            }
+        )
+
+        self.tech_partner = self.env['res.partner'].create(
+            {
+                'name': 'Tech User',
+                'company_id': self.env.ref('base.main_company').id,
+                'customer': False,
+                'city': 'Oiartzun',
+                'zip': '20180',
+                'country_id': self.env.ref('base.es').id,
+                'street': 'Astigarraga bidea 2, 2ª Izquierda, Oficina 10-11',
+                'email': 'tech@yourcompany.example.com',
+                'company_name': 'Binovo IT Human Project S.L.',
+            }
+        )
+
+        group_ids = [self.env.ref('base.group_user').id,
+                     self.env.ref('base.group_partner_manager').id,
+                     self.env.ref('base.group_system').id]
+
+        self.tech_user = self.env.ref('base.user_demo')
+        self.tech_user.write(
+            {
+                "groups_id": [
+                    (
+                        6,
+                        0,
+                        group_ids,
+                    )
+                ],
+            }
+        )
