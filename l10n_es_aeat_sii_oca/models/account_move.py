@@ -1513,7 +1513,7 @@ class AccountMove(models.Model):
             node = doc.xpath("//field[@name='thirdparty_invoice']")
             if node:
                 return res
-            for node in doc.xpath("//field[@name='ref']"):
+            for node in doc.xpath("//field[@name='ref'][last()]"):
                 attrs = {
                     "required": [("thirdparty_invoice", "=", True)],
                     "invisible": [("thirdparty_invoice", "=", False)],
@@ -1527,7 +1527,20 @@ class AccountMove(models.Model):
                 transfer_modifiers_to_node(modifiers, elem)
                 node.addnext(elem)
                 res["fields"].update(self.fields_get(["thirdparty_number"]))
-                elem = etree.Element("field", {"name": "thirdparty_invoice"})
+                attrs = {
+                    "invisible": [
+                        (
+                            "move_type",
+                            "not in",
+                            ("in_invoice", "out_invoice", "out_refund", "in_refund"),
+                        )
+                    ],
+                }
+                elem = etree.Element(
+                    "field", {"name": "thirdparty_invoice", "attrs": str(attrs)}
+                )
+                transfer_node_to_modifiers(elem, modifiers)
+                transfer_modifiers_to_node(modifiers, elem)
                 node.addnext(elem)
                 res["fields"].update(self.fields_get(["thirdparty_invoice"]))
             res["arch"] = etree.tostring(doc)
