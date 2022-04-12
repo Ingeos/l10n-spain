@@ -6,18 +6,14 @@ from base64 import b64encode
 from datetime import datetime
 from uuid import uuid4
 
+import xmlsig
+import xmltodict
+from cryptography.hazmat.primitives import hashes
 from lxml import etree
 
 from ..utils import utils as tbai_utils
 
 _logger = logging.getLogger(__name__)
-
-try:
-    import xmlsig
-    import xmltodict
-    from cryptography.hazmat.primitives import hashes
-except (ImportError, IOError) as err:
-    _logger.error(err)
 
 
 class XMLSchemaException(Exception):
@@ -78,16 +74,10 @@ class XMLSchema:
         :return: bool
         """
         schema = etree.XMLSchema(test_xmlschema_doc)
-        try:
-            schema.assertValid(root)
-            valid = True
-        except etree.DocumentInvalid as error:
-            _logger.exception(error)
-            valid = False
-        return valid
+        return schema(root)
 
     @staticmethod
-    def sign(root, certificate):
+    def sign(root, certificate, tax_agency):
         """
         Sign XML with PKCS #12
         :author: Victor Laskurain <blaskurain@binovo.es>
@@ -140,7 +130,10 @@ class XMLSchema:
             signature, xmlsig.constants.TransformSha256, uri="#" + kinfo_id
         )
         xmlsig.template.add_reference(
-            signature, xmlsig.constants.TransformSha256, uri="#" + sp_id
+            signature,
+            xmlsig.constants.TransformSha256,
+            uri="#" + sp_id,
+            uri_type="http://uri.etsi.org/01903#SignedProperties",
         )
         ki = xmlsig.template.ensure_key_info(signature, name=kinfo_id)
         data = xmlsig.template.add_x509_data(ki)
@@ -155,7 +148,7 @@ class XMLSchema:
             (),
             (
                 "etsi:QualifyingProperties",
-                ("Target", signature_id),
+                ("Target", "#" + signature_id),
                 (
                     "etsi:SignedProperties",
                     ("Id", sp_id),
@@ -176,7 +169,7 @@ class XMLSchema:
                                         "ds:DigestMethod",
                                         (
                                             "Algorithm",
-                                            "http://www.w3.org/2000/09/xmldsig#sha256",
+                                            "http://www.w3.org/2001/04/xmlenc#sha256",
                                         ),
                                     ),
                                     (
@@ -198,15 +191,10 @@ class XMLSchema:
                                 (
                                     "etsi:SigPolicyId",
                                     (),
-                                    (
-                                        "etsi:Identifier",
-                                        (),
-                                        "http://ticketbai.eus/politicafirma",
-                                    ),
+                                    ("etsi:Identifier", (), tax_agency.sign_file_url),
                                     (
                                         "etsi:Description",
                                         (),
-                                        "Política de Firma TicketBAI 1.0",
                                     ),
                                 ),
                                 (
@@ -216,14 +204,10 @@ class XMLSchema:
                                         "ds:DigestMethod",
                                         (
                                             "Algorithm",
-                                            "http://www.w3.org/2000/09/xmldsig#sha256",
+                                            "http://www.w3.org/2001/04/xmlenc#sha256",
                                         ),
                                     ),
-                                    (
-                                        "ds:DigestValue",
-                                        (),
-                                        "lX1xDvBVAsPXkkJ7R07WCVbAm9e0H33I1sCpDtQNkbc=",
-                                    ),
+                                    ("ds:DigestValue", (), tax_agency.sign_file_hash),
                                 ),
                             ),
                         ),

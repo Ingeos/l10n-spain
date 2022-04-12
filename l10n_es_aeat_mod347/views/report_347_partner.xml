@@ -74,14 +74,14 @@
                                     <tr t-foreach="o.move_record_ids" t-as="l">
                                         <td>
                                             <span
-                                                t-esc="l.move_id.ref or l.move_id.name"
+                                                t-esc="l.move_id.ref if l.move_id.move_type[:2] == 'in' else l.move_id.name"
                                             />
                                         </td>
                                         <td>
                                             <span t-field="l.move_id.date" />
                                         </td>
                                         <td class="text-right" id="subtotal">
-                                            <span t-field="l.amount_signed" />
+                                            <span t-field="l.amount" />
                                         </td>
                                     </tr>
                                     <tr

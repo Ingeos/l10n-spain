@@ -14,6 +14,33 @@ class ResCompany(models.Model):
         domain="[('state', '=', 'active'), ('company_id', '=', id)]",
         copy=False,
     )
+    tbai_protected_data = fields.Boolean("Protected Data", default=False)
+    tbai_protected_data_txt = fields.Text(
+        "Substitution Text",
+        translate=True,
+        default="Información protegida por el artículo 9 Reglamento 679/2016",
+    )
+
+    tbai_description_method = fields.Selection(
+        string="TicketBAI Description Method",
+        selection=[("auto", "Automatic"), ("fixed", "Fixed"), ("manual", "Manual")],
+        default="manual",
+        required=True,
+        help="Method for the TicketBAI invoices description, can be one of these:\n"
+        "- Automatic: the description will be the join of the invoice "
+        "  lines description\n"
+        "- Fixed: the description write on the below field 'TBAI "
+        "  Description'\n"
+        "- Manual (by default): It will be necessary to manually enter "
+        "  the description on each invoice",
+    )
+
+    tbai_description = fields.Char(
+        string="TicketBAI Description",
+        size=250,
+        help="The description for invoices. Only used when the field TicketBAI "
+        "Description Method is 'Fixed'.",
+    )
 
     @api.onchange("tbai_enabled")
     def onchange_tbai_enabled_unset_tbai_aeat_certificate_id(self):

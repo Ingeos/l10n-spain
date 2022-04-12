@@ -30,6 +30,11 @@ msgid "Account Move Reversal"
 msgstr ""
 
 #. module: l10n_es_ticketbai
+#: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_invoice_refund_origin__account_refund_invoice_id
+msgid "Account Refund Invoice"
+msgstr ""
+
+#. module: l10n_es_ticketbai
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_l10n_es_aeat_certificate__tbai_p12_friendlyname
 msgid "Alias"
 msgstr ""
@@ -52,6 +57,11 @@ msgstr ""
 #. module: l10n_es_ticketbai
 #: model:ir.model.fields.selection,name:l10n_es_ticketbai.selection__account_move__tbai_refund_key__r3
 msgid "Art. 80.4"
+msgstr ""
+
+#. module: l10n_es_ticketbai
+#: model:ir.model.fields.selection,name:l10n_es_ticketbai.selection__res_company__tbai_description_method__auto
+msgid "Automatic"
 msgstr ""
 
 #. module: l10n_es_ticketbai
@@ -112,6 +122,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_account_fp_tbai_tax__create_uid
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_account_fp_tbai_tax_template__create_uid
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_info__create_uid
+#: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_invoice_refund_origin__create_uid
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_tax_map__create_uid
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_vat_exemption_key__create_uid
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_vat_regime_key__create_uid
@@ -122,6 +133,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_account_fp_tbai_tax__create_date
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_account_fp_tbai_tax_template__create_date
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_info__create_date
+#: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_invoice_refund_origin__create_date
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_tax_map__create_date
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_vat_exemption_key__create_date
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_vat_regime_key__create_date
@@ -171,6 +183,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_res_company__display_name
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_info__display_name
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_invoice__display_name
+#: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_invoice_refund_origin__display_name
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_tax_map__display_name
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_vat_exemption_key__display_name
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_vat_regime_key__display_name
@@ -184,6 +197,16 @@ msgstr ""
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_account_payment__tbai_enabled
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_ir_sequence__tbai_enabled
 msgid "Enable TicketBAI"
+msgstr ""
+
+#. module: l10n_es_ticketbai
+#: model:ir.model.fields,help:l10n_es_ticketbai.field_tbai_invoice_refund_origin__expedition_date
+msgid "Expected string date format: %dd-%mm-%yyyy"
+msgstr ""
+
+#. module: l10n_es_ticketbai
+#: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_invoice_refund_origin__expedition_date
+msgid "Expedition Date"
 msgstr ""
 
 #. module: l10n_es_ticketbai
@@ -210,6 +233,11 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:l10n_es_ticketbai.tbai_account_fiscal_position_template_view_search
 #: model_terms:ir.ui.view,arch_db:l10n_es_ticketbai.tbai_account_fiscal_position_template_view_tree
 msgid "Fiscal Position Template"
+msgstr ""
+
+#. module: l10n_es_ticketbai
+#: model:ir.model.fields.selection,name:l10n_es_ticketbai.selection__res_company__tbai_description_method__fixed
+msgid "Fixed"
 msgstr ""
 
 #. module: l10n_es_ticketbai
@@ -240,6 +268,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_res_company__id
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_info__id
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_invoice__id
+#: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_invoice_refund_origin__id
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_tax_map__id
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_vat_exemption_key__id
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_vat_regime_key__id
@@ -250,6 +279,29 @@ msgstr ""
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_invoice__invoice_id
 #: model_terms:ir.ui.view,arch_db:l10n_es_ticketbai.tbai_invoice_form
 msgid "Invoice"
+msgstr ""
+
+#. module: l10n_es_ticketbai
+#: model_terms:ir.ui.view,arch_db:l10n_es_ticketbai.view_move_form_inherit
+msgid "Invoice Date"
+msgstr ""
+
+#. module: l10n_es_ticketbai
+#: model_terms:ir.ui.view,arch_db:l10n_es_ticketbai.view_move_form_inherit
+msgid "Invoice Number"
+msgstr ""
+
+#. module: l10n_es_ticketbai
+#: model_terms:ir.ui.view,arch_db:l10n_es_ticketbai.view_move_form_inherit
+msgid "Invoice Serial"
+msgstr ""
+
+#. module: l10n_es_ticketbai
+#: code:addons/l10n_es_ticketbai/models/ticketbai_invoice.py:0
+#, python-format
+msgid ""
+"Invoice: number %s prefix %s invoice_date %s exists. Create a credit note "
+"from this invoice."
 msgstr ""
 
 #. module: l10n_es_ticketbai
@@ -273,6 +325,11 @@ msgid "Journal Item"
 msgstr ""
 
 #. module: l10n_es_ticketbai
+#: model_terms:ir.ui.view,arch_db:l10n_es_ticketbai.view_move_form_inherit
+msgid "Key/Type"
+msgstr ""
+
+#. module: l10n_es_ticketbai
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_account_chart_template____last_update
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_account_fiscal_position____last_update
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_account_fiscal_position_template____last_update
@@ -290,6 +347,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_res_company____last_update
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_info____last_update
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_invoice____last_update
+#: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_invoice_refund_origin____last_update
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_tax_map____last_update
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_vat_exemption_key____last_update
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_vat_regime_key____last_update
@@ -300,6 +358,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_account_fp_tbai_tax__write_uid
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_account_fp_tbai_tax_template__write_uid
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_info__write_uid
+#: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_invoice_refund_origin__write_uid
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_tax_map__write_uid
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_vat_exemption_key__write_uid
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_vat_regime_key__write_uid
@@ -310,6 +369,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_account_fp_tbai_tax__write_date
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_account_fp_tbai_tax_template__write_date
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_info__write_date
+#: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_invoice_refund_origin__write_date
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_tax_map__write_date
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_vat_exemption_key__write_date
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_vat_regime_key__write_date
@@ -324,8 +384,22 @@ msgid "Link between a validated Customer Invoice and its substitute."
 msgstr ""
 
 #. module: l10n_es_ticketbai
+#: model:ir.model.fields.selection,name:l10n_es_ticketbai.selection__res_company__tbai_description_method__manual
+msgid "Manual"
+msgstr ""
+
+#. module: l10n_es_ticketbai
 #: model_terms:ir.ui.view,arch_db:l10n_es_ticketbai.view_move_form_inherit
 msgid "Messages"
+msgstr ""
+
+#. module: l10n_es_ticketbai
+#: model:ir.model.fields,help:l10n_es_ticketbai.field_res_company__tbai_description_method
+msgid ""
+"Method for the TicketBAI invoices description, can be one of these:\n"
+"- Automatic: the description will be the join of the invoice   lines description\n"
+"- Fixed: the description write on the below field 'TBAI   Description'\n"
+"- Manual (by default): It will be necessary to manually enter   the description on each invoice"
 msgstr ""
 
 #. module: l10n_es_ticketbai
@@ -333,6 +407,23 @@ msgstr ""
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_vat_exemption_key__name
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_vat_regime_key__name
 msgid "Name"
+msgstr ""
+
+#. module: l10n_es_ticketbai
+#: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_invoice_refund_origin__number
+msgid "Number"
+msgstr ""
+
+#. module: l10n_es_ticketbai
+#: model:ir.model.fields,field_description:l10n_es_ticketbai.field_tbai_invoice_refund_origin__number_prefix
+msgid "Number Prefix"
+msgstr ""
+
+#. module: l10n_es_ticketbai
+#: model:ir.model.fields,help:l10n_es_ticketbai.field_tbai_invoice_refund_origin__number_prefix
+msgid ""
+"Number prefix of this invoice name e.g. if the invoice name is "
+"INV/2021/00001 then the prefix is INV/2021/, ending back slash included"
 msgstr ""
 
 #. module: l10n_es_ticketbai
@@ -347,6 +438,23 @@ msgstr ""
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_account_move__tbai_description_operation
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_account_payment__tbai_description_operation
 msgid "Operation Description"
+msgstr ""
+
+#. module: l10n_es_ticketbai
+#: model_terms:ir.ui.view,arch_db:l10n_es_ticketbai.view_move_form_inherit
+msgid "Origin Invoices Data"
+msgstr ""
+
+#. module: l10n_es_ticketbai
+#: code:addons/l10n_es_ticketbai/models/account_move.py:0
+#, python-format
+msgid ""
+"Please, specify data for the original invoices that are going to be refunded"
+msgstr ""
+
+#. module: l10n_es_ticketbai
+#: model:ir.model.fields,field_description:l10n_es_ticketbai.field_res_company__tbai_protected_data
+msgid "Protected Data"
 msgstr ""
 
 #. module: l10n_es_ticketbai
@@ -367,6 +475,28 @@ msgid ""
 msgstr ""
 
 #. module: l10n_es_ticketbai
+#: code:addons/l10n_es_ticketbai/models/ticketbai_invoice.py:0
+#, python-format
+msgid "Refunded Invoice %s Expedition Date"
+msgstr ""
+
+#. module: l10n_es_ticketbai
+#: code:addons/l10n_es_ticketbai/models/ticketbai_invoice.py:0
+#, python-format
+msgid ""
+"Refunded Invoice %s Number Prefix %s longer than expected. Should be 20 "
+"characters max.!"
+msgstr ""
+
+#. module: l10n_es_ticketbai
+#: code:addons/l10n_es_ticketbai/models/ticketbai_invoice.py:0
+#, python-format
+msgid ""
+"Refunded Invoice Number %s longer than expected. Should be 20 characters "
+"max.!"
+msgstr ""
+
+#. module: l10n_es_ticketbai
 #: model:ir.model,name:l10n_es_ticketbai.model_account_resequence_wizard
 msgid "Remake the sequence of Journal Entries."
 msgstr ""
@@ -380,6 +510,14 @@ msgid "Responses"
 msgstr ""
 
 #. module: l10n_es_ticketbai
+#: model:ir.model.fields,field_description:l10n_es_ticketbai.field_account_bank_statement_line__tbai_send_invoice
+#: model:ir.model.fields,field_description:l10n_es_ticketbai.field_account_journal__tbai_send_invoice
+#: model:ir.model.fields,field_description:l10n_es_ticketbai.field_account_move__tbai_send_invoice
+#: model:ir.model.fields,field_description:l10n_es_ticketbai.field_account_payment__tbai_send_invoice
+msgid "Send TicketBAI invoices to tax agency"
+msgstr ""
+
+#. module: l10n_es_ticketbai
 #: model:ir.model,name:l10n_es_ticketbai.model_ir_sequence
 msgid "Sequence"
 msgstr ""
@@ -390,10 +528,29 @@ msgid "Software"
 msgstr ""
 
 #. module: l10n_es_ticketbai
+#: code:addons/l10n_es_ticketbai/models/account_move.py:0
+#, python-format
+msgid "Some of the original invoices have related tbai cancelled invoices"
+msgstr ""
+
+#. module: l10n_es_ticketbai
+#: code:addons/l10n_es_ticketbai/models/account_move.py:0
+#, python-format
+msgid ""
+"Some of the original invoices have related tbai invoices in inconsistent "
+"state please fix them beforehand."
+msgstr ""
+
+#. module: l10n_es_ticketbai
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_account_bank_statement_line__tbai_substitute_simplified_invoice
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_account_move__tbai_substitute_simplified_invoice
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_account_payment__tbai_substitute_simplified_invoice
 msgid "Substitute Simplified Invoice"
+msgstr ""
+
+#. module: l10n_es_ticketbai
+#: model:ir.model.fields,field_description:l10n_es_ticketbai.field_res_company__tbai_protected_data_txt
+msgid "Substitution Text"
 msgstr ""
 
 #. module: l10n_es_ticketbai
@@ -468,6 +625,20 @@ msgid "Template for Fiscal Position"
 msgstr ""
 
 #. module: l10n_es_ticketbai
+#: model:ir.model.fields,help:l10n_es_ticketbai.field_res_company__tbai_description
+msgid ""
+"The description for invoices. Only used when the field TicketBAI Description"
+" Method is 'Fixed'."
+msgstr ""
+
+#. module: l10n_es_ticketbai
+#: model:ir.model.fields,help:l10n_es_ticketbai.field_tbai_invoice_refund_origin__number
+msgid ""
+"The number of the invoice name e.g. if the invoice name is INV/2021/00001 "
+"then the number is 00001"
+msgstr ""
+
+#. module: l10n_es_ticketbai
 #: model:ir.ui.menu,name:l10n_es_ticketbai.menu_finance_ticketbai
 #: model:ir.ui.menu,name:l10n_es_ticketbai.menu_l10n_es_tbai_config
 #: model_terms:ir.ui.view,arch_db:l10n_es_ticketbai.view_account_position_form_inherit
@@ -503,6 +674,16 @@ msgstr ""
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_account_move__tbai_cancellation_ids
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_account_payment__tbai_cancellation_ids
 msgid "TicketBAI Cancellations"
+msgstr ""
+
+#. module: l10n_es_ticketbai
+#: model:ir.model.fields,field_description:l10n_es_ticketbai.field_res_company__tbai_description
+msgid "TicketBAI Description"
+msgstr ""
+
+#. module: l10n_es_ticketbai
+#: model:ir.model.fields,field_description:l10n_es_ticketbai.field_res_company__tbai_description_method
+msgid "TicketBAI Description Method"
 msgstr ""
 
 #. module: l10n_es_ticketbai
@@ -570,6 +751,18 @@ msgstr ""
 #: model:ir.model.fields,field_description:l10n_es_ticketbai.field_account_payment__tbai_invoice_ids
 #: model:ir.ui.menu,name:l10n_es_ticketbai.menu_tbai_invoices
 msgid "TicketBAI Invoices"
+msgstr ""
+
+#. module: l10n_es_ticketbai
+#: model:ir.model.fields,field_description:l10n_es_ticketbai.field_account_bank_statement_line__tbai_refund_origin_ids
+#: model:ir.model.fields,field_description:l10n_es_ticketbai.field_account_move__tbai_refund_origin_ids
+#: model:ir.model.fields,field_description:l10n_es_ticketbai.field_account_payment__tbai_refund_origin_ids
+msgid "TicketBAI Refund Origin References"
+msgstr ""
+
+#. module: l10n_es_ticketbai
+#: model:ir.model,name:l10n_es_ticketbai.model_tbai_invoice_refund_origin
+msgid "TicketBAI Refunded Invoices Origin Invoice Data"
 msgstr ""
 
 #. module: l10n_es_ticketbai
@@ -683,7 +876,9 @@ msgid "You cannot resequence a customer invoice when TicketBAI is enabled."
 msgstr ""
 
 #. module: l10n_es_ticketbai
-#: code:addons/l10n_es_ticketbai/models/account_move.py:0
+#: code:addons/l10n_es_ticketbai/models/account_journal.py:0
 #, python-format
-msgid "You cannot validate a refund invoice without the origin invoice!"
+msgid ""
+"You cannot stop sending invoices from this journal, an invoice has already "
+"been sent."
 msgstr ""

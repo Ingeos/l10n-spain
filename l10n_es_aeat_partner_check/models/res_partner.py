@@ -1,4 +1,5 @@
 # Copyright 2019 Acysos S.L.
+# Copyright 2021 Landoo Sistemas de Informacion SL
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 import requests
@@ -10,6 +11,8 @@ RESULTS = [
     ("IDENTIFICADO", _("Identificado")),
     ("NO PROCESADO", _("No procesado")),
     ("NO IDENTIFICABLE", _("No identificable")),
+    ("IDENTIFICADO-BAJA", _("Identificado, baja")),
+    ("IDENTIFICADO-REVOCADO", _("Identificado, revocado")),
 ]
 TYPES = [
     ("sales_equalization", _("Régimen de recargo de equivalencia")),
@@ -34,7 +37,7 @@ class ResPartner(models.Model):
     aeat_partner_check_result = fields.Selection(
         selection=RESULTS, string="Check Result", readonly=True
     )
-    aeat_partner_vat = fields.Char(string="VAT", readonly=True)
+    aeat_partner_vat = fields.Char(string="AEAT VAT", readonly=True)
     aeat_partner_name = fields.Char(string="AEAT Name", readonly=True)
     aeat_data_diff = fields.Boolean(
         string="Data different", compute="_compute_data_diff", store=True

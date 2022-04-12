@@ -61,7 +61,19 @@ class TestL10nEsTicketBAI(TestL10nEsTicketBAIAPI):
             )
         )
 
-    def create_draft_invoice(self, uid, fp, partner, only_service=False):
+    def create_draft_invoice(
+        self,
+        uid,
+        fp,
+        partner,
+        only_service=False,
+        company_id=None,
+        invoice_type="out_invoice",
+        journal_id=None,
+        context=None,
+    ):
+        if not context:
+            context = {}
         invoice_line_ids = []
 
         if not only_service:
@@ -133,20 +145,24 @@ class TestL10nEsTicketBAI(TestL10nEsTicketBAIAPI):
             )
         )
 
+        invoice_vals = {
+            "partner_id": partner,
+            "currency_id": self.env.ref("base.EUR").id,
+            "invoice_date": str(date.today()),
+            "tbai_date_operation": str(date.today()),
+            "fiscal_position_id": fp.id,
+            "invoice_line_ids": invoice_line_ids,
+            "company_id": company_id or self.main_company.id,
+        }
+
+        if journal_id:
+            invoice_vals["journal_id"] = journal_id.id
+
         invoice = (
             self.env["account.move"]
             .with_user(uid)
-            .create(
-                {
-                    "partner_id": partner,
-                    "currency_id": self.env.ref("base.EUR").id,
-                    "move_type": "out_invoice",
-                    "invoice_date": str(date.today()),
-                    "tbai_date_operation": str(date.today()),
-                    "fiscal_position_id": fp.id,
-                    "invoice_line_ids": invoice_line_ids,
-                }
-            )
+            .with_context(default_move_type=invoice_type)
+            .create(invoice_vals)
         )
 
         return invoice
@@ -170,6 +186,17 @@ class TestL10nEsTicketBAI(TestL10nEsTicketBAIAPI):
         )
         aeat_certificate.action_active()
         return aeat_certificate
+
+    def create_product(self, product_name, product_type="consu", product_taxes=None):
+        def create_template():
+            template_model = self.env["product.template"]
+            template_dict = {"name": product_name, "type": product_type}
+            return template_model.create(template_dict)
+
+        product_obj = create_template().product_variant_ids[0]
+        if product_taxes:
+            product_obj["taxes_id"] = [(6, 0, product_taxes)]
+        return product_obj
 
     def setUp(self):
         super().setUp()
@@ -209,6 +236,8 @@ class TestL10nEsTicketBAI(TestL10nEsTicketBAIAPI):
             ],
             limit=1,
         )
+        # Exenciones en operaciones interiores
+        self.vat_exemption_E1 = self.env.ref("l10n_es_ticketbai.tbai_vat_exemption_E1")
         # Exportaciones de mercancías
         self.vat_exemption_E2 = self.env.ref("l10n_es_ticketbai.tbai_vat_exemption_E2")
         # Entregas a otro estado miembro
@@ -233,6 +262,10 @@ class TestL10nEsTicketBAI(TestL10nEsTicketBAIAPI):
         self.tax_iva0_e = self.env.ref("l10n_es.1_account_tax_template_s_iva0_e")
         # Servicios extracomunitarios
         self.tax_iva0_sp_e = self.env.ref("l10n_es.1_account_tax_template_s_iva_e")
+        # IVA Exento Repercutido Sujeto
+        self.tax_iva0_exento_sujeto = self.env.ref(
+            "l10n_es.1_account_tax_template_s_iva0"
+        )
         self.product_delivery.taxes_id = [(6, 0, [self.tax_21b.id])]
         self.product_service.taxes_id = [(6, 0, [self.tax_10s.id])]
         # 07 - Régimen especial criterio de caja
@@ -250,6 +283,16 @@ class TestL10nEsTicketBAI(TestL10nEsTicketBAIAPI):
                 "tbai_vat_regime_key3": self.env.ref(
                     "l10n_es_ticketbai.tbai_vat_regime_01"
                 ).id,
+                "tbai_vat_exemption_ids": [
+                    (
+                        0,
+                        0,
+                        {
+                            "tax_id": self.tax_iva0_exento_sujeto.id,
+                            "tbai_vat_exemption_key": self.vat_exemption_E1.id,
+                        },
+                    )
+                ],
             }
         )
         self.fiscal_position_surcharge = self.env["account.fiscal.position"].create(
@@ -402,4 +445,12 @@ class TestL10nEsTicketBAI(TestL10nEsTicketBAIAPI):
         )
         self.fiscal_position_ipsi_igic = self.main_company.get_fps_from_templates(
             self.env.ref("l10n_es.fp_not_subject_tai")
+        )
+        self.non_tbai_journal = self.env["account.journal"].create(
+            {
+                "name": "Non-Tbai journal",
+                "type": "sale",
+                "code": "NTBAI",
+                "tbai_send_invoice": False,
+            }
         )

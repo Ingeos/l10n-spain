@@ -1,11 +1,15 @@
 # generated from manifests external_dependencies
 chardet
 cryptography
+paramiko
 pycountry
 pycrypto
+pyOpenSSL
 qrcode
 requests
+suds-py3
 unidecode
+xmlsec
 xmlsig
 xmltodict
 zeep

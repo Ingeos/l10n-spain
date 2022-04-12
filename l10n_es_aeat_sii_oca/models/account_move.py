@@ -11,11 +11,17 @@
 import json
 import logging
 
+from lxml import etree
 from requests import Session
 
 from odoo import _, api, exceptions, fields, models
 from odoo.modules.registry import Registry
 from odoo.tools.float_utils import float_compare
+
+from odoo.addons.base.models.ir_ui_view import (
+    transfer_modifiers_to_node,
+    transfer_node_to_modifiers,
+)
 
 _logger = logging.getLogger(__name__)
 
@@ -233,16 +239,20 @@ class AccountMove(models.Model):
         "The invoice number should start with LC, QZC, QRC, A01 or A02.",
         copy=False,
     )
-    sii_thirdparty_invoice = fields.Boolean(
-        string="SII third-party invoice", copy=False
-    )
-    sii_thirdparty_number = fields.Char(
-        string="SII third-party number",
-        help="[RD 1619/2012] Cumplimiento de la obligación de expedir factura "
-        "por el destinatario o por un tercero.\n"
-        "Se permite notificar de Factura emitida por Terceros mediante el campo "
-        "'Factura de terceros SII' y 'Número de terceros SII'.",
+    thirdparty_invoice = fields.Boolean(
+        string="Third-party invoice",
         copy=False,
+        compute="_compute_thirdparty_invoice",
+        store=True,
+        readonly=False,
+    )
+    thirdparty_number = fields.Char(
+        string="Third-party number",
+        index=True,
+        readonly=True,
+        states={"draft": [("readonly", False)]},
+        copy=False,
+        help="Número de la factura emitida por un tercero.",
     )
     invoice_jobs_ids = fields.Many2many(
         comodel_name="queue.job",
@@ -252,6 +262,11 @@ class AccountMove(models.Model):
         string="Connector Jobs",
         copy=False,
     )
+
+    @api.depends("journal_id")
+    def _compute_thirdparty_invoice(self):
+        for item in self:
+            item.thirdparty_invoice = item.journal_id.thirdparty_invoice
 
     @api.depends("move_type")
     def _compute_sii_registration_key_domain(self):
@@ -398,7 +413,8 @@ class AccountMove(models.Model):
         :return: Recordset with the corresponding codes
         """
         self.ensure_one()
-        sii_map = self.env["aeat.sii.map"].search(
+        map_obj = self.env["aeat.sii.map"].sudo()
+        sii_map = map_obj.search(
             [
                 "|",
                 ("date_from", "<=", self.date),
@@ -409,9 +425,7 @@ class AccountMove(models.Model):
             ],
             limit=1,
         )
-        tax_templates = (
-            sii_map.sudo().map_lines.filtered(lambda x: x.code in codes).taxes
-        )
+        tax_templates = sii_map.map_lines.filtered(lambda x: x.code in codes).taxes
         return self.company_id.get_taxes_from_templates(tax_templates)
 
     def _change_date_format(self, date):
@@ -807,8 +821,8 @@ class AccountMove(models.Model):
         periodo = "%02d" % fields.Date.to_date(self.date).month
         is_simplified_invoice = self._is_sii_simplified_invoice()
         serial_number = (self.name or "")[0:60]
-        if self.sii_thirdparty_invoice:
-            serial_number = self.sii_thirdparty_number[0:60]
+        if self.thirdparty_invoice:
+            serial_number = self.thirdparty_number[0:60]
         inv_dict = {
             "IDFactura": {
                 "IDEmisorFactura": {"NIF": company.vat[2:]},
@@ -828,7 +842,7 @@ class AccountMove(models.Model):
                 "TipoDesglose": tipo_desglose,
                 "ImporteTotal": amount_total,
             }
-            if self.sii_thirdparty_invoice:
+            if self.thirdparty_invoice:
                 inv_dict["FacturaExpedida"]["EmitidaPorTercerosODestinatario"] = "S"
             if self.sii_macrodata:
                 inv_dict["FacturaExpedida"].update(Macrodato="S")
@@ -1197,7 +1211,7 @@ class AccountMove(models.Model):
                     )
                 res_line = res["RespuestaLinea"][0]
                 if res_line["CodigoErrorRegistro"]:
-                    inv_vals["sii_send_error"] = u"{} | {}".format(
+                    inv_vals["sii_send_error"] = "{} | {}".format(
                         str(res_line["CodigoErrorRegistro"]),
                         str(res_line["DescripcionErrorRegistro"])[:60],
                     )
@@ -1479,3 +1493,54 @@ class AccountMove(models.Model):
 
     def cancel_one_invoice(self):
         self.sudo()._cancel_invoice_to_sii()
+
+    @api.model
+    def fields_view_get(
+        self, view_id=None, view_type="form", toolbar=False, submenu=False
+    ):
+        """Thirdparty fields are added to the form view only if they don't exist
+        previously (l10n_es_facturae addon also has the same field names).
+        """
+        res = super().fields_view_get(
+            view_id=view_id,
+            view_type=view_type,
+            toolbar=toolbar,
+            submenu=submenu,
+        )
+        if view_type == "form":
+            doc = etree.XML(res["arch"])
+            node = doc.xpath("//field[@name='thirdparty_invoice']")
+            if node:
+                return res
+            for node in doc.xpath("//field[@name='ref'][last()]"):
+                attrs = {
+                    "required": [("thirdparty_invoice", "=", True)],
+                    "invisible": [("thirdparty_invoice", "=", False)],
+                }
+                elem = etree.Element(
+                    "field",
+                    {"name": "thirdparty_number", "attrs": str(attrs)},
+                )
+                modifiers = {}
+                transfer_node_to_modifiers(elem, modifiers)
+                transfer_modifiers_to_node(modifiers, elem)
+                node.addnext(elem)
+                res["fields"].update(self.fields_get(["thirdparty_number"]))
+                attrs = {
+                    "invisible": [
+                        (
+                            "move_type",
+                            "not in",
+                            ("in_invoice", "out_invoice", "out_refund", "in_refund"),
+                        )
+                    ],
+                }
+                elem = etree.Element(
+                    "field", {"name": "thirdparty_invoice", "attrs": str(attrs)}
+                )
+                transfer_node_to_modifiers(elem, modifiers)
+                transfer_modifiers_to_node(modifiers, elem)
+                node.addnext(elem)
+                res["fields"].update(self.fields_get(["thirdparty_invoice"]))
+            res["arch"] = etree.tostring(doc)
+        return res
