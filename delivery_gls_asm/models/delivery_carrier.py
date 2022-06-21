@@ -5,7 +5,7 @@ from xml.sax.saxutils import escape
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
-from .gls_asm_request import (
+from .gls_asm_master_data import (
     GLS_ASM_SERVICES,
     GLS_DELIVERY_STATES_STATIC,
     GLS_PICKUP_STATES_STATIC,
@@ -13,8 +13,8 @@ from .gls_asm_request import (
     GLS_POSTAGE_TYPE,
     GLS_SHIPMENT_TYPE_STATES,
     GLS_SHIPPING_TIMES,
-    GlsAsmRequest,
 )
+from .gls_asm_request import GlsAsmRequest
 
 
 class DeliveryCarrier(models.Model):
@@ -46,6 +46,21 @@ class DeliveryCarrier(models.Model):
         string="Pick-up service",
         help="Checked if this service is used for pickups",
         compute="_compute_gls_pickup_service",
+    )
+    gls_asm_cash_on_delivery = fields.Boolean(
+        string="Cash on delivery",
+        help=(
+            "If checked, it means that the carrier is paid with cash. It assumes "
+            "there is a sale order linked and it will use that "
+            "total amount as the value to be paid"
+        ),
+    )
+    gls_asm_with_return = fields.Boolean(
+        string="GLS/ASM With return",
+        help=(
+            "Check this field to mark the delivery as 'With return'. This means that "
+            "the customer receiving the delivery also has a package to return."
+        ),
     )
 
     @api.depends("gls_asm_service")
@@ -98,8 +113,13 @@ class DeliveryCarrier(models.Model):
             picking.picking_type_id.warehouse_id.partner_id
             or picking.company_id.partner_id
         )
+        consignee = picking.partner_id
+        consignee_entity = picking.partner_id.commercial_partner_id
         if not sender_partner.street:
             raise UserError(_("Couldn't find the sender street"))
+        cash_amount = 0
+        if self.gls_asm_cash_on_delivery:
+            cash_amount = picking.sale_id.amount_total
         return {
             "fecha": fields.Date.today().strftime("%d/%m/%Y"),
             "portes": self.gls_asm_postage_type,
@@ -111,7 +131,7 @@ class DeliveryCarrier(models.Model):
             "declarado": "",  # [optional]
             "dninomb": "0",  # [optional]
             "fechaentrega": "",  # [optional]
-            "retorno": "0",  # [optional]
+            "retorno": "1" if self.gls_asm_with_return else "0",  # [optional]
             "pod": "N",  # [optional]
             "podobligatorio": "N",  # [deprecated]
             "remite_plaza": "",  # [optional] Origin agency
@@ -132,20 +152,20 @@ class DeliveryCarrier(models.Model):
             "destinatario_codigo": "",
             "destinatario_plaza": "",
             "destinatario_nombre": (
-                escape(picking.partner_id.name or picking.partner_id.parent_id.name)
-                or escape(
-                    picking.partner_id.commercial_partner_id.name
-                    or picking.partner_id.commercial_partner_id.parent_id.name
-                )
+                escape(consignee.name) or escape(consignee.commercial_partner_id.name)
             ),
-            "destinatario_direccion": escape(picking.partner_id.street or ""),
-            "destinatario_poblacion": escape(picking.partner_id.city or ""),
-            "destinatario_provincia": escape(picking.partner_id.state_id.name or ""),
-            "destinatario_pais": picking.partner_id.country_id.phone_code or "",
-            "destinatario_cp": picking.partner_id.zip,
-            "destinatario_telefono": picking.partner_id.phone or "",
-            "destinatario_movil": picking.partner_id.mobile or "",
-            "destinatario_email": escape(picking.partner_id.email or ""),
+            "destinatario_direccion": escape(consignee.street or ""),
+            "destinatario_poblacion": escape(consignee.city or ""),
+            "destinatario_provincia": escape(consignee.state_id.name or ""),
+            "destinatario_pais": consignee.country_id.phone_code or "",
+            "destinatario_cp": consignee.zip,
+            # For certain destinations the consignee mobile and email are required to
+            # make the expedition. Try to fallback to the commercial entity one
+            "destinatario_telefono": consignee.phone or consignee_entity.phone or "",
+            "destinatario_movil": consignee.mobile or consignee_entity.mobile or "",
+            "destinatario_email": escape(
+                consignee.email or consignee_entity.email or ""
+            ),
             "destinatario_observaciones": "",
             "destinatario_att": "",
             "destinatario_departamento": "",
@@ -155,7 +175,7 @@ class DeliveryCarrier(models.Model):
             ),  # Our unique reference
             "referencia_0": "",  # Not used if the above is set
             "importes_debido": "0",  # The customer pays the shipping
-            "importes_reembolso": "",  # TODO: Support Cash On Delivery
+            "importes_reembolso": cash_amount or "",
             "seguro": "0",  # [optional]
             "seguro_descripcion": "",  # [optional]
             "seguro_importe": "",  # [optional]
@@ -268,7 +288,21 @@ class DeliveryCarrier(models.Model):
             # For compatibility we provide this number although we get
             # two more codes: codbarras and uid
             vals["tracking_number"] = response.get("_codexp")
-            picking.gls_asm_public_tracking_ref = response.get("_codbarras")
+            gls_asm_picking_ref = ""
+            try:
+                references = response.get("Referencias", {}).get("Referencia", [])
+                for ref in references:
+                    if ref.get("_tipo", "") == "N":
+                        gls_asm_picking_ref = ref.get("value", "")
+                        break
+            except Exception:
+                pass
+            picking.write(
+                {
+                    "gls_asm_public_tracking_ref": response.get("_codbarras"),
+                    "gls_asm_picking_ref": gls_asm_picking_ref,
+                }
+            )
             # We post an extra message in the chatter with the barcode and the
             # label because there's clean way to override the one sent by core.
             body = _("GLS Shipping extra info:\n" "barcode: %s") % response.get(
@@ -411,7 +445,9 @@ class DeliveryCarrier(models.Model):
                 )
                 picking.message_post(body=msg)
                 continue
-            picking.gls_asm_public_tracking_ref = False
+            picking.write(
+                {"gls_asm_public_tracking_ref": False, "gls_asm_picking_ref": False}
+            )
             self.gls_asm_tracking_state_update(picking=picking)
 
     def gls_asm_rate_shipment(self, order):

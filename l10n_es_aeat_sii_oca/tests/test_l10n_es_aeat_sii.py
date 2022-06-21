@@ -152,6 +152,7 @@ class TestL10nEsAeatSiiBase(TestL10nEsAeatModBase, TestL10nEsAeatCertificateBase
                 "use_connector": True,
                 "vat": "ESU2687761C",
                 "sii_description_method": "manual",
+                "tax_agency_id": cls.env.ref("l10n_es_aeat.aeat_tax_agency_spain"),
             }
         )
 
@@ -171,10 +172,19 @@ class TestL10nEsAeatSii(TestL10nEsAeatSiiBase):
                 "email": "somebody@somewhere.com",
             }
         )
-        cls.tax_agencies = cls.env["aeat.sii.tax.agency"].search([])
+        cls.tax_agencies = cls.env["aeat.tax.agency"].search(
+            [("sii_wsdl_out", "!=", False)]
+        )
 
     def test_job_creation(self):
         self.assertTrue(self.invoice.invoice_jobs_ids)
+
+    def test_partner_sii_enabled(self):
+        company_02 = self.env["res.company"].create({"name": "Company 02"})
+        self.env.user.company_ids += company_02
+        self.assertTrue(self.partner.sii_enabled)
+        self.partner.company_id = company_02
+        self.assertFalse(self.partner.sii_enabled)
 
     def test_get_invoice_data(self):
         mapping = [
@@ -307,10 +317,16 @@ class TestL10nEsAeatSii(TestL10nEsAeatSiiBase):
             "Test customer header | Test line",
         )
 
+    def test_vat_number_check(self):
+        self.partner.write(
+            {"vat": "F35999705", "country_id": self.env.ref("base.es").id}
+        )
+        self.test_get_invoice_data()
+
     def _check_binding_address(self, invoice):
         company = invoice.company_id
-        tax_agency = company.sii_tax_agency_id
-        self.sii_cert.company_id.sii_tax_agency_id = tax_agency
+        tax_agency = company.tax_agency_id
+        self.sii_cert.company_id.tax_agency_id = tax_agency
         proxy = invoice._connect_sii(invoice.move_type)
         address = proxy._binding_options["address"]
         self.assertTrue(address)
@@ -321,10 +337,10 @@ class TestL10nEsAeatSii(TestL10nEsAeatSiiBase):
 
     def _check_tax_agencies(self, invoice):
         for tax_agency in self.tax_agencies:
-            invoice.company_id.sii_tax_agency_id = tax_agency
+            invoice.company_id.tax_agency_id = tax_agency
             self._check_binding_address(invoice)
         else:
-            invoice.company_id.sii_tax_agency_id = False
+            invoice.company_id.tax_agency_id = False
             self._check_binding_address(invoice)
 
     def test_tax_agencies_sandbox(self):
