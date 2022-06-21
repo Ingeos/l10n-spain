@@ -106,7 +106,7 @@ class AccountMove(models.Model):
             if bool(record.facturae_start_date) != bool(record.facturae_end_date):
                 raise ValidationError(
                     _(
-                        "FacturaE start and end dates are both required if one of "
+                        "Facturae start and end dates are both required if one of "
                         "them is filled"
                     )
                 )
@@ -177,16 +177,18 @@ class AccountMove(models.Model):
             raise ValidationError(_("Payment mode is required"))
         if self.payment_mode_id.facturae_code:
             partner_bank = self.partner_banks_to_show()[:1]
-            if not partner_bank:
-                raise ValidationError(_("Partner bank is missing"))
-            if partner_bank.bank_id.bic and len(partner_bank.bank_id.bic) != 11:
+            if (
+                partner_bank
+                and partner_bank.bank_id.bic
+                and len(partner_bank.bank_id.bic) != 11
+            ):
                 raise ValidationError(_("Selected account BIC must be 11"))
-            if len(partner_bank.acc_number) < 5:
+            if partner_bank and len(partner_bank.acc_number) < 5:
                 raise ValidationError(_("Selected account is too small"))
         if self.state not in self._get_valid_move_statuses():
             raise ValidationError(
                 _(
-                    "You can only create Factura-E files for "
+                    "You can only create Facturae files for "
                     "moves that have been validated."
                 )
             )
@@ -320,7 +322,7 @@ class AccountMoveLine(models.Model):
             if bool(record.facturae_start_date) != bool(record.facturae_end_date):
                 raise ValidationError(
                     _(
-                        "FacturaE start and end dates are both required if one of "
+                        "Facturae start and end dates are both required if one of "
                         "them is filled"
                     )
                 )

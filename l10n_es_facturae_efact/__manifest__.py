@@ -3,8 +3,8 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 
 {
-    "name": "Envío de Factura-e a e.FACT",
-    "version": "14.0.1.0.1",
+    "name": "Envío de Facturae a e.FACT",
+    "version": "14.0.1.1.0",
     "author": "Creu Blanca, " "Odoo Community Association (OCA)",
     "category": "Accounting & Finance",
     "website": "https://github.com/OCA/l10n-spain",
@@ -13,4 +13,5 @@
     "data": ["data/efact_data.xml"],
     "external_dependencies": {"python": ["paramiko", "OpenSSL", "xmlsec"]},
     "installable": True,
+    "maintainers": ["etobella"],
 }

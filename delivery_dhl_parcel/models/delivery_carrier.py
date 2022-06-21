@@ -3,6 +3,7 @@
 import base64
 
 from odoo import _, fields, models
+from odoo.tools import float_compare
 
 from .dhl_parcel_request import (
     DHL_PARCEL_DELIVERY_STATES_STATIC,
@@ -39,6 +40,11 @@ class DeliveryCarrier(models.Model):
         string="DHL Parcel last manual end day report"
     )
     dhl_parcel_last_end_day_report_name = fields.Char(string="Filename")
+    dhl_parcel_label_format = fields.Selection(
+        selection=[("PDF", "PDF"), ("ZPL", "ZPL"), ("EPL", "EPL")],
+        default="PDF",
+        string="Label format",
+    )
 
     def dhl_parcel_get_tracking_link(self, picking):
         """Provide tracking link for the customer"""
@@ -89,13 +95,18 @@ class DeliveryCarrier(models.Model):
         :returns dict values for the connector
         """
         self.ensure_one()
+        # El peso debe tener 2 decimales para evitar errores en el cierre del día
+        weight = round(picking.shipping_weight, 2)
+        # El peso del envío tiene que ser como mínimo 1 kilo o como máximo 99999 kilos
+        if float_compare(weight, 1, precision_digits=2) == -1:
+            weight = 1
         return {
             "Customer": self.dhl_parcel_customer_code,
             "Receiver": self._get_dhl_parcel_receiver_info(picking),
             "Sender": self._get_dhl_parcel_sender_info(picking),  # [optional]
             "Reference": picking.name,  # [optional]
             "Quantity": picking.number_of_packages,  # 1-999
-            "Weight": picking.shipping_weight,  # in kg, 1-99999
+            "Weight": weight,  # in kg, 1-99999
             "WeightVolume": "",  # [optional] Volume, in kg
             "CODAmount": "",  # [optional]
             "CODExpenses": "",  # [optional], mandatory if CODAmount filled
@@ -113,7 +124,7 @@ class DeliveryCarrier(models.Model):
             "GoodsDescription": "",  # [optional]
             "CustomsValue": "",  # [optional]
             "CustomsCurrency": "",  # [optional]
-            "Format": "PDF",  # [optional]
+            "Format": self.dhl_parcel_label_format,  # [optional]
             "tracking_number": False,
             "exact_price": 0,
         }
@@ -147,9 +158,13 @@ class DeliveryCarrier(models.Model):
             )
             attachment = []
             if response.get("Label"):
+                label_format = picking.carrier_id.dhl_parcel_label_format.lower()
                 attachment = [
                     (
-                        "dhl_parcel_{}.pdf".format(response.get("Tracking", "")),
+                        "dhl_parcel_{}.{}".format(
+                            response.get("Tracking", ""),
+                            "pdf" if label_format == "pdf" else "txt",
+                        ),
                         base64.b64decode(response.get("Label")),
                     )
                 ]
@@ -204,6 +219,7 @@ class DeliveryCarrier(models.Model):
                 % picking.carrier_tracking_ref
             )
 
+    # TODO: The label_format parameter is not used and can be removed.
     def dhl_parcel_get_label(self, carrier_tracking_ref, label_format="pdf"):
         """Generate label for picking
         :param str carrier_tracking_ref - tracking reference
@@ -213,9 +229,7 @@ class DeliveryCarrier(models.Model):
         if not carrier_tracking_ref:
             return False
         dhl_parcel_request = DhlParcelRequest(self)
-        label = dhl_parcel_request.print_shipment(
-            carrier_tracking_ref, label_format=label_format
-        )
+        label = dhl_parcel_request.print_shipment(carrier_tracking_ref)
         return label or False
 
     def dhl_parcel_hold_shipment(self, carrier_tracking_ref):
@@ -260,7 +274,9 @@ class DeliveryCarrier(models.Model):
     def action_open_end_day(self):
         """Action to launch the end day wizard"""
         self.ensure_one()
-        wizard = self.env["dhl.parcel.endday.wizard"].create({"carrier_id": self.id})
+        wizard = self.env["dhl.parcel.endday.wizard"].create(
+            {"carrier_id": self.id, "customer_accounts": self.dhl_parcel_customer_code}
+        )
         view_id = self.env.ref("delivery_dhl_parcel.delivery_endday_wizard_form").id
         return {
             "name": _("DHL Parcel End Day"),
