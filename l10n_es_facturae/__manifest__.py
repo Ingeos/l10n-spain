@@ -7,7 +7,7 @@
 
 {
     "name": "Creación de Facturae",
-    "version": "15.0.1.2.1",
+    "version": "15.0.1.2.3",
     "author": "ASR-OSS, "
     "FactorLibre, "
     "Tecon, "
@@ -40,7 +40,7 @@
         "wizard/account_move_reversal_view.xml",
         "views/account_move_view.xml",
     ],
-    "external_dependencies": {"python": ["pycountry", "xmlsig"]},
+    "external_dependencies": {"python": ["pycountry", "xmlsig", "cryptography"]},
     "installable": True,
     "maintainers": ["etobella"],
 }
