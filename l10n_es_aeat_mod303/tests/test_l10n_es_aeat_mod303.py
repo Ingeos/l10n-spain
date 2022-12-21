@@ -29,11 +29,12 @@ class TestL10nEsAeatMod303Base(TestL10nEsAeatModBase):
         'S_REQ014': (1800, 25.2),
         'S_REQ52': (1900, 98.8),
         'S_IVA0_E': (2000, 0),
-        'S_IVA_SP_E': (2100, 0),
+        'S_IVA_E': (2100, 0),
         'S_IVA_NS': (2200, 0),
         'S_IVA0_ISP': (2300, 0),
         'S_IVA0_IC': (2400, 0),
         'S_IVA0_SP_I': (2500, 0),
+        'S_IVA0': (2600, 0),
     }
     taxes_purchase = {
         # tax code: (base, tax_amount)
@@ -63,7 +64,7 @@ class TestL10nEsAeatMod303Base(TestL10nEsAeatModBase):
         'P_IVA21_BC': (260, 54.6),
         'P_REQ05': (270, 1.35),
         'P_REQ014': (280, 3.92),
-        'P_REQ5.2': (290, 15.08),
+        'P_REQ52': (290, 15.08),
         'P_IVA4_BI': (310, 12.4),
         'P_IVA10_BI': (320, 32),
         'P_IVA21_BI': (330, 69.3),
@@ -232,9 +233,9 @@ class TestL10nEsAeatMod303Base(TestL10nEsAeatModBase):
         # Entregas intra. de bienes y servicios - Base ventas
         '59': (2 * 2400) + (2 * 2500),  # S_IVA0_IC, S_IVA0_SP_I
         # Exportaciones y operaciones asimiladas - Base ventas
-        '60': (2 * 2000),  # S_IVA0_E
+        '60': (2 * 2000) + (2 * 2200) + (2 * 2600),  # S_IVA0_E+S_IVA_NS+S_IVA0
         # Op. no sujetas o con inv. del sujeto pasivo - Base ventas
-        '61': ((2 * 2100) + (2 * 2200) +   # S_IVA_SP_E, S_IVA_NS
+        '61': ((2 * 2100) +   # S_IVA_SP_E
                (2 * 2300)),                # S_IVA0_ISP
         # Importes de las entregas de bienes y prestaciones de servicios
         # a las que habiéndoles sido aplicado el régimen especial del
@@ -320,9 +321,11 @@ class TestL10nEsAeatMod303(TestL10nEsAeatMod303Base):
         # Fill manual fields
         self.model303.write({
             'porcentaje_atribuible_estado': 95,
+            'potential_cuota_compensar': 250,
             'cuota_compensar': 250,
             'casilla_77': 455,
         })
+        self.assertAlmostEqual(self.model303.remaining_cuota_compensar, 0)
         if self.debug:
             self._print_tax_lines(self.model303.tax_line_ids)
         self._check_tax_lines()
@@ -352,9 +355,12 @@ class TestL10nEsAeatMod303(TestL10nEsAeatMod303Base):
             'name': 'test_export_to_boe.txt',
         })
         export_config_xml_ids = [
-            'l10n_es_aeat_mod303.aeat_mod303_main_export_config',
-            'l10n_es_aeat_mod303.aeat_mod303_2017_main_export_config',
-            'l10n_es_aeat_mod303.aeat_mod303_2018_main_export_config',
+            "l10n_es_aeat_mod303.aeat_mod303_main_export_config",
+            "l10n_es_aeat_mod303.aeat_mod303_2017_main_export_config",
+            "l10n_es_aeat_mod303.aeat_mod303_2018_main_export_config",
+            "l10n_es_aeat_mod303.aeat_mod303_2021_main_export_config",
+            "l10n_es_aeat_mod303.aeat_mod303_202107_main_export_config",
+            "l10n_es_aeat_mod303.aeat_mod303_2022_main_export_config",
         ]
         for xml_id in export_config_xml_ids:
             export_config = self.env.ref(xml_id)
@@ -399,7 +405,7 @@ class TestL10nEsAeatMod303(TestL10nEsAeatMod303Base):
             ).amount, 14280.0,
         )
         self.assertAlmostEqual(
-            self.model303_4t.casilla_88, 38280.0,
+            self.model303_4t.casilla_88, 35680.0,
         )
         # Check change of period type
         self.model303_4t.period_type = '1T'

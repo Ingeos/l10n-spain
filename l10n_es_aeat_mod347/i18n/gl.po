@@ -69,13 +69,13 @@ msgid ""
 "  <strong>Importe de transmisión de inmueble:</strong> ${object."
 "real_estate_transmissions_amount}<br/>\n"
 "  <strong>Inmuebles primer trimestre:</strong> ${object."
-"first_quarter_real_estate_transmission_amount}<br/>\n"
+"first_quarter_real_estate_transmission}<br/>\n"
 "  <strong>Inmuebles segundo trimestre:</strong> ${object."
-"second_quarter_real_estate_transmission_amount}<br/>\n"
+"second_quarter_real_estate_transmission}<br/>\n"
 "  <strong>Inmuebles tercer trimestre:</strong> ${object."
-"third_quarter_real_estate_transmission_amount}<br/>\n"
+"third_quarter_real_estate_transmission}<br/>\n"
 "  <strong>Inmuebles cuarto trimestre:</strong> ${object."
-"fourth_quarter_real_estate_transmission_amount}<br/>\n"
+"fourth_quarter_real_estate_transmission}<br/>\n"
 "  </p>\n"
 "  % endif\n"
 "  <p>En el documento adjunto se incluyen las facturas en base a las cuales "
@@ -290,12 +290,6 @@ msgid "Amount 4Q:"
 msgstr "Importe"
 
 #. module: l10n_es_aeat_mod347
-#: model:ir.model.fields,field_description:l10n_es_aeat_mod347.field_l10n_es_aeat_mod347_move_record__amount_signed
-#, fuzzy
-msgid "Amount signed"
-msgstr "Importe"
-
-#. module: l10n_es_aeat_mod347
 #: model_terms:ir.ui.view,arch_db:l10n_es_aeat_mod347.report_347_partner_document
 #, fuzzy
 msgid "Amount:"
@@ -445,7 +439,7 @@ msgid "Complementary"
 msgstr "Complementaria"
 
 #. module: l10n_es_aeat_mod347
-#: code:addons/l10n_es_aeat_mod347/models/mod347.py:570
+#: code:addons/l10n_es_aeat_mod347/models/mod347.py:556
 #, python-format
 msgid "Compose Email"
 msgstr ""
@@ -871,11 +865,6 @@ msgstr ""
 #, fuzzy
 msgid "Move Record"
 msgstr "Rexistro de factura"
-
-#. module: l10n_es_aeat_mod347
-#: model:ir.model.fields,field_description:l10n_es_aeat_mod347.field_l10n_es_aeat_mod347_move_record__move_type
-msgid "Move Type"
-msgstr ""
 
 #. module: l10n_es_aeat_mod347
 #: model_terms:ir.ui.view,arch_db:l10n_es_aeat_mod347.view_l10n_es_aeat_mod347_partner_record_form
@@ -1598,6 +1587,10 @@ msgstr ""
 #: model:ir.model.fields,field_description:l10n_es_aeat_mod347.field_l10n_es_aeat_mod347_report__year
 msgid "Year"
 msgstr ""
+
+#, fuzzy
+#~ msgid "Amount signed"
+#~ msgstr "Importe"
 
 #~ msgid ""
 #~ "<p class=\"oe_view_nocontent_create\">\n"

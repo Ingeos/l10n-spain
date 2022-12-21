@@ -1,7 +1,8 @@
-# Copyright 2018 Tecnativa - Pedro M. Baeza
+# Copyright 2018-2021 Tecnativa - Pedro M. Baeza
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl
 
 from collections import OrderedDict
+from odoo import exceptions
 from odoo.addons.l10n_es_aeat.tests.test_l10n_es_aeat_mod_base import \
     TestL10nEsAeatModBase
 
@@ -23,7 +24,7 @@ class TestL10nEsAeatMod390Base(TestL10nEsAeatModBase):
         'S_REQ014': (1800, 25.2),
         'S_REQ52': (1900, 98.8),
         'S_IVA0_E': (2000, 0),
-        'S_IVA_SP_E': (2100, 0),
+        'S_IVA_E': (2100, 0),
         'S_IVA_NS': (2200, 0),
         'S_IVA0_ISP': (2300, 0),
         'S_IVA0_IC': (2400, 0),
@@ -55,7 +56,7 @@ class TestL10nEsAeatMod390Base(TestL10nEsAeatModBase):
         'P_IVA21_BC': (260, 54.6),
         'P_REQ05': (270, 1.35),
         'P_REQ014': (280, 3.92),
-        'P_REQ5.2': (290, 15.08),
+        'P_REQ52': (290, 15.08),
         'P_IVA4_BI': (310, 12.4),
         'P_IVA10_BI': (320, 32),
         'P_IVA21_BI': (330, 69.3),
@@ -101,7 +102,7 @@ class TestL10nEsAeatMod390Base(TestL10nEsAeatModBase):
         # Modificación de bases
         ('29', -12450),  # -7140.0 - 4860.0 - 450.0
         # Modificación de cuotas
-        ('30', -897.6 - 619.7),
+        ('30', -897.6 - 673.9),
         # Recargo de equivalencia - Base 0,5%
         ('35', 5100.0),
         # Recargo de equivalencia - Cuota 0,5%
@@ -116,15 +117,17 @@ class TestL10nEsAeatMod390Base(TestL10nEsAeatModBase):
         ('99', 14280.0),
         # Operaciones realizadas por sujetos pasivos acogidos al régimen
         # especial del recargo de equivalencia
-        ('102', -16200.0),
+        ('102', 0.0),
         # Entregas intracomunitarias exentas
         ('103', 9800.0),
         # Exportaciones y otras operaciones exentas con derecho a deducción
-        ('104', 8200.0),
+        ('104', 4000.0),
         # Operaciones exentas sin derecho a deducción
         ('105', 5200),
         # Adquisiciones intracomunitarias exentas
-        ('109', 6300.0),
+        ('109', 0.0),
+        # Exportaciones y otras operaciones exentas con derecho a deducción
+        ('110', 4200.0),
         # IVA deducible en oper. corrientes de bienes y servicios - Base 4%
         ('190', 2100.0),
         # IVA deducible en oper. corrientes de bienes y servicios - Cuota 4%
@@ -140,11 +143,11 @@ class TestL10nEsAeatMod390Base(TestL10nEsAeatModBase):
         # IVA deducible en adquisiciones intracomu. bienes corrientes -Cuota 4%
         ('215', 12.0),
         # Adquisiciones interiores exentas
-        ('230', 1200),
+        ('230', 800),
         # Importaciones exentas
-        ('231', -3150.0),
+        ('231', 0.0),
         # Bases imponibles del IVA soportado no deducible
-        ('232', 1260),
+        ('232', 840),
         # Adquisiciones intracomunitarias de servicios - Base 4%
         ('545', 1200.0),
         # Adquisiciones intracomunitarias de servicios - Cuota 4%
@@ -254,8 +257,8 @@ class TestL10nEsAeatMod390(TestL10nEsAeatMod390Base):
             )
         # Check computed fields
         self.assertAlmostEqual(self.model390.casilla_33, 17700.0, 2)
-        self.assertAlmostEqual(self.model390.casilla_34, 2306.2, 2)
-        self.assertAlmostEqual(self.model390.casilla_47, 2571.2, 2)
+        self.assertAlmostEqual(self.model390.casilla_34, 2252.0, 2)
+        self.assertAlmostEqual(self.model390.casilla_47, 2517.0, 2)
         self.assertAlmostEqual(self.model390.casilla_48, 6660.0, 2)
         self.assertAlmostEqual(self.model390.casilla_49, 797.4, 2)
         self.assertAlmostEqual(self.model390.casilla_50, 2880.0, 2)
@@ -271,9 +274,14 @@ class TestL10nEsAeatMod390(TestL10nEsAeatMod390Base):
         self.assertAlmostEqual(self.model390.casilla_597, 4500.0, 2)
         self.assertAlmostEqual(self.model390.casilla_598, 576.0, 2)
         self.assertAlmostEqual(self.model390.casilla_64, 2408.45, 2)
-        self.assertAlmostEqual(self.model390.casilla_65, 162.75, 2)
-        self.assertAlmostEqual(self.model390.casilla_86, 162.75, 2)
-        self.assertAlmostEqual(self.model390.casilla_108, 21280.0, 2)
+        self.assertAlmostEqual(self.model390.casilla_65, 108.55, 2)
+        self.assertAlmostEqual(self.model390.casilla_86, 108.55, 2)
+        self.assertAlmostEqual(self.model390.casilla_108, 37480.0, 2)
+        # It's not possible to confirm without entering manual 303 summary
+        with self.assertRaises(exceptions.UserError):
+            self.model390.button_confirm()
+        self.model390.casilla_95 = 108.55
+        self.model390.button_confirm()
         # Export to BOE
         export_to_boe = self.env['l10n.es.aeat.report.export_to_boe'].create({
             'name': 'test_export_to_boe.txt',

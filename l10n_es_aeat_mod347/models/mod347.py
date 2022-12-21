@@ -4,9 +4,9 @@
 # Copyright 2013 Joaquín Pedrosa Gutierrez (http://gutierrezweb.es)
 # Copyright 2016 Tecnativa - Antonio Espinosa
 # Copyright 2016 Tecnativa - Angel Moya <odoo@tecnativa.com>
-# Copyright 2014-2019 Tecnativa - Pedro M. Baeza
 # Copyright 2018 PESOL - Angel Moya <info@pesol.es>
 # Copyright 2019 Tecnativa - Carlos Dauden
+# Copyright 2014-2022 Tecnativa - Pedro M. Baeza
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from odoo import fields, models, api, exceptions, _
@@ -176,16 +176,12 @@ class L10nEsAeatMod347Report(models.Model):
 
     @api.model
     def _get_taxes(self, map):
-        tax_obj = self.env['account.tax']
-        # Obtain all the taxes to be considered
-        tax_templates = map.mapped('tax_ids').mapped('description')
+        """Obtain all the taxes to be considered for 347."""
+        self.ensure_one()
+        tax_templates = map.mapped('tax_ids')
         if not tax_templates:
             raise exceptions.Warning(_('No Tax Mapping was found'))
-        # search the account.tax referred to by the template
-        taxes = tax_obj.search(
-            [('description', 'in', tax_templates),
-             ('company_id', 'child_of', self.company_id.id)])
-        return taxes
+        return self.get_taxes_from_templates(tax_templates)
 
     @api.model
     def _get_partner_347_identification(self, partner):
@@ -241,7 +237,7 @@ class L10nEsAeatMod347Report(models.Model):
             vals['move_record_ids'] = [
                 (0, 0, {
                     'move_id': move_group['move_id'][0],
-                    'amount': abs(move_group['balance']),
+                    'amount': move_group['balance'],
                 }) for move_group in move_groups
             ]
             if partner_record:
@@ -497,42 +493,32 @@ class L10nEsAeatMod347PartnerRecord(models.Model):
 
     @api.depends('move_record_ids.move_id.date', 'report_id.year')
     def calculate_quarter_totals(self):
-        def calc_amount_by_quarter(invoices, refunds, year, month_start):
+        def calc_amount_by_quarter(records, sign, year, month_start):
             day_start = 1
             month_end = month_start + 2
             day_end = monthrange(year, month_end)[1]
             date_start = datetime.date(year, month_start, day_start)
             date_end = datetime.date(year, month_end, day_end)
             return (
-                sum(invoices.filtered(
-                    lambda x: date_start <= x.move_id.date <= date_end
-                ).mapped('amount')) - sum(refunds.filtered(
+                sum(records.filtered(
                     lambda x: date_start <= x.move_id.date <= date_end
                 ).mapped('amount'))
-            )
+            ) * sign
 
         for record in self:
+            sign = -1 if record.operation_key == "B" else 1
             year = record.report_id.year
-            invoices = record.move_record_ids.filtered(
-                lambda rec: rec.move_id.move_type in ('receivable', 'payable')
-            )
-            refunds = record.move_record_ids.filtered(
-                lambda rec: (
-                    rec.move_id.move_type in (
-                        'receivable_refund', 'payable_refund')
-                )
-            )
             record.first_quarter = calc_amount_by_quarter(
-                invoices, refunds, year, 1,
+                record.move_record_ids, sign, year, 1,
             )
             record.second_quarter = calc_amount_by_quarter(
-                invoices, refunds, year, 4,
+                record.move_record_ids, sign, year, 4,
             )
             record.third_quarter = calc_amount_by_quarter(
-                invoices, refunds, year, 7,
+                record.move_record_ids, sign, year, 7,
             )
             record.fourth_quarter = calc_amount_by_quarter(
-                invoices, refunds, year, 10,
+                record.move_record_ids, sign, year, 10,
             )
 
     def action_exception(self):
@@ -702,7 +688,7 @@ class L10nEsAeatMod347RealStateRecord(models.Model):
             vals = self.report_id._get_partner_347_identification(
                 self.partner_id,
             )
-            del vals['community_vat']
+            vals.pop('community_vat', None)
             del vals['partner_country_code']
             self.update(vals)
 
@@ -725,11 +711,6 @@ class L10nEsAeatMod347MoveRecord(models.Model):
         string='Move',
         ondelete="restrict",
     )
-    move_type = fields.Selection(
-        related='move_id.move_type',
-        store=True,
-        readonly=True,
-    )
     invoice_id = fields.Many2one(
         comodel_name='account.invoice',
         string='Invoice',
@@ -747,14 +728,3 @@ class L10nEsAeatMod347MoveRecord(models.Model):
         string='Amount',
         readonly=True,
     )
-    amount_signed = fields.Float(
-        string='Amount signed',
-        compute="_compute_amount_signed",
-    )
-
-    def _compute_amount_signed(self):
-        for record in self:
-            if 'refund' in record.move_id.move_type:
-                record.amount_signed = record.amount * -1
-            else:
-                record.amount_signed = record.amount
