@@ -7,22 +7,17 @@
 # Copyright 2020 Valentin Vinagre <valent.vinagre@sygel.es>
 # Copyright 2021 Tecnativa - João Marques
 # Copyright 2022 ForgeFlow - Lois Rilo
+# Copyright 2022 Tecnativa - Víctor Martínez
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 import json
 import logging
 
-from lxml import etree
 from requests import Session
 
 from odoo import _, api, exceptions, fields, models
 from odoo.modules.registry import Registry
 from odoo.tools.float_utils import float_compare
-
-from odoo.addons.base.models.ir_ui_view import (
-    transfer_modifiers_to_node,
-    transfer_node_to_modifiers,
-)
 
 _logger = logging.getLogger(__name__)
 
@@ -221,21 +216,6 @@ class AccountMove(models.Model):
         "The invoice number should start with LC, QZC, QRC, A01 or A02.",
         copy=False,
     )
-    thirdparty_invoice = fields.Boolean(
-        string="Third-party invoice",
-        copy=False,
-        compute="_compute_thirdparty_invoice",
-        store=True,
-        readonly=False,
-    )
-    thirdparty_number = fields.Char(
-        string="Third-party number",
-        index=True,
-        readonly=True,
-        states={"draft": [("readonly", False)]},
-        copy=False,
-        help="Número de la factura emitida por un tercero.",
-    )
     invoice_jobs_ids = fields.Many2many(
         comodel_name="queue.job",
         column1="invoice_id",
@@ -244,11 +224,6 @@ class AccountMove(models.Model):
         string="Connector Jobs",
         copy=False,
     )
-
-    @api.depends("journal_id")
-    def _compute_thirdparty_invoice(self):
-        for item in self:
-            item.thirdparty_invoice = item.journal_id.thirdparty_invoice
 
     @api.depends("move_type")
     def _compute_sii_registration_key_domain(self):
@@ -264,12 +239,12 @@ class AccountMove(models.Model):
     def _compute_macrodata(self):
         for inv in self:
             inv.sii_macrodata = (
-                True
-                if float_compare(
-                    inv.amount_total, SII_MACRODATA_LIMIT, precision_digits=2
+                float_compare(
+                    abs(inv.amount_total_signed),
+                    SII_MACRODATA_LIMIT,
+                    precision_digits=2,
                 )
                 >= 0
-                else False
             )
 
     @api.onchange("sii_refund_type")
@@ -328,6 +303,16 @@ class AccountMove(models.Model):
             invoice.onchange_fiscal_position_id_l10n_es_aeat_sii()
         return invoice
 
+    def _raise_exception_sii(self, field_name):
+        raise exceptions.UserError(
+            _(
+                "You cannot change the %s of an invoice "
+                "already registered at the SII. You must cancel the "
+                "invoice and create a new one with the correct value"
+            )
+            % field_name
+        )
+
     def write(self, vals):
         """For supplier invoices the SII primary key is the supplier
         VAT/ID Otro and the supplier invoice number. Cannot let change these
@@ -336,35 +321,20 @@ class AccountMove(models.Model):
             lambda x: x.is_invoice() and x.sii_state != "not_sent"
         ):
             if "invoice_date" in vals:
-                raise exceptions.UserError(
-                    _(
-                        "You cannot change the invoice date of an invoice "
-                        "already registered at the SII. You must cancel the "
-                        "invoice and create a new one with the correct date"
-                    )
-                )
-            if invoice.move_type in ["in_invoice", "in refund"]:
+                self._raise_exception_sii(_("invoice date"))
+            elif "thirdparty_number" in vals:
+                self._raise_exception_sii(_("third-party number"))
+            if invoice.move_type in ["in_invoice", "in_refund"]:
                 if "partner_id" in vals:
                     correct_partners = invoice._sii_get_partner()
                     correct_partners |= correct_partners.child_ids
                     if vals["partner_id"] not in correct_partners.ids:
-                        raise exceptions.UserError(
-                            _(
-                                "You cannot change the supplier of an invoice "
-                                "already registered at the SII. You must cancel "
-                                "the invoice and create a new one with the "
-                                "correct supplier"
-                            )
-                        )
+                        self._raise_exception_sii(_("supplier"))
                 elif "ref" in vals:
-                    raise exceptions.UserError(
-                        _(
-                            "You cannot change the supplier invoice number of "
-                            "an invoice already registered at the SII. You must "
-                            "cancel the invoice and create a new one with the "
-                            "correct number"
-                        )
-                    )
+                    self._raise_exception_sii(_("supplier invoice number"))
+            elif invoice.move_type in ["out_invoice", "out_refund"]:
+                if "name" in vals:
+                    self._raise_exception_sii(_("invoice number"))
         # Fill sii_refund_type if not set previously. It happens on sales
         # order invoicing process for example.
         if (
@@ -515,30 +485,6 @@ class AccountMove(models.Model):
             return True
         return False
 
-    def _get_tax_info(self):
-        self.ensure_one()
-        res = {}
-        for line in self.line_ids:
-            sign = -1 if self.move_type[:3] == "out" else 1
-            for tax in line.tax_ids:
-                res.setdefault(tax, {"tax": tax, "base": 0, "amount": 0})
-                res[tax]["base"] += line.balance * sign
-            if line.tax_line_id:
-                tax = line.tax_line_id
-                if "invoice" in self.move_type:
-                    repartition_lines = tax.invoice_repartition_line_ids
-                else:
-                    repartition_lines = tax.refund_repartition_line_ids
-                if (
-                    len(repartition_lines) > 2
-                    and line.tax_repartition_line_id.factor_percent < 0
-                ):
-                    # taxes with more than one "tax" repartition line must be discarded
-                    continue
-                res.setdefault(tax, {"tax": tax, "base": 0, "amount": 0})
-                res[tax]["amount"] += line.balance * sign
-        return res
-
     def _get_sii_out_taxes(self):  # noqa: C901
         """Get the taxes for sales invoices.
 
@@ -559,7 +505,7 @@ class AccountMove(models.Model):
         base_not_in_total = self._get_sii_taxes_map(["BaseNotIncludedInTotal"])
         not_in_amount_total = 0
         exempt_cause = self._get_sii_exempt_cause(taxes_sfesbe + taxes_sfesse)
-        tax_lines = self._get_tax_info()
+        tax_lines = self._get_aeat_tax_info()
         for tax_line in tax_lines.values():
             tax = tax_line["tax"]
             breakdown_taxes = taxes_sfesb + taxes_sfesisp + taxes_sfens + taxes_sfesbe
@@ -685,7 +631,7 @@ class AccountMove(models.Model):
         base_not_in_total = self._get_sii_taxes_map(["BaseNotIncludedInTotal"])
         tax_amount = 0.0
         not_in_amount_total = 0.0
-        tax_lines = self._get_tax_info()
+        tax_lines = self._get_aeat_tax_info()
         for tax_line in tax_lines.values():
             tax = tax_line["tax"]
             if tax in taxes_not_in_total:
@@ -705,7 +651,7 @@ class AccountMove(models.Model):
                 continue
             tax_dict = self._get_sii_tax_dict(tax_line, tax_lines)
             if tax in taxes_sfrisp + taxes_sfrs:
-                tax_amount += tax_line["amount"]
+                tax_amount += tax_line["quote_amount"]
             if tax in taxes_sfrns:
                 tax_dict.pop("TipoImpositivo")
                 tax_dict.pop("CuotaSoportada")
@@ -1324,7 +1270,12 @@ class AccountMove(models.Model):
                     "IDOtro": {
                         "CodigoPais": country_code,
                         "IDType": identifier_type,
-                        "ID": identifier,
+                        "ID": country_code + identifier
+                        if self.commercial_partner_id._map_aeat_country_code(
+                            country_code
+                        )
+                        in self.commercial_partner_id._get_aeat_europe_codes()
+                        else identifier,
                     },
                 }
         elif gen_type == 2:
@@ -1349,9 +1300,8 @@ class AccountMove(models.Model):
         gen_type = self._get_sii_gen_type()
         if gen_type == 2:
             return "E5"
-        elif gen_type == 3:
-            return "E2"
         else:
+            exempt_cause = False
             product_exempt_causes = (
                 self.mapped("invoice_line_ids")
                 .filtered(
@@ -1369,12 +1319,15 @@ class AccountMove(models.Model):
                     _("Currently there's no support for multiple exempt " "causes.")
                 )
             if product_exempt_causes:
-                return product_exempt_causes.pop()
+                exempt_cause = product_exempt_causes.pop()
             elif (
                 self.fiscal_position_id.sii_exempt_cause
                 and self.fiscal_position_id.sii_exempt_cause != "none"
             ):
-                return self.fiscal_position_id.sii_exempt_cause
+                exempt_cause = self.fiscal_position_id.sii_exempt_cause
+            if gen_type == 3 and exempt_cause not in ["E2", "E3"]:
+                exempt_cause = "E2"
+            return exempt_cause
 
     def _get_no_taxable_cause(self):
         self.ensure_one()
@@ -1473,54 +1426,3 @@ class AccountMove(models.Model):
 
     def cancel_one_invoice(self):
         self.sudo()._cancel_invoice_to_sii()
-
-    @api.model
-    def fields_view_get(
-        self, view_id=None, view_type="form", toolbar=False, submenu=False
-    ):
-        """Thirdparty fields are added to the form view only if they don't exist
-        previously (l10n_es_facturae addon also has the same field names).
-        """
-        res = super().fields_view_get(
-            view_id=view_id,
-            view_type=view_type,
-            toolbar=toolbar,
-            submenu=submenu,
-        )
-        if view_type == "form":
-            doc = etree.XML(res["arch"])
-            node = doc.xpath("//field[@name='thirdparty_invoice']")
-            if node:
-                return res
-            for node in doc.xpath("//field[@name='ref'][last()]"):
-                attrs = {
-                    "required": [("thirdparty_invoice", "=", True)],
-                    "invisible": [("thirdparty_invoice", "=", False)],
-                }
-                elem = etree.Element(
-                    "field",
-                    {"name": "thirdparty_number", "attrs": str(attrs)},
-                )
-                modifiers = {}
-                transfer_node_to_modifiers(elem, modifiers)
-                transfer_modifiers_to_node(modifiers, elem)
-                node.addnext(elem)
-                res["fields"].update(self.fields_get(["thirdparty_number"]))
-                attrs = {
-                    "invisible": [
-                        (
-                            "move_type",
-                            "not in",
-                            ("in_invoice", "out_invoice", "out_refund", "in_refund"),
-                        )
-                    ],
-                }
-                elem = etree.Element(
-                    "field", {"name": "thirdparty_invoice", "attrs": str(attrs)}
-                )
-                transfer_node_to_modifiers(elem, modifiers)
-                transfer_modifiers_to_node(modifiers, elem)
-                node.addnext(elem)
-                res["fields"].update(self.fields_get(["thirdparty_invoice"]))
-            res["arch"] = etree.tostring(doc)
-        return res

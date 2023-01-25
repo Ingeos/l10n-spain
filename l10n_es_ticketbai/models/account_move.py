@@ -16,6 +16,13 @@ from odoo.addons.l10n_es_ticketbai_api.ticketbai.xml_schema import TicketBaiSche
 class AccountMove(models.Model):
     _inherit = "account.move"
 
+    def _default_tbai_vat_regime_key(self):
+        context = self.env.context
+        invoice_type = context.get("move_type", context.get("default_move_type"))
+        if invoice_type in ["out_invoice", "out_refund"]:
+            key = self.env["tbai.vat.regime.key"].search([("code", "=", "01")], limit=1)
+            return key
+
     tbai_enabled = fields.Boolean(related="company_id.tbai_enabled", readonly=True)
     tbai_send_invoice = fields.Boolean(related="journal_id.tbai_send_invoice")
     tbai_substitution_invoice_id = fields.Many2one(
@@ -77,7 +84,10 @@ class AccountMove(models.Model):
         copy=False,
     )
     tbai_vat_regime_key = fields.Many2one(
-        comodel_name="tbai.vat.regime.key", string="VAT Regime Key", copy=True
+        comodel_name="tbai.vat.regime.key",
+        string="VAT Regime Key",
+        copy=True,
+        default=_default_tbai_vat_regime_key,
     )
     tbai_vat_regime_key2 = fields.Many2one(
         comodel_name="tbai.vat.regime.key", string="VAT Regime 2nd Key", copy=True
@@ -230,16 +240,24 @@ class AccountMove(models.Model):
             "number": self.tbai_get_value_num_factura(),
             "expedition_date": self.tbai_get_value_fecha_exp_factura(),
             "expedition_hour": self.tbai_get_value_hora_exp_factura(),
+            "simplified_invoice": self.tbai_get_value_simplified_invoice(),
             "substitutes_simplified_invoice": (
                 self.tbai_get_value_factura_emitida_sustitucion_simplificada()
             ),
-            "tbai_customer_ids": [
+            "description": self.tbai_description_operation[:250],
+            "amount_total": "%.2f" % self.amount_total_signed,
+            "vat_regime_key": self.tbai_vat_regime_key.code,
+            "vat_regime_key2": self.tbai_vat_regime_key2.code,
+            "vat_regime_key3": self.tbai_vat_regime_key3.code,
+        }
+        if partner and not partner.aeat_anonymous_cash_customer:
+            vals["tbai_customer_ids"] = [
                 (
                     0,
                     0,
                     {
                         "name": partner.tbai_get_value_apellidos_nombre_razon_social(),
-                        "country_code": partner.tbai_get_partner_country_code(),
+                        "country_code": partner._parse_aeat_vat_info()[0],
                         "nif": partner.tbai_get_value_nif(),
                         "identification_number": (
                             partner.tbai_partner_identification_number or partner.vat
@@ -249,13 +267,7 @@ class AccountMove(models.Model):
                         "zip": partner.zip,
                     },
                 )
-            ],
-            "description": self.tbai_description_operation[:250],
-            "amount_total": "%.2f" % self.amount_total_signed,
-            "vat_regime_key": self.tbai_vat_regime_key.code,
-            "vat_regime_key2": self.tbai_vat_regime_key2.code,
-            "vat_regime_key3": self.tbai_vat_regime_key3.code,
-        }
+            ]
         retencion_soportada = self.tbai_get_value_retencion_soportada()
         if retencion_soportada:
             vals["tax_retention_amount_total"] = retencion_soportada
@@ -274,13 +286,14 @@ class AccountMove(models.Model):
         tax_agency = self.company_id.tbai_tax_agency_id
         if tax_agency in (gipuzkoa_tax_agency, araba_tax_agency):
             lines = []
-            for line in self.invoice_line_ids:
+            for line in self.invoice_line_ids.filtered(lambda l: not l.display_type):
                 description_line = line.name[:250]
                 if (
                     self.company_id.tbai_protected_data
                     and self.company_id.tbai_protected_data_txt
                 ):
                     description_line = self.company_id.tbai_protected_data_txt[:250]
+                price_unit = line.tbai_get_price_unit()
                 lines.append(
                     (
                         0,
@@ -288,8 +301,10 @@ class AccountMove(models.Model):
                         {
                             "description": description_line,
                             "quantity": line.tbai_get_value_cantidad(),
-                            "price_unit": "%.8f" % line.price_unit,
-                            "discount_amount": line.tbai_get_value_descuento(),
+                            "price_unit": "%.8f" % price_unit,
+                            "discount_amount": line.tbai_get_value_descuento(
+                                price_unit
+                            ),
                             "amount_total": line.tbai_get_value_importe_total(),
                         },
                     )
@@ -301,51 +316,59 @@ class AccountMove(models.Model):
         exclude_taxes = self.company_id.get_taxes_from_templates(
             tbai_maps.mapped("tax_template_ids")
         )
-        for tax in self.invoice_line_ids.filtered(lambda x: x.tax_ids).mapped(
-            "tax_ids"
+        for tax in (
+            self.invoice_line_ids.filtered(lambda x: x.tax_ids)
+            .mapped("tax_ids")
+            .filtered(lambda t: t not in exclude_taxes)
         ):
-            if tax not in exclude_taxes:
-                tax_subject_to = tax.tbai_is_subject_to_tax()
-                not_subject_to_cause = (
-                    not tax_subject_to and tax.tbai_get_value_causa(self) or ""
-                )
-                is_exempted = tax_subject_to and tax.tbai_is_tax_exempted() or False
-                not_exempted_type = (
-                    tax_subject_to
-                    and not is_exempted
-                    and tax.tbai_get_value_tipo_no_exenta()
-                    or ""
-                )
-                exemption = self.fiscal_position_id.tbai_vat_exemption_ids.filtered(
-                    lambda e: e.tax_id.id == tax["id"]
-                )
-                taxes.append(
-                    (
-                        0,
-                        0,
-                        {
-                            "base": tax.tbai_get_value_base_imponible(self),
-                            "is_subject_to": tax_subject_to,
-                            "not_subject_to_cause": not_subject_to_cause,
-                            "is_exempted": is_exempted,
-                            "exempted_cause": is_exempted
-                            and exemption.tbai_vat_exemption_key.code
-                            or "",
-                            "not_exempted_type": not_exempted_type,
-                            "amount": "%.2f" % abs(tax.amount),
-                            "amount_total": tax.tbai_get_value_cuota_impuesto(self),
-                            "re_amount": tax.tbai_get_value_tipo_recargo_equiv(self)
-                            or "",
-                            "re_amount_total": (
-                                tax.tbai_get_value_cuota_recargo_equiv(self) or ""
-                            ),
-                            "surcharge_or_simplified_regime": (
-                                tax.tbai_get_value_op_recargo_equiv_o_reg_simpl(self)
-                            ),
-                            "type": tax.tbai_get_value_tax_type(),
-                        },
+            tax_subject_to = tax.tbai_is_subject_to_tax()
+            not_subject_to_cause = (
+                not tax_subject_to and tax.tbai_get_value_causa(self) or ""
+            )
+            is_exempted = tax_subject_to and tax.tbai_is_tax_exempted() or False
+            not_exempted_type = (
+                tax_subject_to
+                and not is_exempted
+                and tax.tbai_get_value_tipo_no_exenta()
+                or ""
+            )
+            exemption = ""
+            if tax.tbai_is_tax_exempted():
+                if self.fiscal_position_id:
+                    exemption = self.fiscal_position_id.tbai_vat_exemption_ids.filtered(
+                        lambda e: e.tax_id.id == tax["id"]
                     )
+                    if len(exemption) == 1:
+                        exemption = exemption.tbai_vat_exemption_key.code
+                else:
+                    exemption = self.env["tbai.vat.exemption.key"].search(
+                        [("code", "=", "E1")], limit=1
+                    )
+                    exemption = exemption.code
+            taxes.append(
+                (
+                    0,
+                    0,
+                    {
+                        "base": tax.tbai_get_value_base_imponible(self),
+                        "is_subject_to": tax_subject_to,
+                        "not_subject_to_cause": not_subject_to_cause,
+                        "is_exempted": is_exempted,
+                        "exempted_cause": is_exempted and exemption or "",
+                        "not_exempted_type": not_exempted_type,
+                        "amount": "%.2f" % abs(tax.amount),
+                        "amount_total": tax.tbai_get_value_cuota_impuesto(self),
+                        "re_amount": tax.tbai_get_value_tipo_recargo_equiv(self) or "",
+                        "re_amount_total": (
+                            tax.tbai_get_value_cuota_recargo_equiv(self) or ""
+                        ),
+                        "surcharge_or_simplified_regime": (
+                            tax.tbai_get_value_op_recargo_equiv_o_reg_simpl(self)
+                        ),
+                        "type": tax.tbai_get_value_tax_type(),
+                    },
                 )
+            )
         vals["tbai_tax_ids"] = taxes
         return vals
 
@@ -433,13 +456,17 @@ class AccountMove(models.Model):
             lambda x: x.tbai_enabled
             and "out_invoice" == x.move_type
             and x.tbai_send_invoice
+            and x.invoice_date >= x.journal_id.tbai_active_date
         )
         refund_invoices = self.sudo().filtered(
             lambda x: x.tbai_enabled
             and "out_refund" == x.move_type
-            and not x.tbai_refund_type
-            or x.tbai_refund_type == RefundType.differences.value
+            and (
+                not x.tbai_refund_type
+                or x.tbai_refund_type == RefundType.differences.value
+            )
             and x.tbai_send_invoice
+            and x.invoice_date >= x.journal_id.tbai_active_date
         )
 
         validate_refund_invoices()
@@ -452,28 +479,6 @@ class AccountMove(models.Model):
         refund_common_fields.append("tbai_substitution_invoice_id")
         refund_common_fields.append("company_id")
         return refund_common_fields
-
-    @api.model
-    def _get_tax_grouping_key_from_tax_line(self, tax_line):
-        vals = super()._get_tax_grouping_key_from_tax_line(tax_line)
-        if self.fiscal_position_id:
-            exemption = self.fiscal_position_id.tbai_vat_exemption_ids.filtered(
-                lambda e: e.tax_id.id == tax_line.tax_line_id.id
-            )
-            if 1 == len(exemption):
-                vals["tbai_vat_exemption_key"] = exemption.tbai_vat_exemption_key.id
-        return vals
-
-    @api.model
-    def _get_tax_grouping_key_from_base_line(self, base_line, tax_vals):
-        vals = super()._get_tax_grouping_key_from_base_line(base_line, tax_vals)
-        if self.fiscal_position_id:
-            exemption = self.fiscal_position_id.tbai_vat_exemption_ids.filtered(
-                lambda e: e.tax_id.id == tax_vals["id"]
-            )
-            if 1 == len(exemption):
-                vals["tbai_vat_exemption_key"] = exemption.tbai_vat_exemption_key.id
-        return vals
 
     def tbai_is_invoice_refund(self):
         if "out_refund" == self.move_type or (
@@ -516,6 +521,13 @@ class AccountMove(models.Model):
             self, fields.Datetime.from_string(invoice_datetime)
         )
         return date.strftime("%H:%M:%S")
+
+    def tbai_get_value_simplified_invoice(self):
+        if self.partner_id.aeat_anonymous_cash_customer:
+            res = SiNoType.S.value
+        else:
+            res = SiNoType.N.value
+        return res
 
     def tbai_get_value_factura_emitida_sustitucion_simplificada(self):
         if self.tbai_substitute_simplified_invoice:
@@ -608,22 +620,20 @@ class AccountMoveLine(models.Model):
             sign = 1
         return "%.2f" % (sign * self.quantity)
 
-    def tbai_get_value_descuento(self):
+    def tbai_get_value_descuento(self, price_unit):
         if self.discount:
             if RefundType.differences.value == self.move_id.tbai_refund_type:
                 sign = -1
             else:
                 sign = 1
-            res = "%.2f" % (
-                sign * self.quantity * self.price_unit * self.discount / 100.0
-            )
+            res = "%.2f" % (sign * self.quantity * price_unit * self.discount / 100.0)
         else:
             res = "0.00"
         return res
 
     def tbai_get_value_importe_total(self):
         tbai_maps = self.env["tbai.tax.map"].search([("code", "=", "IRPF")])
-        irpf_taxes = self.env["l10n.es.aeat.report"].get_taxes_from_templates(
+        irpf_taxes = self.company_id.get_taxes_from_templates(
             tbai_maps.mapped("tax_template_ids")
         )
         currency = self.move_id and self.move_id.currency_id or None
@@ -641,6 +651,14 @@ class AccountMoveLine(models.Model):
         else:
             sign = 1
         return "%.2f" % (sign * price_total)
+
+    def tbai_get_price_unit(self):
+        price_unit = self.price_unit
+        for tax in self.tax_ids.filtered(lambda t: t.price_include):
+            price_unit = price_unit - (
+                self.price_unit * tax.amount / (100 + tax.amount)
+            )
+        return price_unit
 
 
 class AccountMoveReversal(models.TransientModel):

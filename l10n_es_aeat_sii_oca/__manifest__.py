@@ -11,11 +11,13 @@
 # Copyright 2020 Sygel Technology - Valentín Vinagre <valentin.vinagre@sygel.es>
 # Copyright 2021 Tecnativa - João Marques
 # Copyright 2022 ForgeFlow - Lois Rilo
+# Copyright 2022 Moduon - Eduardo de Miguel
+# Copyright 2022 NuoBiT - Eric Antones <eantones@nuobit.com>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 {
     "name": "Suministro Inmediato de Información en el IVA",
-    "version": "14.0.2.2.0",
+    "version": "14.0.2.6.2",
     "category": "Accounting & Finance",
     "website": "https://github.com/OCA/l10n-spain",
     "author": "Acysos S.L.,"
@@ -33,7 +35,7 @@
     "installable": True,
     "development_status": "Production/Stable",
     "maintainers": ["pedrobaeza"],
-    "external_dependencies": {"python": ["zeep", "requests", "cryptography"]},
+    "external_dependencies": {"python": ["zeep", "requests", "cryptography<39"]},
     "depends": ["account_invoice_refund_link", "l10n_es", "l10n_es_aeat", "queue_job"],
     "data": [
         "data/aeat_sii_queue_job.xml",
@@ -52,6 +54,7 @@
         "views/account_fiscal_position_view.xml",
         "views/res_partner_views.xml",
         "views/aeat_tax_agency_view.xml",
+        "views/account_journal_view.xml",
     ],
     "images": ["static/description/SII_1.jpg"],
     "post_init_hook": "add_key_to_existing_invoices",

@@ -7,8 +7,6 @@
 
 import json
 
-from lxml import etree
-
 from odoo import exceptions
 from odoo.modules.module import get_resource_path
 
@@ -407,11 +405,26 @@ class TestL10nEsAeatSii(TestL10nEsAeatSiiBase):
         with self.assertRaises(exceptions.UserError):
             self.invoice.unlink()
 
-    def test_account_move_thirdparty_fields(self):
-        view = self.env["account.move"].fields_view_get(
-            view_id=self.env.ref("account.view_move_form").id,
-            view_type="form",
+    def test_account_move_sii_write_exceptions(self):
+        # out_invoice
+        self.invoice.sii_state = "sent"
+        with self.assertRaises(exceptions.UserError):
+            self.invoice.write({"invoice_date": "2022-01-01"})
+        with self.assertRaises(exceptions.UserError):
+            self.invoice.write({"thirdparty_number": "CUSTOM"})
+        with self.assertRaises(exceptions.UserError):
+            self.invoice.write({"name": "NEW-NUMBER"})
+        # in_invoice
+        in_invoice = self.invoice.copy(
+            {
+                "move_type": "in_invoice",
+                "journal_id": self.journal_purchase.id,
+                "ref": "REF",
+            }
         )
-        doc = etree.XML(view["arch"])
-        self.assertTrue(doc.xpath("//field[@name='thirdparty_number']"))
-        self.assertTrue(doc.xpath("//field[@name='thirdparty_invoice']"))
+        in_invoice.sii_state = "sent"
+        partner = self.partner.copy()
+        with self.assertRaises(exceptions.UserError):
+            in_invoice.write({"partner_id": partner.id})
+        with self.assertRaises(exceptions.UserError):
+            in_invoice.write({"ref": "REF2"})

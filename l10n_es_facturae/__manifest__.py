@@ -3,11 +3,13 @@
 # Copyright 2015 Tecon
 # Copyright 2015 Omar Castiñeira (Comunitea)
 # Copyright 2016-2020 Tecnativa - Pedro M. Baeza
+# Copyright 2022 Moduon - Eduardo de Miguel
+# Copyright 2022 NuoBiT - Eric Antones
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 
 {
     "name": "Creación de Facturae",
-    "version": "14.0.2.2.0",
+    "version": "14.0.2.5.1",
     "author": "ASR-OSS, "
     "FactorLibre, "
     "Tecon, "
@@ -39,9 +41,10 @@
         "wizard/create_facturae_view.xml",
         "wizard/account_move_reversal_view.xml",
         "views/account_move_view.xml",
+        "views/account_journal_view.xml",
     ],
     "external_dependencies": {
-        "python": ["cryptography", "pyOpenSSL", "pycountry", "xmlsig"]
+        "python": ["cryptography<39", "pyOpenSSL", "pycountry", "xmlsig"]
     },
     "installable": True,
     "maintainers": ["etobella"],
