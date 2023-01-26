@@ -7,20 +7,20 @@ msgstr ""
 "Project-Id-Version: Odoo Server 11.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-01-13 09:00+0000\n"
-"PO-Revision-Date: 2022-01-13 10:01+0100\n"
-"Last-Translator: \n"
+"PO-Revision-Date: 2022-08-23 13:07+0000\n"
+"Last-Translator: olatzavanzosc <olatzaranguren@avanzosc.es>\n"
 "Language-Team: \n"
-"Language: es_ES\n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.0\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.3.2\n"
 
 #. module: l10n_es_ticketbai_batuz
 #: model:ir.model,name:l10n_es_ticketbai_batuz.model_account_chart_template
 msgid "Account Chart Template"
-msgstr ""
+msgstr "Plantilla de Plan Contable"
 
 #. module: l10n_es_ticketbai_batuz
 #: model_terms:ir.ui.view,arch_db:l10n_es_ticketbai_batuz.view_account_invoice_filter_inherit_l10n_es_ticketbai_batuz
@@ -53,11 +53,11 @@ msgid "Chapter"
 msgstr "Capítulo"
 
 #. module: l10n_es_ticketbai_batuz
-#: code:addons/l10n_es_ticketbai_batuz/models/account_invoice.py:661
+#: code:addons/l10n_es_ticketbai_batuz/models/account_invoice.py:645
 #, python-format
-msgid "Chapter and type are required for search a pending LROE Operation"
+msgid ""
+"Chapter and Operation Type are required for search a pending LROE Operation"
 msgstr ""
-"El capitulo y tipo son obligatorios para buscar operaciones LROE pendientes"
 
 #. module: l10n_es_ticketbai_batuz
 #: model:ir.model.fields,help:l10n_es_ticketbai_batuz.field_res_company__use_connector
@@ -152,13 +152,13 @@ msgid "LROE API URL"
 msgstr "LROE API URL"
 
 #. module: l10n_es_ticketbai_batuz
-#: code:addons/l10n_es_ticketbai_batuz/models/account_invoice.py:726
+#: code:addons/l10n_es_ticketbai_batuz/models/account_invoice.py:711
 #, python-format
 msgid "LROE Build: method for model %s chapter %s not implemented!"
 msgstr "¡LROE: método para modelo %s capítulo %s no implementado!"
 
 #. module: l10n_es_ticketbai_batuz
-#: code:addons/l10n_es_ticketbai_batuz/models/account_invoice.py:707
+#: code:addons/l10n_es_ticketbai_batuz/models/account_invoice.py:692
 #, python-format
 msgid "LROE Build: operation type is necessary!"
 msgstr "¡LROE: el tipo de operación es necesario!"
@@ -169,10 +169,10 @@ msgid "LROE Operation"
 msgstr "Operación LROE"
 
 #. module: l10n_es_ticketbai_batuz
-#: code:addons/l10n_es_ticketbai_batuz/models/lroe_operation.py:200
+#: code:addons/l10n_es_ticketbai_batuz/models/lroe_operation.py:202
 #, python-format
 msgid "LROE Operation %s: XML schema not supported!"
-msgstr "Operación LROE %s: Esquema XML de factura no soportado."
+msgstr "Operación LROE %s: Esquema XML de factura no soportado!"
 
 #. module: l10n_es_ticketbai_batuz
 #: model:ir.model.fields,field_description:l10n_es_ticketbai_batuz.field_account_invoice__lroe_operation_ids
@@ -181,6 +181,7 @@ msgid "LROE Operations"
 msgstr "Operaciones LROE"
 
 #. module: l10n_es_ticketbai_batuz
+#: model:ir.model.fields,field_description:l10n_es_ticketbai_batuz.field_account_invoice__lroe_response_line_ids
 #: model_terms:ir.ui.view,arch_db:l10n_es_ticketbai_batuz.invoice_supplier_form_inherit_l10n_es_ticketbai_batuz
 #: model_terms:ir.ui.view,arch_db:l10n_es_ticketbai_batuz.view_invoice_form_tbai_batuz
 msgid "LROE Responses"
@@ -265,7 +266,7 @@ msgstr "Aceptado con errores"
 #. module: l10n_es_ticketbai_batuz
 #: model_terms:ir.ui.view,arch_db:l10n_es_ticketbai_batuz.invoice_supplier_form_inherit_l10n_es_ticketbai_batuz
 msgid "Refund"
-msgstr ""
+msgstr "Reembolso"
 
 #. module: l10n_es_ticketbai_batuz
 #: selection:account.invoice,lroe_state:0
@@ -286,11 +287,6 @@ msgstr "Registro en LROE planificado"
 #: model_terms:ir.ui.view,arch_db:l10n_es_ticketbai_batuz.invoice_supplier_form_inherit_l10n_es_ticketbai_batuz
 msgid "Resend to LROE"
 msgstr "Reenviar LROE"
-
-#. module: l10n_es_ticketbai_batuz
-#: model:ir.model.fields,field_description:l10n_es_ticketbai_batuz.field_account_invoice__lroe_response_line_ids
-msgid "Responses"
-msgstr "Respuestas"
 
 #. module: l10n_es_ticketbai_batuz
 #: selection:tbai.vat.regime.key,type:0
@@ -334,7 +330,7 @@ msgid "The last attemp to sent to LROE has failed"
 msgstr "El último intento de envío al LROE ha fallado"
 
 #. module: l10n_es_ticketbai_batuz
-#: code:addons/l10n_es_ticketbai_batuz/models/account_invoice.py:400
+#: code:addons/l10n_es_ticketbai_batuz/models/account_invoice.py:384
 #, python-format
 msgid "There's a mismatch in taxes for RE. Check them."
 msgstr "Hay un cruce erróneo para tasas en RE. Compruébelas."
@@ -363,7 +359,7 @@ msgstr "Usar conector"
 #: model:ir.model.fields,field_description:l10n_es_ticketbai_batuz.field_account_fiscal_position__tbai_vat_regime_key2
 #: model:ir.model.fields,field_description:l10n_es_ticketbai_batuz.field_account_fiscal_position_template__tbai_vat_regime_key2
 msgid "VAT Regime 2nd Key"
-msgstr ""
+msgstr "2ª clave de regímenes de IVA"
 
 #. module: l10n_es_ticketbai_batuz
 #: model:ir.model.fields,field_description:l10n_es_ticketbai_batuz.field_account_fiscal_position__tbai_vat_regime_purchase_key2
@@ -375,7 +371,7 @@ msgstr "2ª clave de regímenes de IVA para compras"
 #: model:ir.model.fields,field_description:l10n_es_ticketbai_batuz.field_account_fiscal_position__tbai_vat_regime_key3
 #: model:ir.model.fields,field_description:l10n_es_ticketbai_batuz.field_account_fiscal_position_template__tbai_vat_regime_key3
 msgid "VAT Regime 3rd Key"
-msgstr ""
+msgstr "3ª clave de regímenes de IVA"
 
 #. module: l10n_es_ticketbai_batuz
 #: model:ir.model.fields,field_description:l10n_es_ticketbai_batuz.field_account_fiscal_position__tbai_vat_regime_purchase_key3
@@ -387,7 +383,7 @@ msgstr "3ª clave de regímenes de IVA para compras"
 #: model:ir.model.fields,field_description:l10n_es_ticketbai_batuz.field_account_fiscal_position__tbai_vat_regime_key
 #: model:ir.model.fields,field_description:l10n_es_ticketbai_batuz.field_account_fiscal_position_template__tbai_vat_regime_key
 msgid "VAT Regime Key"
-msgstr ""
+msgstr "Clave de regímenes de IVA"
 
 #. module: l10n_es_ticketbai_batuz
 #: model:ir.model.fields,field_description:l10n_es_ticketbai_batuz.field_account_fiscal_position__tbai_vat_regime_purchase_key
@@ -411,7 +407,13 @@ msgid "With delay"
 msgstr "Con retardo"
 
 #. module: l10n_es_ticketbai_batuz
-#: code:addons/l10n_es_ticketbai_batuz/models/account_invoice.py:712
+#: code:addons/l10n_es_ticketbai_batuz/models/account_invoice.py:793
+#, python-format
+msgid "You can not cancel this invoice because there is a job running!"
+msgstr ""
+
+#. module: l10n_es_ticketbai_batuz
+#: code:addons/l10n_es_ticketbai_batuz/models/account_invoice.py:697
 #, python-format
 msgid ""
 "You can not communicate this invoice at this moment because there is a job "
@@ -421,13 +423,20 @@ msgstr ""
 "ejecutándose!"
 
 #. module: l10n_es_ticketbai_batuz
-#: code:addons/l10n_es_ticketbai_batuz/models/account_invoice.py:804
 #: code:addons/l10n_es_ticketbai_batuz/models/account_invoice.py:838
 #, python-format
 msgid "You can not set to draft this invoice because there is a job running!"
 msgstr ""
 "¡En este momento no puede poner en borrador esta factura porque hay un "
 "trabajo ejecutándose!"
+
+#~ msgid "Chapter and type are required for search a pending LROE Operation"
+#~ msgstr ""
+#~ "El capitulo y tipo son obligatorios para buscar operaciones LROE "
+#~ "pendientes"
+
+#~ msgid "Responses"
+#~ msgstr "Respuestas"
 
 #~ msgid "Templates for Account Chart"
 #~ msgstr "Plantillas de plan contable"
