@@ -71,6 +71,7 @@ class AccountMove(models.Model):
             (RefundCode.R2.value, "Art. 80.3"),
             (RefundCode.R3.value, "Art. 80.4"),
             (RefundCode.R4.value, "Art. 80 - other"),
+            (RefundCode.R5.value, "Simplified Invoice"),
         ],
         help="BOE-A-1992-28740. Ley 37/1992, de 28 de diciembre, del Impuesto sobre el "
         "Valor Añadido. Artículo 80. Modificación de la base imponible.",
@@ -133,7 +134,14 @@ class AccountMove(models.Model):
                     if not vals.get("tbai_refund_type", False):
                         vals["tbai_refund_type"] = RefundType.differences.value
                     if not vals.get("tbai_refund_key", False):
-                        vals["tbai_refund_key"] = RefundCode.R1.value
+                        if vals.get("partner_id", False):
+                            partner = self.env["res.partner"].browse(vals["partner_id"])
+                            if partner.aeat_anonymous_cash_customer:
+                                vals["tbai_refund_key"] = RefundCode.R5.value
+                            else:
+                                vals["tbai_refund_key"] = RefundCode.R1.value
+                        else:
+                            vals["tbai_refund_key"] = RefundCode.R1.value
             if vals.get("fiscal_position_id", False):
                 fiscal_position = self.env["account.fiscal.position"].browse(
                     vals["fiscal_position_id"]
@@ -175,7 +183,10 @@ class AccountMove(models.Model):
             if not self.tbai_refund_type:
                 self.tbai_refund_type = RefundType.differences.value
             if not self.tbai_refund_key:
-                self.tbai_refund_key = RefundCode.R1.value
+                if not self.partner_id.aeat_anonymous_cash_customer:
+                    self.tbai_refund_key = RefundCode.R1.value
+                else:
+                    self.tbai_refund_key = RefundCode.R5.value
 
     def tbai_prepare_invoice_values(self):
         def tbai_prepare_refund_values():
@@ -257,7 +268,7 @@ class AccountMove(models.Model):
                     0,
                     {
                         "name": partner.tbai_get_value_apellidos_nombre_razon_social(),
-                        "country_code": partner.tbai_get_partner_country_code(),
+                        "country_code": partner._parse_aeat_vat_info()[0],
                         "nif": partner.tbai_get_value_nif(),
                         "identification_number": (
                             partner.tbai_partner_identification_number or partner.vat
@@ -286,13 +297,14 @@ class AccountMove(models.Model):
         tax_agency = self.company_id.tbai_tax_agency_id
         if tax_agency in (gipuzkoa_tax_agency, araba_tax_agency):
             lines = []
-            for line in self.invoice_line_ids:
+            for line in self.invoice_line_ids.filtered(lambda l: not l.display_type):
                 description_line = line.name[:250]
                 if (
                     self.company_id.tbai_protected_data
                     and self.company_id.tbai_protected_data_txt
                 ):
                     description_line = self.company_id.tbai_protected_data_txt[:250]
+                price_unit = line.tbai_get_price_unit()
                 lines.append(
                     (
                         0,
@@ -300,8 +312,10 @@ class AccountMove(models.Model):
                         {
                             "description": description_line,
                             "quantity": line.tbai_get_value_cantidad(),
-                            "price_unit": "%.8f" % line.price_unit,
-                            "discount_amount": line.tbai_get_value_descuento(),
+                            "price_unit": "%.8f" % price_unit,
+                            "discount_amount": line.tbai_get_value_descuento(
+                                price_unit
+                            ),
                             "amount_total": line.tbai_get_value_importe_total(),
                         },
                     )
@@ -613,15 +627,13 @@ class AccountMoveLine(models.Model):
             sign = 1
         return "%.2f" % (sign * self.quantity)
 
-    def tbai_get_value_descuento(self):
+    def tbai_get_value_descuento(self, price_unit):
         if self.discount:
             if RefundType.differences.value == self.move_id.tbai_refund_type:
                 sign = -1
             else:
                 sign = 1
-            res = "%.2f" % (
-                sign * self.quantity * self.price_unit * self.discount / 100.0
-            )
+            res = "%.2f" % (sign * self.quantity * price_unit * self.discount / 100.0)
         else:
             res = "0.00"
         return res
@@ -646,6 +658,14 @@ class AccountMoveLine(models.Model):
         else:
             sign = 1
         return "%.2f" % (sign * price_total)
+
+    def tbai_get_price_unit(self):
+        price_unit = self.price_unit
+        for tax in self.tax_ids.filtered(lambda t: t.price_include):
+            price_unit = price_unit - (
+                self.price_unit * tax.amount / (100 + tax.amount)
+            )
+        return price_unit
 
 
 class AccountMoveReversal(models.TransientModel):

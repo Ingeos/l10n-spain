@@ -215,22 +215,6 @@ class AccountMove(models.Model):
         "The invoice number should start with LC, QZC, QRC, A01 or A02.",
         copy=False,
     )
-    thirdparty_invoice = fields.Boolean(
-        string="Third-party invoice",
-        copy=False,
-        compute="_compute_thirdparty_invoice",
-        store=True,
-        readonly=False,
-    )
-    thirdparty_number = fields.Char(
-        string="Third-party number",
-        index=True,
-        readonly=True,
-        states={"draft": [("readonly", False)]},
-        copy=False,
-        help="Número de la factura emitida por un tercero.",
-        tracking=True,
-    )
     invoice_jobs_ids = fields.Many2many(
         comodel_name="queue.job",
         column1="invoice_id",
@@ -239,11 +223,6 @@ class AccountMove(models.Model):
         string="Connector Jobs",
         copy=False,
     )
-
-    @api.depends("journal_id")
-    def _compute_thirdparty_invoice(self):
-        for item in self:
-            item.thirdparty_invoice = item.journal_id.thirdparty_invoice
 
     @api.depends("move_type")
     def _compute_sii_registration_key_domain(self):
@@ -259,12 +238,12 @@ class AccountMove(models.Model):
     def _compute_macrodata(self):
         for inv in self:
             inv.sii_macrodata = (
-                True
-                if float_compare(
-                    inv.amount_total, SII_MACRODATA_LIMIT, precision_digits=2
+                float_compare(
+                    abs(inv.amount_total_signed),
+                    SII_MACRODATA_LIMIT,
+                    precision_digits=2,
                 )
                 >= 0
-                else False
             )
 
     @api.onchange("sii_refund_type")
@@ -1314,7 +1293,12 @@ class AccountMove(models.Model):
                     "IDOtro": {
                         "CodigoPais": country_code,
                         "IDType": identifier_type,
-                        "ID": identifier,
+                        "ID": country_code + identifier
+                        if self.commercial_partner_id._map_aeat_country_code(
+                            country_code
+                        )
+                        in self.commercial_partner_id._get_aeat_europe_codes()
+                        else identifier,
                     },
                 }
         elif gen_type == 2:
@@ -1339,9 +1323,8 @@ class AccountMove(models.Model):
         gen_type = self._get_sii_gen_type()
         if gen_type == 2:
             return "E5"
-        elif gen_type == 3:
-            return "E2"
         else:
+            exempt_cause = False
             product_exempt_causes = (
                 self.mapped("invoice_line_ids")
                 .filtered(
@@ -1359,12 +1342,15 @@ class AccountMove(models.Model):
                     _("Currently there's no support for multiple exempt " "causes.")
                 )
             if product_exempt_causes:
-                return product_exempt_causes.pop()
+                exempt_cause = product_exempt_causes.pop()
             elif (
                 self.fiscal_position_id.sii_exempt_cause
                 and self.fiscal_position_id.sii_exempt_cause != "none"
             ):
-                return self.fiscal_position_id.sii_exempt_cause
+                exempt_cause = self.fiscal_position_id.sii_exempt_cause
+            if gen_type == 3 and exempt_cause not in ["E2", "E3"]:
+                exempt_cause = "E2"
+            return exempt_cause
 
     def _get_no_taxable_cause(self):
         self.ensure_one()
