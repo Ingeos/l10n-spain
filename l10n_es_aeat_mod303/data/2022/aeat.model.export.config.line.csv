@@ -98,7 +98,7 @@
 "aeat_mod303_2022_sub03_export_line_26","aeat_mod303_2022_sub03_export_config",24,"Resultado - Resultado ([66] + [77] - [78] + [68]) [69]","float",17,2,"right",1,"N",0," ","X","${object.casilla_69}",,,,
 "aeat_mod303_2022_sub03_export_line_27","aeat_mod303_2022_sub03_export_config",25,"Resultado - A deducir [70]","float",17,2,"right",1,"N",0," ","X","${object.previous_result}",,,,
 "aeat_mod303_2022_sub03_export_line_28","aeat_mod303_2022_sub03_export_config",26,"Resultado - Resultado de la liquidación [71]","float",17,2,"right",1,"N",0," ","X","${object.resultado_liquidacion}",,,,
-"aeat_mod303_2022_sub03_export_line_29","aeat_mod303_2022_sub03_export_config",27,"Declaración complementaria","boolean",1,0,"left",1,"N",0," ","X","${object.statement_type == 'C'}",,,,
+"aeat_mod303_2022_sub03_export_line_29","aeat_mod303_2022_sub03_export_config",27,"Declaración complementaria","boolean",1,0,"left",1,"N",0," ","X","${object.type == 'C'}",,,,
 "aeat_mod303_2022_sub03_export_line_30","aeat_mod303_2022_sub03_export_config",28,"Numero justificante declaración anterior","string",13,0,"left",1,"N",0," ","X","${object.previous_number}",,,,
 "aeat_mod303_2022_sub03_export_line_31","aeat_mod303_2022_sub03_export_config",29,"Declaración sin actividad","boolean",1,0,"left",1,"N",0," ","X","${object.result_type == 'N'}",,,,
 "aeat_mod303_2022_sub03_export_line_32","aeat_mod303_2022_sub03_export_config",30,"Devolución. SWIFT-BIC","string",11,0,"left",1,"N",0," ","X","${object.result_type == 'D' and object.marca_sepa == '3' and object.partner_bank_id.bank_bic or ''}",,,,

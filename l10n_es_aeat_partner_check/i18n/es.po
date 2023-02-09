@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-# 	* l10n_es_aeat_partner_check
+#     * l10n_es_aeat_partner_check
 #
 msgid ""
 msgstr ""
@@ -31,12 +31,6 @@ msgstr ""
 #: model:ir.model.fields,field_description:l10n_es_aeat_partner_check.field_res_users__aeat_partner_name
 msgid "AEAT Name"
 msgstr "Nombre AEAT"
-
-#. module: l10n_es_aeat_partner_check
-#: model:ir.model.fields,field_description:l10n_es_aeat_partner_check.field_res_partner__aeat_partner_vat
-#: model:ir.model.fields,field_description:l10n_es_aeat_partner_check.field_res_users__aeat_partner_vat
-msgid "AEAT VAT"
-msgstr "AEAT NIF"
 
 #. module: l10n_es_aeat_partner_check
 #: model_terms:ir.ui.view,arch_db:l10n_es_aeat_partner_check.view_partner_aeat_form
@@ -76,25 +70,11 @@ msgid "Data different"
 msgstr "Datos diferentes"
 
 #. module: l10n_es_aeat_partner_check
-#: code:addons/l10n_es_aeat_partner_check/models/res_partner.py:0
-#: model:ir.model.fields.selection,name:l10n_es_aeat_partner_check.selection__res_partner__aeat_partner_check_result__identificado
+#: code:addons/l10n_es_aeat_partner_check/models/res_partner.py:10
+#: selection:res.partner,aeat_partner_check_result:0
 #, python-format
 msgid "Identificado"
 msgstr "Identificado"
-
-#. module: l10n_es_aeat_partner_check
-#: code:addons/l10n_es_aeat_partner_check/models/res_partner.py:0
-#: model:ir.model.fields.selection,name:l10n_es_aeat_partner_check.selection__res_partner__aeat_partner_check_result__identificado-baja
-#, python-format
-msgid "Identificado, baja"
-msgstr ""
-
-#. module: l10n_es_aeat_partner_check
-#: code:addons/l10n_es_aeat_partner_check/models/res_partner.py:0
-#: model:ir.model.fields.selection,name:l10n_es_aeat_partner_check.selection__res_partner__aeat_partner_check_result__identificado-revocado
-#, python-format
-msgid "Identificado, revocado"
-msgstr ""
 
 #. module: l10n_es_aeat_partner_check
 #: model_terms:ir.ui.view,arch_db:l10n_es_aeat_partner_check.view_res_partner_aeat_filter
@@ -126,22 +106,29 @@ msgid "Latest AEAT check"
 msgstr "Última petición"
 
 #. module: l10n_es_aeat_partner_check
-#: code:addons/l10n_es_aeat_partner_check/models/res_partner.py:0
-#: model:ir.model.fields.selection,name:l10n_es_aeat_partner_check.selection__res_partner__aeat_partner_check_result__no_identificable
+#: code:addons/l10n_es_aeat_partner_check/models/res_partner.py:17
+#: selection:res.partner,aeat_partner_type:0
+#, python-format
+msgid "No es posible reportar información sobre el NIF consultado"
+msgstr ""
+
+#. module: l10n_es_aeat_partner_check
+#: code:addons/l10n_es_aeat_partner_check/models/res_partner.py:12
+#: selection:res.partner,aeat_partner_check_result:0
 #, python-format
 msgid "No identificable"
 msgstr "No identificable"
 
 #. module: l10n_es_aeat_partner_check
-#: code:addons/l10n_es_aeat_partner_check/models/res_partner.py:0
-#: model:ir.model.fields.selection,name:l10n_es_aeat_partner_check.selection__res_partner__aeat_partner_check_result__no_identificado
+#: code:addons/l10n_es_aeat_partner_check/models/res_partner.py:9
+#: selection:res.partner,aeat_partner_check_result:0
 #, python-format
 msgid "No identificado"
 msgstr "No identificado"
 
 #. module: l10n_es_aeat_partner_check
-#: code:addons/l10n_es_aeat_partner_check/models/res_partner.py:0
-#: model:ir.model.fields.selection,name:l10n_es_aeat_partner_check.selection__res_partner__aeat_partner_check_result__no_procesado
+#: code:addons/l10n_es_aeat_partner_check/models/res_partner.py:11
+#: selection:res.partner,aeat_partner_check_result:0
 #, python-format
 msgid "No procesado"
 msgstr "No procesado"
@@ -173,15 +160,15 @@ msgid "Partner type"
 msgstr "Tipo asociado"
 
 #. module: l10n_es_aeat_partner_check
-#: code:addons/l10n_es_aeat_partner_check/models/res_partner.py:0
-#: model:ir.model.fields.selection,name:l10n_es_aeat_partner_check.selection__res_partner__aeat_partner_type__sales_equalization
+#: code:addons/l10n_es_aeat_partner_check/models/res_partner.py:15
+#: selection:res.partner,aeat_partner_type:0
 #, python-format
 msgid "Régimen de recargo de equivalencia"
 msgstr "Régimen de recargo de equivalencia"
 
 #. module: l10n_es_aeat_partner_check
-#: code:addons/l10n_es_aeat_partner_check/models/res_partner.py:0
-#: model:ir.model.fields.selection,name:l10n_es_aeat_partner_check.selection__res_partner__aeat_partner_type__standard
+#: code:addons/l10n_es_aeat_partner_check/models/res_partner.py:16
+#: selection:res.partner,aeat_partner_type:0
 #, python-format
 msgid "Régimen estándar"
 msgstr "Régimen estándar"
@@ -195,6 +182,12 @@ msgstr "Régimen de recargo de equivalencia"
 #: model_terms:ir.ui.view,arch_db:l10n_es_aeat_partner_check.view_res_partner_aeat_filter
 msgid "Standard regimen"
 msgstr "Régimen estándar"
+
+#. module: l10n_es_aeat_partner_check
+#: model:ir.model.fields,field_description:l10n_es_aeat_partner_check.field_res_partner__aeat_partner_vat
+#: model:ir.model.fields,field_description:l10n_es_aeat_partner_check.field_res_users__aeat_partner_vat
+msgid "VAT"
+msgstr "NIF"
 
 #. module: l10n_es_aeat_partner_check
 #: model:ir.model.fields,field_description:l10n_es_aeat_partner_check.field_res_company__vat_check_aeat

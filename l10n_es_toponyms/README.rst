@@ -7,20 +7,20 @@ Topónimos españoles
    !! changes will be overwritten.                   !!
    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-.. |badge1| image:: https://img.shields.io/badge/maturity-Mature-brightgreen.png
+.. |badge1| image:: https://img.shields.io/badge/maturity-Beta-yellow.png
     :target: https://odoo-community.org/page/development-status
-    :alt: Mature
+    :alt: Beta
 .. |badge2| image:: https://img.shields.io/badge/licence-AGPL--3-blue.png
     :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
     :alt: License: AGPL-3
 .. |badge3| image:: https://img.shields.io/badge/github-OCA%2Fl10n--spain-lightgray.png?logo=github
-    :target: https://github.com/OCA/l10n-spain/tree/16.0/l10n_es_toponyms
+    :target: https://github.com/OCA/l10n-spain/tree/12.0/l10n_es_toponyms
     :alt: OCA/l10n-spain
 .. |badge4| image:: https://img.shields.io/badge/weblate-Translate%20me-F47D42.png
-    :target: https://translation.odoo-community.org/projects/l10n-spain-16-0/l10n-spain-16-0-l10n_es_toponyms
+    :target: https://translation.odoo-community.org/projects/l10n-spain-12-0/l10n-spain-12-0-l10n_es_toponyms
     :alt: Translate me on Weblate
 .. |badge5| image:: https://img.shields.io/badge/runbot-Try%20me-875A7B.png
-    :target: https://runbot.odoo-community.org/runbot/189/16.0
+    :target: https://runbot.odoo-community.org/runbot/189/12.0
     :alt: Try me on Runbot
 
 |badge1| |badge2| |badge3| |badge4| |badge5| 
@@ -35,7 +35,7 @@ Provincias, municipios y códigos postales de España.
     campos ciudad y provincia del formulario de empresa, de contacto y de
     compañía a partir del código postal o el nombre de la ciudad.
 
-Los datos se obtienen de GeoNames (https://www.geonames.org) directamente,
+Los datos se obtienen de GeoNames (http://www.geonames.org) directamente,
 o bien utilizando una copia local extraída del mismo sitio cuya última
 actualización es del 25/02/2015.
 
@@ -55,8 +55,10 @@ https://github.com/OCA/partner-contact
 Usage
 =====
 
-Tras la instalación del módulo, aparecerá un cuadro de diálogo para iniciar
-la importacion de los nombres de las provincias, ciudades y codigos postales.
+Tras la instalación del módulo, aparecerá un cuadro de diálogo para seleccionar
+los nombres de las provincias y si se desean importar las ciudades. Escoja
+las opciones que quiera y pulse en el botón *Configurar* correspondiente
+según se quiera importar de Internet o de local.
 
 Bug Tracker
 ===========
@@ -64,7 +66,7 @@ Bug Tracker
 Bugs are tracked on `GitHub Issues <https://github.com/OCA/l10n-spain/issues>`_.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us smashing it by providing a detailed and welcomed
-`feedback <https://github.com/OCA/l10n-spain/issues/new?body=module:%20l10n_es_toponyms%0Aversion:%2016.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
+`feedback <https://github.com/OCA/l10n-spain/issues/new?body=module:%20l10n_es_toponyms%0Aversion:%2012.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
 
 Do not contact contributors directly about support or help with technical issues.
 
@@ -91,9 +93,6 @@ Contributors
 
   * Pedro M. Baeza
   * Sergio Teruel
-  * João Marques
-* David Gómez
-* Jose Luis Algara
 
 Maintainers
 ~~~~~~~~~~~
@@ -108,14 +107,6 @@ OCA, or the Odoo Community Association, is a nonprofit organization whose
 mission is to support the collaborative development of Odoo features and
 promote its widespread use.
 
-.. |maintainer-pedrobaeza| image:: https://github.com/pedrobaeza.png?size=40px
-    :target: https://github.com/pedrobaeza
-    :alt: pedrobaeza
-
-Current `maintainer <https://odoo-community.org/page/maintainer-role>`__:
-
-|maintainer-pedrobaeza| 
-
-This module is part of the `OCA/l10n-spain <https://github.com/OCA/l10n-spain/tree/16.0/l10n_es_toponyms>`_ project on GitHub.
+This module is part of the `OCA/l10n-spain <https://github.com/OCA/l10n-spain/tree/12.0/l10n_es_toponyms>`_ project on GitHub.
 
 You are welcome to contribute. To learn how please visit https://odoo-community.org/page/Contribute.

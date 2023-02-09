@@ -1,12 +1,12 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-# 	* l10n_es_irnr
+#	* l10n_es_irnr
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0\n"
+"Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: \n"
+"Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -22,3 +22,4 @@ msgstr ""
 #: model:account.tax.group,name:l10n_es_irnr.tax_group_irnr_no_ue
 msgid "Retenciones no residentes no-UE"
 msgstr ""
+

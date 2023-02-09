@@ -5,7 +5,7 @@ from odoo import fields, models
 
 
 class AeatTaxAgency(models.Model):
-    _name = "aeat.tax.agency"
-    _description = "Aeat Tax Agency"
+    _name = 'aeat.tax.agency'
+    _description = 'Aeat Tax Agency'
 
-    name = fields.Char(required=True)
+    name = fields.Char(string='Name', required=True)

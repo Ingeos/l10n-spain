@@ -10,19 +10,3 @@
 
   * Antonio Espinosa
   * Pedro M. Baeza
-
-* `Acysos S.L. <https://www.acysos.com>`__:
-
-  * Ignacio Ibeas
-
-* `ForgeFlow S.L. <https://www.forgeflow.com>`__:
-
-  * Aaron Henriquez <ahenriquez@forgeflow.com>
-
-* `QubiQ <https://www.qubiq.es>`__:
-
-  * Raúl Fernández <raul.fernandez@qubiq.es>
-
-* `Coninpe <https://www.coninpe.es>`__:
-
-  * Jorge Hernández <jhernandez@coninpe.com>

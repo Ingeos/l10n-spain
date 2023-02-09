@@ -4,4 +4,3 @@
 * Sergio Teruel <sergio@incaser.es>
 * Ismael Calvo <ismael.calvo@factorlibre.com>
 * Carlos Dauden <carlos.dauden@tecnativa.com>
-* Manuel Regidor <manuel.regidor@sygel.es>

@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: Odoo Server 11.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-13 12:03+0000\n"
-"PO-Revision-Date: 2021-03-30 09:46+0000\n"
-"Last-Translator: Daniel Martinez Vila <daniel.martinez@qubiq.es>\n"
+"PO-Revision-Date: 2021-01-13 22:44+0000\n"
+"Last-Translator: Eugeni Chafer <eugeni@chafer.cat>\n"
 "Language-Team: Catalan (https://www.transifex.com/oca/teams/23907/ca/)\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
@@ -23,7 +23,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:l10n_es_account_asset.field_account_asset__annual_percentage
 #: model:ir.model.fields,field_description:l10n_es_account_asset.field_account_asset_profile__annual_percentage
 msgid "Annual depreciation percentage"
-msgstr "Percentatge d’amortització anual"
+msgstr "Percentatge anual d'amortització"
 
 #. module: l10n_es_account_asset
 #: model:ir.model,name:l10n_es_account_asset.model_account_asset
@@ -33,7 +33,7 @@ msgstr "Actiu"
 #. module: l10n_es_account_asset
 #: model:ir.model,name:l10n_es_account_asset.model_account_asset_profile
 msgid "Asset profile"
-msgstr "Perfil del actiu"
+msgstr "Configuració"
 
 #. module: l10n_es_account_asset
 #: model:ir.model.fields,field_description:l10n_es_account_asset.field_account_asset__method_percentage
@@ -42,26 +42,15 @@ msgid "Depreciation percentage"
 msgstr "Percentatge d'amortització"
 
 #. module: l10n_es_account_asset
-#. odoo-python
-#: code:addons/l10n_es_account_asset/models/account_asset_profile.py:0
+#: code:addons/l10n_es_account_asset/models/account_asset_profile.py:21
 #, python-format
 msgid "Fixed percentage"
 msgstr "Percentatge fix"
 
 #. module: l10n_es_account_asset
-#: model:ir.model.constraint,message:l10n_es_account_asset.constraint_account_asset_annual_percentage
-#: model:ir.model.constraint,message:l10n_es_account_asset.constraint_account_asset_profile_annual_percentage
+#: sql_constraint:account.asset:0 sql_constraint:account.asset.profile:0
 msgid "Wrong percentage!"
 msgstr "Percentatge equivocat!"
-
-#~ msgid "Display Name"
-#~ msgstr "Nom visible"
-
-#~ msgid "ID"
-#~ msgstr "ID"
-
-#~ msgid "Last Modified on"
-#~ msgstr "Darrera modificació el"
 
 #~ msgid "Asset category"
 #~ msgstr "Categoria d'actiu"

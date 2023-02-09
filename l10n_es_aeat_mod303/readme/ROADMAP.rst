@@ -1,5 +1,3 @@
-* No se pueden cambiar las cuentas contables genéricas de los impuestos si se
-  quiere que el modelo recoja correctamente sus cifras.
 * Los regimenes simplificado y agrícola, ganadero y forestal no están
   contemplados en el desarrollo actual.
 * No se permite definir que una compañía realiza tributación conjunta.
@@ -23,5 +21,3 @@
   posiciones fiscales.
 
   Más información en https://www.boe.es/diario_boe/txt.php?id=BOE-A-2014-12329
-* No se han mapeado las ventas con el nuevo IVA a la electricidad del 5%, a la
-  espera de si Hacienda cambia el modelo para alojar dicho valor.

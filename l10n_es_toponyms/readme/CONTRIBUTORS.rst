@@ -8,6 +8,3 @@
 
   * Pedro M. Baeza
   * Sergio Teruel
-  * João Marques
-* David Gómez
-* Jose Luis Algara
