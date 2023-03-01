@@ -72,7 +72,7 @@ class L10nEsIntrastatProductDeclaration(models.Model):
             line_vals["incoterm_id"] = incoterm_id.id
         if self.declaration_type == "dispatches" and int(self.year) >= 2022:
             line_vals["partner_vat"] = (
-                inv_line.move_id.partner_shipping_id.vat or "QV999999999999"
+                inv_line.move_id.partner_shipping_id.vat or inv_line.move_id.partner_id.vat or "QV999999999999"
             )
             if not inv_line.move_id.partner_shipping_id.vat:
                 line_notes = [
