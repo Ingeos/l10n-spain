@@ -74,7 +74,7 @@ class L10nEsIntrastatProductDeclaration(models.Model):
             line_vals["partner_vat"] = (
                 inv_line.move_id.partner_shipping_id.vat or inv_line.move_id.partner_id.vat or "QV999999999999"
             )
-            if not inv_line.move_id.partner_shipping_id.vat:
+            if not inv_line.move_id.partner_shipping_id.vat and not inv_line.move_id.partner_id.vat:
                 line_notes = [
                     _("Missing partner vat on invoice %s. ") % (inv_line.move_id.name)
                 ]
