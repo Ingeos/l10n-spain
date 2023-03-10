@@ -165,6 +165,8 @@ class Mod349(models.Model):
             op_key_dict["record_details"] += record_detail
         for partner in list(data.keys()):
             for op_key in list(data[partner].keys()):
+                if not partner:
+                    raise exceptions.UserError("No existe la empresa para "+move_line.name+"("+move_line.id+")")
                 record_created = rec_obj.create(
                     {
                         "report_id": self.id,
