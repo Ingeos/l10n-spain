@@ -15,6 +15,7 @@ import logging
 from requests import Session
 
 from odoo import _, api, exceptions, fields, models
+from odoo.exceptions import ValidationError
 from odoo.modules.registry import Registry
 from odoo.tools.float_utils import float_compare
 
@@ -402,7 +403,7 @@ class AccountMove(models.Model):
             "IDVersionSii": SII_VERSION,
             "Titular": {
                 "NombreRazon": self.company_id.name[0:120],
-                "NIF": self.company_id.vat[2:],
+                "NIF": company.partner_id._parse_aeat_vat_info()[2],
             },
         }
         if not cancellation:
@@ -776,7 +777,9 @@ class AccountMove(models.Model):
             serial_number = self.thirdparty_number[0:60]
         inv_dict = {
             "IDFactura": {
-                "IDEmisorFactura": {"NIF": company.vat[2:]},
+                "IDEmisorFactura": {
+                    "NIF": company.partner_id._parse_aeat_vat_info()[2]
+                },
                 # On cancelled invoices, number is not filled
                 "NumSerieFacturaEmisor": serial_number,
                 "FechaExpedicionFacturaEmisor": invoice_date,
@@ -1008,7 +1011,6 @@ class AccountMove(models.Model):
 
     def _send_invoice_to_sii(self):
         for invoice in self.filtered(lambda i: i.state in SII_VALID_INVOICE_STATES):
-            serv = invoice._connect_sii(invoice.move_type)
             if invoice.sii_state == "not_sent":
                 tipo_comunicacion = "A0"
             else:
@@ -1017,8 +1019,14 @@ class AccountMove(models.Model):
             inv_vals = {
                 "sii_header_sent": json.dumps(header, indent=4),
             }
+            # add this extra try except in case _get_sii_invoice_dict fails
+            # if not, get the value inv_dict for the next try and except below
             try:
                 inv_dict = invoice._get_sii_invoice_dict()
+            except Exception as fault:
+                raise ValidationError(fault) from fault
+            try:
+                serv = invoice._connect_sii(invoice.move_type)
                 inv_vals["sii_content_sent"] = json.dumps(inv_dict, indent=4)
                 if invoice.move_type in ["out_invoice", "out_refund"]:
                     res = serv.SuministroLRFacturasEmitidas(header, inv_dict)
@@ -1077,12 +1085,13 @@ class AccountMove(models.Model):
                         "sii_send_failed": True,
                         "sii_send_error": repr(fault)[:60],
                         "sii_return": repr(fault),
+                        "sii_content_sent": json.dumps(inv_dict, indent=4),
                     }
                 )
                 invoice.write(inv_vals)
                 new_cr.commit()
                 new_cr.close()
-                raise
+                raise ValidationError(fault) from fault
 
     def _sii_invoice_dict_not_modified(self):
         self.ensure_one()
@@ -1109,6 +1118,17 @@ class AccountMove(models.Model):
                 continue
             invoice._process_invoice_for_sii_send()
         return res
+
+    def process_send_sii(self):
+        return {
+            "name": "Confirmation message for sending invoices to the SII",
+            "type": "ir.actions.act_window",
+            "view_mode": "form",
+            "res_model": "wizard.send.sii",
+            "views": [(False, "form")],
+            "target": "new",
+            "context": self.env.context,
+        }
 
     def send_sii(self):
         invoices = self.filtered(

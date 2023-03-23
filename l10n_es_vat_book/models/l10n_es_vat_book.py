@@ -323,6 +323,7 @@ class L10nEsVatBook(models.Model):
             ("date", ">=", self.date_start),
             ("date", "<=", self.date_end),
             ("parent_state", "=", "posted"),
+            ("display_type", "=", False),
         ]
         if taxes:
             domain.append(("tax_ids", "in", taxes.ids))
@@ -437,7 +438,7 @@ class L10nEsVatBook(models.Model):
         """
         for rec in self:
             if not rec.company_id.partner_id.vat:
-                raise UserError(_("This company doesn't have VAT"))
+                raise UserError(_("This partner doesn't have VAT"))
             rec._clear_old_data()
             # Searches for all possible usable lines to report
             moves = rec._get_account_move_lines()
