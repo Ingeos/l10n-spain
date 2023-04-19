@@ -145,7 +145,13 @@ class L10nEsAeatMod303Report(models.Model):
     )
     main_activity_code = fields.Many2one(
         comodel_name="l10n.es.aeat.mod303.report.activity.code",
-        domain="[('period_type', '=', period_type)]",
+        domain="["
+        "   '|',"
+        "   ('period_type', '=', False), ('period_type', '=', period_type),"
+        "   '&',"
+        "   '|', ('date_start', '=', False), ('date_start', '<=', date_start),"
+        "   '|', ('date_end', '=', False), ('date_end', '>=', date_end),"
+        "]",
         states=NON_EDITABLE_ON_DONE,
         string=u"Código actividad principal",
     )
@@ -273,7 +279,7 @@ class L10nEsAeatMod303Report(models.Model):
     @api.multi
     @api.depends('tax_line_ids', 'tax_line_ids.amount')
     def _compute_total_devengado(self):
-        casillas_devengado = (3, 6, 9, 11, 13, 15, 18, 21, 24, 26)
+        casillas_devengado = (152, 3, 155, 6, 9, 11, 13, 15, 158, 18, 21, 24, 26)
         for report in self:
             tax_lines = report.tax_line_ids.filtered(
                 lambda x: x.field_number in casillas_devengado)
@@ -320,6 +326,7 @@ class L10nEsAeatMod303Report(models.Model):
     @api.multi
     @api.depends('casilla_69', 'previous_result')
     def _compute_resultado_liquidacion(self):
+        # TODO: Add field 109
         for report in self:
             report.resultado_liquidacion = (
                 report.casilla_69 - report.previous_result)
@@ -459,9 +466,8 @@ class L10nEsAeatMod303ReportActivityCode(models.Model):
             ('4T', '4T'),
             ('12', 'December'),
         ],
-        required=True,
     )
-    code = fields.Integer(
+    code = fields.Char(
         string="Activity code",
         required=True,
     )
@@ -470,3 +476,5 @@ class L10nEsAeatMod303ReportActivityCode(models.Model):
         translate=True,
         required=True,
     )
+    date_start = fields.Date(string="Starting date")
+    date_end = fields.Date(string="Ending date")
