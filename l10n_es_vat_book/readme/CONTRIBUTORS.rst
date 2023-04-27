@@ -10,4 +10,3 @@
 * Fernando La Chica <fernandolachica@gmail.com>
 * Victor Garcia <victor.garcia@kayuulab.com>
 * Luis Lafaurie <ldlafaurie@gmail.com>
-* Eduardo de miguel <edu@moduon.team>

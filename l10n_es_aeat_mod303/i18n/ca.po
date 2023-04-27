@@ -137,33 +137,6 @@ msgstr ""
 "6 - Sense epígraf, corresponent a: Altres activitats no subjectes a l'IAE"
 
 #. module: l10n_es_aeat_mod303
-#: model:l10n.es.aeat.mod303.report.activity.code,name:l10n_es_aeat_mod303.aeat_mod303_activity_code_A01
-msgid "A01 - Arrendadores de bienes inmuebles"
-msgstr ""
-
-#. module: l10n_es_aeat_mod303
-#: model:l10n.es.aeat.mod303.report.activity.code,name:l10n_es_aeat_mod303.aeat_mod303_activity_code_A02
-msgid "A02 - Ganadería independiente"
-msgstr ""
-
-#. module: l10n_es_aeat_mod303
-#: model:l10n.es.aeat.mod303.report.activity.code,name:l10n_es_aeat_mod303.aeat_mod303_activity_code_A03
-msgid ""
-"A03 - Resto de actividades empresariales no incluidas en los dos subtipos "
-"anteriores"
-msgstr ""
-
-#. module: l10n_es_aeat_mod303
-#: model:l10n.es.aeat.mod303.report.activity.code,name:l10n_es_aeat_mod303.aeat_mod303_activity_code_A04
-msgid "A04 - Actividades profesionales de carácter artístico o deportivo"
-msgstr ""
-
-#. module: l10n_es_aeat_mod303
-#: model:l10n.es.aeat.mod303.report.activity.code,name:l10n_es_aeat_mod303.aeat_mod303_activity_code_A05
-msgid "A05 - Resto de actividades profesionales"
-msgstr ""
-
-#. module: l10n_es_aeat_mod303
 #: model:ir.model,name:l10n_es_aeat_mod303.model_l10n_es_aeat_mod303_report
 msgid "AEAT 303 Report"
 msgstr "Declaración AEAT 303"
@@ -250,41 +223,9 @@ msgid "Attachment Count"
 msgstr "Recompte de fitxers adjunts"
 
 #. module: l10n_es_aeat_mod303
-#: model:l10n.es.aeat.mod303.report.activity.code,name:l10n_es_aeat_mod303.aeat_mod303_activity_code_B01
-msgid "B01 - Actividad agrícola"
-msgstr ""
-
-#. module: l10n_es_aeat_mod303
-#: model:l10n.es.aeat.mod303.report.activity.code,name:l10n_es_aeat_mod303.aeat_mod303_activity_code_B02
-msgid "B02 - Actividad ganadera dependiente"
-msgstr ""
-
-#. module: l10n_es_aeat_mod303
-#: model:l10n.es.aeat.mod303.report.activity.code,name:l10n_es_aeat_mod303.aeat_mod303_activity_code_B03
-msgid "B03 - Actividad forestal"
-msgstr ""
-
-#. module: l10n_es_aeat_mod303
-#: model:l10n.es.aeat.mod303.report.activity.code,name:l10n_es_aeat_mod303.aeat_mod303_activity_code_B04
-msgid "B04 - Producción del mejillón en batea"
-msgstr ""
-
-#. module: l10n_es_aeat_mod303
-#: model:l10n.es.aeat.mod303.report.activity.code,name:l10n_es_aeat_mod303.aeat_mod303_activity_code_B05
-msgid ""
-"B05 - Actividad pesquera, excepto la actividad de producción de mejillón en "
-"batea"
-msgstr ""
-
-#. module: l10n_es_aeat_mod303
 #: model:ir.model.fields,field_description:l10n_es_aeat_mod303.field_l10n_es_aeat_mod303_report__partner_bank_id
 msgid "Bank account"
 msgstr "Compte bancari"
-
-#. module: l10n_es_aeat_mod303
-#: model:l10n.es.aeat.mod303.report.activity.code,name:l10n_es_aeat_mod303.aeat_mod303_activity_code_C
-msgid "C - Actividades no iniciadas"
-msgstr ""
 
 #. module: l10n_es_aeat_mod303
 #: model:ir.model.fields,field_description:l10n_es_aeat_mod303.field_l10n_es_aeat_mod303_report__calculation_date
@@ -395,7 +336,6 @@ msgstr "Nom mostrat"
 
 #. module: l10n_es_aeat_mod303
 #: model:ir.model.fields,field_description:l10n_es_aeat_mod303.field_l10n_es_aeat_mod303_report__date_end
-#: model:ir.model.fields,field_description:l10n_es_aeat_mod303.field_l10n_es_aeat_mod303_report_activity_code__date_end
 msgid "Ending date"
 msgstr "Data de finalització"
 
@@ -510,6 +450,7 @@ msgstr "Icona per indicar una activitat d'excepció."
 
 #. module: l10n_es_aeat_mod303
 #: model:ir.model.fields,help:l10n_es_aeat_mod303.field_l10n_es_aeat_mod303_report__message_needaction
+#: model:ir.model.fields,help:l10n_es_aeat_mod303.field_l10n_es_aeat_mod303_report__message_unread
 msgid "If checked, new messages require your attention."
 msgstr "Si està marcat, els missatges nous requereixen la vostra atenció."
 
@@ -520,7 +461,6 @@ msgid "If checked, some messages have a delivery error."
 msgstr "Si està marcat, alguns missatges tenen un error d'entrega."
 
 #. module: l10n_es_aeat_mod303
-#. odoo-python
 #: code:addons/l10n_es_aeat_mod303/models/mod303.py:0
 #, python-format
 msgid ""
@@ -704,6 +644,11 @@ msgid "Number of messages with delivery error"
 msgstr "Número de missatges amb error d'enviament"
 
 #. module: l10n_es_aeat_mod303
+#: model:ir.model.fields,help:l10n_es_aeat_mod303.field_l10n_es_aeat_mod303_report__message_unread_counter
+msgid "Number of unread messages"
+msgstr "Número de missatges no llegits"
+
+#. module: l10n_es_aeat_mod303
 #: model_terms:ir.ui.view,arch_db:l10n_es_aeat_mod303.view_l10n_es_aeat_mod303_report_form
 msgid "Otras - 1ª actividad"
 msgstr "Altres - 1a activitat"
@@ -794,7 +739,6 @@ msgid "SMS Delivery error"
 msgstr "Error d'entrega d'SMS"
 
 #. module: l10n_es_aeat_mod303
-#. odoo-python
 #: code:addons/l10n_es_aeat_mod303/models/mod303.py:0
 #, python-format
 msgid "Select an account for receiving the money"
@@ -802,7 +746,6 @@ msgstr "Seleccioni un compte bancari per rebre els diners"
 
 #. module: l10n_es_aeat_mod303
 #: model:ir.model.fields,field_description:l10n_es_aeat_mod303.field_l10n_es_aeat_mod303_report__date_start
-#: model:ir.model.fields,field_description:l10n_es_aeat_mod303.field_l10n_es_aeat_mod303_report_activity_code__date_start
 msgid "Starting date"
 msgstr "Data d'inici"
 
@@ -855,7 +798,6 @@ msgstr ""
 "el 100%"
 
 #. module: l10n_es_aeat_mod303
-#. odoo-python
 #: code:addons/l10n_es_aeat_mod303/models/mod303.py:0
 #, python-format
 msgid "The fee to compensate must be indicated as a positive number."
@@ -881,34 +823,24 @@ msgid "To enter"
 msgstr "A ingressar"
 
 #. module: l10n_es_aeat_mod303
-#: model:ir.model.fields.selection,name:l10n_es_aeat_mod303.selection__l10n_es_aeat_mod303_report__result_type__g
-msgid "To enter - AEAT account"
-msgstr ""
-
-#. module: l10n_es_aeat_mod303
-#: model:ir.model.fields.selection,name:l10n_es_aeat_mod303.selection__l10n_es_aeat_mod303_report__result_type__u
-msgid "To enter - Bank account debit"
-msgstr ""
-
-#. module: l10n_es_aeat_mod303
 #: model:ir.model.fields.selection,name:l10n_es_aeat_mod303.selection__l10n_es_aeat_mod303_report__result_type__d
 msgid "To return"
 msgstr "A retornar"
 
 #. module: l10n_es_aeat_mod303
-#: model:ir.model.fields.selection,name:l10n_es_aeat_mod303.selection__l10n_es_aeat_mod303_report__result_type__v
-msgid "To return - AEAT account"
-msgstr ""
-
-#. module: l10n_es_aeat_mod303
-#: model:ir.model.fields.selection,name:l10n_es_aeat_mod303.selection__l10n_es_aeat_mod303_report__result_type__x
-msgid "To return - Foreign bank account"
-msgstr ""
-
-#. module: l10n_es_aeat_mod303
 #: model:ir.model.fields,help:l10n_es_aeat_mod303.field_l10n_es_aeat_mod303_report__activity_exception_decoration
 msgid "Type of the exception activity on record."
 msgstr "Tipus d'activitat d'excepció registrada."
+
+#. module: l10n_es_aeat_mod303
+#: model:ir.model.fields,field_description:l10n_es_aeat_mod303.field_l10n_es_aeat_mod303_report__message_unread
+msgid "Unread Messages"
+msgstr "Missatges no llegits"
+
+#. module: l10n_es_aeat_mod303
+#: model:ir.model.fields,field_description:l10n_es_aeat_mod303.field_l10n_es_aeat_mod303_report__message_unread_counter
+msgid "Unread Messages Counter"
+msgstr "Comptador de missatges no llegits"
 
 #. module: l10n_es_aeat_mod303
 #: model:ir.model.fields,field_description:l10n_es_aeat_mod303.field_l10n_es_aeat_mod303_report__company_vat
@@ -1037,15 +969,6 @@ msgstr "SII voluntari?"
 #: model:ir.model.fields,field_description:l10n_es_aeat_mod303.field_l10n_es_aeat_mod303_report__has_operation_volume
 msgid "¿Volumen de operaciones?"
 msgstr "Volumen d'operacions?"
-
-#~ msgid "Number of unread messages"
-#~ msgstr "Número de missatges no llegits"
-
-#~ msgid "Unread Messages"
-#~ msgstr "Missatges no llegits"
-
-#~ msgid "Unread Messages Counter"
-#~ msgstr "Comptador de missatges no llegits"
 
 #~ msgid "Allow posting"
 #~ msgstr "Permetre publicar"
