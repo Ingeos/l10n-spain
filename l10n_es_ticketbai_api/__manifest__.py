@@ -18,7 +18,7 @@
     "external_dependencies": {
         "python": [
             # for compatibility with urllib shipped with Odoo 14
-            "cryptography<39",
+            #"cryptography<39",
             "pyOpenSSL",
             "qrcode",
             "xmlsig",
