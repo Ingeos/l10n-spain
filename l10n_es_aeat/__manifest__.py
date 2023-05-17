@@ -11,7 +11,7 @@
 {
     "name": "AEAT Base",
     "summary": "Modulo base para declaraciones de la AEAT",
-    "version": "14.0.2.4.4",
+    "version": "14.0.3.0.0",
     "author": "Pexego, "
     "Acysos S.L., "
     "AvanzOSC, "
@@ -22,7 +22,8 @@
     "category": "Accounting & Finance",
     "development_status": "Mature",
     "depends": ["l10n_es", "account_tax_balance"],
-    "external_dependencies": {"python": ["unidecode", "cryptography<39"]},
+    "external_dependencies": {"python": ["unidecode"]},
+    #, "cryptography<39"]},
     "data": [
         "security/aeat_security.xml",
         "security/ir.model.access.csv",
