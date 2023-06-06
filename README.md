@@ -29,7 +29,7 @@ addon | version | maintainers | summary
 [account_promissory_note_caixabank](account_promissory_note_caixabank/) | 12.0.1.1.0 |  | Impresión de pagaré CaixaBank A4
 [account_promissory_note_deutschebank_es](account_promissory_note_deutschebank_es/) | 12.0.1.0.0 |  | Impresión de pagaré Deutsche Bank ES A4
 [account_promissory_note_santander](account_promissory_note_santander/) | 12.0.1.0.0 | [![cubells](https://github.com/cubells.png?size=30px)](https://github.com/cubells) | Impresión de pagaré del Santander en A4
-[delivery_gls_asm](delivery_gls_asm/) | 12.0.1.0.7 |  | Delivery Carrier implementation for GLS with ASMRed API
+[delivery_gls_asm](delivery_gls_asm/) | 12.0.1.0.8 |  | Delivery Carrier implementation for GLS with ASMRed API
 [delivery_seur](delivery_seur/) | 12.0.1.1.6 |  | Integrate SEUR webservice
 [l10n_es_account_asset](l10n_es_account_asset/) | 12.0.2.0.7 | [![pedrobaeza](https://github.com/pedrobaeza.png?size=30px)](https://github.com/pedrobaeza) | Gestión de activos fijos para España
 [l10n_es_account_bank_statement_import_n43](l10n_es_account_bank_statement_import_n43/) | 12.0.1.0.7 | [![pedrobaeza](https://github.com/pedrobaeza.png?size=30px)](https://github.com/pedrobaeza) | Importación de extractos bancarios españoles (Norma 43)
@@ -43,7 +43,7 @@ addon | version | maintainers | summary
 [l10n_es_aeat_mod190](l10n_es_aeat_mod190/) | 12.0.1.0.2 |  | AEAT modelo 190
 [l10n_es_aeat_mod216](l10n_es_aeat_mod216/) | 12.0.2.4.0 | [![pedrobaeza](https://github.com/pedrobaeza.png?size=30px)](https://github.com/pedrobaeza) | AEAT modelo 216
 [l10n_es_aeat_mod296](l10n_es_aeat_mod296/) | 12.0.2.2.0 |  | AEAT modelo 296
-[l10n_es_aeat_mod303](l10n_es_aeat_mod303/) | 12.0.4.0.0 |  | AEAT modelo 303
+[l10n_es_aeat_mod303](l10n_es_aeat_mod303/) | 12.0.4.1.0 |  | AEAT modelo 303
 [l10n_es_aeat_mod303_extra_data](l10n_es_aeat_mod303_extra_data/) | 12.0.2.0.0 | [![cubells](https://github.com/cubells.png?size=30px)](https://github.com/cubells) | Módulo para incluir los impuestos extra en el modelo 303.
 [l10n_es_aeat_mod303_oss](l10n_es_aeat_mod303_oss/) | 12.0.1.0.0 |  | AEAT modelo 303 - OSS
 [l10n_es_aeat_mod347](l10n_es_aeat_mod347/) | 12.0.2.2.0 |  | AEAT modelo 347
@@ -51,7 +51,7 @@ addon | version | maintainers | summary
 [l10n_es_aeat_mod390](l10n_es_aeat_mod390/) | 12.0.4.1.1 | [![pedrobaeza](https://github.com/pedrobaeza.png?size=30px)](https://github.com/pedrobaeza) | AEAT modelo 390
 [l10n_es_aeat_mod390_vat_prorate](l10n_es_aeat_mod390_vat_prorate/) | 12.0.1.0.0 | [![victoralmau](https://github.com/victoralmau.png?size=30px)](https://github.com/victoralmau) | AEAT - Prorrata de IVA 390
 [l10n_es_aeat_partner_check](l10n_es_aeat_partner_check/) | 12.0.1.0.3 |  | AEAT - Comprobación de Calidad de datos identificativos
-[l10n_es_aeat_sii](l10n_es_aeat_sii/) | 12.0.1.9.1 | [![pedrobaeza](https://github.com/pedrobaeza.png?size=30px)](https://github.com/pedrobaeza) | Suministro Inmediato de Información en el IVA
+[l10n_es_aeat_sii](l10n_es_aeat_sii/) | 12.0.1.9.2 | [![pedrobaeza](https://github.com/pedrobaeza.png?size=30px)](https://github.com/pedrobaeza) | Suministro Inmediato de Información en el IVA
 [l10n_es_aeat_sii_extra_data](l10n_es_aeat_sii_extra_data/) | 12.0.1.0.0 | [![cubells](https://github.com/cubells.png?size=30px)](https://github.com/cubells) | Módulo para incluir los impuestos extra en el módulo del SII.
 [l10n_es_aeat_sii_oss](l10n_es_aeat_sii_oss/) | 12.0.1.0.1 |  | Suministro Inmediato de Información en el IVA: OSS
 [l10n_es_aeat_vat_prorrate](l10n_es_aeat_vat_prorrate/) | 12.0.1.2.0 |  | AEAT - Prorrata de IVA
@@ -80,7 +80,7 @@ addon | version | maintainers | summary
 [l10n_es_ticketbai_pos](l10n_es_ticketbai_pos/) | 12.0.1.0.5 | [![ao-landoo](https://github.com/ao-landoo.png?size=30px)](https://github.com/ao-landoo) | TicketBAI - Point of Sale - declaración de todas las operaciones de venta realizadas por las personas y entidades que desarrollan actividades económicas
 [l10n_es_toponyms](l10n_es_toponyms/) | 12.0.1.0.0 |  | Topónimos españoles
 [l10n_es_vat_book](l10n_es_vat_book/) | 12.0.1.7.0 |  | Libro de IVA
-[l10n_es_vat_book_extra_data](l10n_es_vat_book_extra_data/) | 12.0.1.1.0 | [![cubells](https://github.com/cubells.png?size=30px)](https://github.com/cubells) | Módulo para incluir los impuestos extra en el libro de IVA.
+[l10n_es_vat_book_extra_data](l10n_es_vat_book_extra_data/) | 12.0.1.2.0 | [![cubells](https://github.com/cubells.png?size=30px)](https://github.com/cubells) | Módulo para incluir los impuestos extra en el libro de IVA.
 [payment_redsys](payment_redsys/) | 12.0.2.0.1 |  | Payment Acquirer: Redsys Implementation
 
 [//]: # (end addons)
