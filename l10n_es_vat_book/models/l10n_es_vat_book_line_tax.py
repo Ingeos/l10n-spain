@@ -50,3 +50,21 @@ class L10nEsVatBookLineTax(models.Model):
     def _compute_tax_rate(self):
         for rec in self:
             rec.tax_rate = rec.tax_id.amount
+
+    def write(self, vals):
+        res = super(L10nEsVatBookLineTax, self).write(vals)
+        if vals.get('special_tax_amount') and vals.get('special_tax_amount') == 0:
+            for tax in self:
+                if tax.special_tax_id:
+                    lines = tax.move_line_ids.filtered(lambda l: l.name == tax.special_tax_id.name)
+                    tax.write({'special_tax_amount': lines.credit})
+        return res
+
+    @api.model
+    def create(self, vals):
+        tax = super(L10nEsVatBookLineTax, self).create(vals)
+        if vals.get('special_tax_amount') and vals.get('special_tax_amount') == 0:
+            if tax.special_tax_id:
+                lines = tax.move_line_ids.filtered(lambda l: l.name == tax.special_tax_id.name)
+                tax.write({'special_tax_amount': lines.credit})
+        return tax
