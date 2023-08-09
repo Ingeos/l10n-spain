@@ -102,6 +102,7 @@ Known issues / Roadmap
 * Asistente para consultar los documentos comunicados.
 * Libro de bienes de inversión (Libro anual se crea un módulo aparte).
 * Regímenes especiales de seguros, de agencias de viaje o de bienes usados.
+* Devolución de IVA de viajeros.
 * Facturas rectificativas por sustitución.
 * Soportar facturas de canje de facturas simplificadas por facturas completas.
   Ver https://github.com/OCA/l10n-spain/issues/1171 para más información.
@@ -157,6 +158,9 @@ Contributors
 * Lois Rilo Antelo <lois.rilo@forgeflow.com>
 * Eduardo de Miguel (edu@moduon.team)
 * Jose Zambudio <jose@aurestic.es>
+* `Factor Libre <https://factorlibre.com>`__:
+
+  * Luis J. Salvatierra <luis.salvatierra@factorlibre.com>
 
 Maintainers
 ~~~~~~~~~~~
