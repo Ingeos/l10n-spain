@@ -69,7 +69,6 @@ class AccountInvoice(models.Model):
                    'satisfechas. Auto de declaración de concurso')
         ]
     )
-
     integration_ids = fields.One2many(
         comodel_name='account.invoice.integration',
         inverse_name='invoice_id',
@@ -82,6 +81,12 @@ class AccountInvoice(models.Model):
     facturae_end_date = fields.Date(
         readonly=True,
         states={'draft': [('readonly', False)]},
+    )
+    integration_issue = fields.Boolean(
+        compute='_compute_integration_issue',
+        store=True,
+        help="This field should show if the invoice has been integrated and "
+             "has any issues"
     )
 
     @api.constrains('facturae_start_date', 'facturae_end_date')
@@ -124,6 +129,21 @@ class AccountInvoice(models.Model):
                     break
 
     can_integrate = fields.Boolean(compute="_compute_can_integrate")
+
+    def _integration_issue_fields(self):
+        return (
+            'integration_ids', 'integration_ids.state',
+            'integration_ids.method_id', 'integration_ids.integration_status')
+
+    @api.depends(lambda r: r._integration_issue_fields())
+    def _compute_integration_issue(self):
+        for record in self:
+            integration_issue = False
+            for integration in record.integration_ids:
+                if integration._check_integration_issue():
+                    integration_issue = True
+                    break
+            record.integration_issue = integration_issue
 
     @api.multi
     def action_integrations(self):
@@ -189,10 +209,11 @@ class AccountInvoice(models.Model):
                 'correction_method']['selection'])[self.correction_method]
 
     def _get_valid_invoice_statuses(self):
-        return ['open', 'paid']
+        return ['open', 'paid', 'in_payment']
 
     def validate_facturae_fields(self):
-        for line in self.invoice_line_ids:
+        lines = self.invoice_line_ids.filtered(lambda r: not r.display_type)
+        for line in lines:
             if not line.invoice_line_tax_ids:
                 raise ValidationError(_('Taxes not provided in invoice line '
                                         '%s') % line.name)
@@ -208,40 +229,44 @@ class AccountInvoice(models.Model):
             raise ValidationError(_('Company vat is too small'))
         if not self.payment_mode_id:
             raise ValidationError(_('Payment mode is required'))
-        if self.payment_mode_id.facturae_code == '02':
-            if not self.mandate_id:
-                raise ValidationError(_('Mandate is missing'))
-            if not self.mandate_id.partner_bank_id:
-                raise ValidationError(_('Partner bank in mandate is missing'))
-            if len(self.mandate_id.partner_bank_id.bank_id.bic) != 11:
-                raise ValidationError(_('Mandate account BIC must be 11'))
-            if len(self.mandate_id.partner_bank_id.acc_number) < 5:
-                raise ValidationError(_('Mandate account is too small'))
-        else:
+        if self.payment_mode_id.facturae_code:
             partner_bank = self.partner_banks_to_show()[:1]
-            if not partner_bank:
-                raise ValidationError(_('Partner bank is missing'))
-            if partner_bank.bank_id.bic and len(
-                    partner_bank.bank_id.bic) != 11:
+            if (partner_bank and partner_bank.bank_id.bic
+                    and len(partner_bank.bank_id.bic) != 11):
                 raise ValidationError(_('Selected account BIC must be 11'))
-            if len(partner_bank.acc_number) < 5:
+            if partner_bank and len(partner_bank.acc_number) < 5:
                 raise ValidationError(_('Selected account is too small'))
         if self.state not in self._get_valid_invoice_statuses():
             raise ValidationError(_('You can only create Factura-E files for '
                                     'invoices that have been validated.'))
         return
 
+    def _get_facturae_invoice_attachments(self):
+        result = []
+        if self.partner_id.attach_invoice_as_annex:
+            action = self.env.ref('account.account_invoices')
+            content, content_type = action.render(self.ids)
+            result.append({
+                'data': base64.b64encode(content),
+                'content_type': content_type,
+                'encoding': 'BASE64',
+                'description': _("Invoice %s") % self.number,
+                'compression': False
+            })
+        return result
+
     def get_facturae(self, firmar_facturae):
 
         def _sign_file(cert, password, request):
-            min = 1
-            max = 99999
-            signature_id = 'Signature%05d' % random.randint(min, max)
-            signed_properties_id = signature_id + '-SignedProperties%05d' \
-                                                  % random.randint(min, max)
-            key_info_id = 'KeyInfo%05d' % random.randint(min, max)
-            reference_id = 'Reference%05d' % random.randint(min, max)
-            object_id = 'Object%05d' % random.randint(min, max)
+            minimum = 1
+            maximum = 99999
+            signature_id = 'Signature%05d' % random.randint(minimum, maximum)
+            signed_properties_id = (signature_id + '-SignedProperties%05d') % (
+                random.randint(minimum, maximum)
+            )
+            key_info_id = 'KeyInfo%05d' % random.randint(minimum, maximum)
+            reference_id = 'Reference%05d' % random.randint(minimum, maximum)
+            object_id = 'Object%05d' % random.randint(minimum, maximum)
             etsi = 'http://uri.etsi.org/01903/v1.3.2#'
             sig_policy_identifier = 'http://www.facturae.es/' \
                                     'politica_de_firma_formato_facturae/' \
@@ -460,8 +485,15 @@ class AccountInvoice(models.Model):
 
         return invoice_file, file_name
 
+    def get_facturae_version(self):
+        return (
+            self.partner_id.facturae_version or
+            self.company_id.facturae_version or
+            '3_2'
+        )
+
     def _get_facturae_schema_file(self):
-        return tools.file_open("Facturaev3_2.xsd",
+        return tools.file_open("Facturaev%s.xsd" % self.get_facturae_version(),
                                subdir="addons/l10n_es_facturae/data")
 
     def _validate_facturae(self, xml_string):

@@ -132,20 +132,28 @@ class VatNumberXlsx(models.AbstractModel):
     def fill_issued_row_data(self, sheet, row, line, tax_line, with_total,
                              draft_export):
         """ Fill issued data """
-
+        # We don't want to fail on empty records, like in the case of PoS
+        # cash sales, which dont't have a partner. Just return empty values.
+        # Country code will be "ES", as the operations will be made in Spain
+        # in all cases.
         country_code, identifier_type, vat_number = (
-            line.partner_id._parse_aeat_vat_info())
+            line.partner_id and line.partner_id._parse_aeat_vat_info()
+            or ("ES", "", "")
+        )
         sheet.write('A' + str(row), self.format_boe_date(line.invoice_date))
         # sheet.write('B' + str(row), self.format_boe_date(line.invoice_date))
-        sheet.write('C' + str(row), line.ref[:-20])
-        sheet.write('D' + str(row), line.ref[-20:])
+        sheet.write('C' + str(row), (line.ref or "")[:-20])
+        sheet.write('D' + str(row), (line.ref or "")[-20:])
         sheet.write('E' + str(row), '')  # Final number
         sheet.write('F' + str(row), identifier_type)
         if country_code != 'ES':
             sheet.write('G' + str(row), country_code)
         sheet.write('H' + str(row), vat_number)
-        if not vat_number and line.partner_id.aeat_anonymous_cash_customer:
-            sheet.write('I' + str(row), 'VENTA POR CAJA')
+        if not vat_number and (
+            line.partner_id.aeat_anonymous_cash_customer
+            or not line.partner_id
+        ):
+            sheet.write('I' + str(row), "VENTA ANÓNIMA")
         else:
             sheet.write('I' + str(row), line.partner_id.name[:40])
         # TODO: Substitute Invoice
@@ -269,15 +277,21 @@ class VatNumberXlsx(models.AbstractModel):
         """ Fill received data """
 
         date_invoice = line.invoice_id.date_invoice
+        # We don't want to fail on empty records, like in the case of PoS
+        # cash sales, which dont't have a partner. Just return empty values.
+        # Country code will be "ES", as the operations will be made in Spain
+        # in all cases.
         country_code, identifier_type, vat_number = (
-            line.partner_id._parse_aeat_vat_info())
+            line.partner_id and line.partner_id._parse_aeat_vat_info()
+            or ("ES", "", "")
+        )
         sheet.write('A' + str(row), self.format_boe_date(line.invoice_date))
         if date_invoice and date_invoice != line.invoice_date:
             sheet.write('B' + str(row), self.format_boe_date(date_invoice))
         sheet.write('C' + str(row),
                     line.external_ref and line.external_ref[:40] or '')
         sheet.write('D' + str(row), '')
-        sheet.write('E' + str(row), line.ref[:20])
+        sheet.write('E' + str(row), (line.ref or "")[:20])
         sheet.write('F' + str(row), '')
         sheet.write('G' + str(row), identifier_type)
         if country_code != 'ES':
@@ -317,7 +331,7 @@ class VatNumberXlsx(models.AbstractModel):
         # Issued
         issued_sheet = self.create_issued_sheet(workbook, book, draft_export)
         lines = book.issued_line_ids + book.rectification_issued_line_ids
-        lines = lines.sorted(key=lambda l: (l.invoice_date, l.ref))
+        lines = lines.sorted(key=lambda l: (l.invoice_date, l.ref or ""))
         row = 8
         for line in lines:
             with_total = True
@@ -334,7 +348,7 @@ class VatNumberXlsx(models.AbstractModel):
         received_sheet = self.create_received_sheet(workbook, book,
                                                     draft_export)
         lines = book.received_line_ids + book.rectification_received_line_ids
-        lines = lines.sorted(key=lambda l: (l.invoice_date, l.ref))
+        lines = lines.sorted(key=lambda l: (l.invoice_date, l.ref or ""))
         row = 8
         for line in lines:
             with_total = True

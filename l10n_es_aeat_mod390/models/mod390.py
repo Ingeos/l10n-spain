@@ -1,7 +1,8 @@
-# Copyright 2017-2019 Tecnativa - Pedro M. Baeza
+# Copyright 2017-2021 Tecnativa - Pedro M. Baeza
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl
 
 from odoo import _, api, fields, exceptions, models
+from odoo.tools import float_compare
 
 
 REQUIRED_ON_CALCULATED = {
@@ -55,8 +56,12 @@ class L10nEsAeatMod390Report(models.Model):
         states=REQUIRED_ON_CALCULATED,
     )
     main_activity_code = fields.Selection(
-        selection=ACTIVITY_CODE_SELECTION, states=REQUIRED_ON_CALCULATED,
-        string="Código actividad principal", readonly=True,
+        selection=ACTIVITY_CODE_SELECTION,
+        string="Código actividad principal",
+    )
+    main_activity_code_id = fields.Many2one(
+        comodel_name="l10n.es.aeat.mod303.report.activity.code",
+        string="Código actividad principal",
     )
     main_activity_iae = fields.Char(
         string="Epígrafe I.A.E. actividad principal", readonly=True, size=4,
@@ -67,8 +72,12 @@ class L10nEsAeatMod390Report(models.Model):
         states=EDITABLE_ON_CALCULATED,
     )
     other_first_activity_code = fields.Selection(
-        selection=ACTIVITY_CODE_SELECTION, states=EDITABLE_ON_CALCULATED,
-        string="Código 1ª actividad", readonly=True,
+        selection=ACTIVITY_CODE_SELECTION,
+        string="Código 1ª actividad",
+    )
+    other_first_activity_code_id = fields.Many2one(
+        comodel_name="l10n.es.aeat.mod303.report.activity.code",
+        string="Código 1ª actividad",
     )
     other_first_activity_iae = fields.Char(
         string="Epígrafe I.A.E. 1ª actividad", readonly=True, size=4,
@@ -79,8 +88,12 @@ class L10nEsAeatMod390Report(models.Model):
         states=EDITABLE_ON_CALCULATED,
     )
     other_second_activity_code = fields.Selection(
-        selection=ACTIVITY_CODE_SELECTION, states=EDITABLE_ON_CALCULATED,
-        string="Código 2ª actividad", readonly=True,
+        selection=ACTIVITY_CODE_SELECTION,
+        string="Código 2ª actividad",
+    )
+    other_second_activity_code_id = fields.Many2one(
+        comodel_name="l10n.es.aeat.mod303.report.activity.code",
+        string="Código 2ª actividad",
     )
     other_second_activity_iae = fields.Char(
         string="Epígrafe I.A.E. 2ª actividad", readonly=True, size=4,
@@ -91,8 +104,12 @@ class L10nEsAeatMod390Report(models.Model):
         states=EDITABLE_ON_CALCULATED,
     )
     other_third_activity_code = fields.Selection(
-        selection=ACTIVITY_CODE_SELECTION, states=EDITABLE_ON_CALCULATED,
-        string="Código 3ª actividad", readonly=True,
+        selection=ACTIVITY_CODE_SELECTION,
+        string="Código 3ª actividad",
+    )
+    other_third_activity_code_id = fields.Many2one(
+        comodel_name="l10n.es.aeat.mod303.report.activity.code",
+        string="Código 3ª actividad",
     )
     other_third_activity_iae = fields.Char(
         string="Epígrafe I.A.E. 3ª actividad", readonly=True, size=4,
@@ -103,8 +120,12 @@ class L10nEsAeatMod390Report(models.Model):
         states=EDITABLE_ON_CALCULATED,
     )
     other_fourth_activity_code = fields.Selection(
-        selection=ACTIVITY_CODE_SELECTION, states=EDITABLE_ON_CALCULATED,
-        string="Código 4ª actividad", readonly=True,
+        selection=ACTIVITY_CODE_SELECTION,
+        string="Código 4ª actividad",
+    )
+    other_fourth_activity_code_id = fields.Many2one(
+        comodel_name="l10n.es.aeat.mod303.report.activity.code",
+        string="Código 4ª actividad",
     )
     other_fourth_activity_iae = fields.Char(
         string="Epígrafe I.A.E. 4ª actividad", readonly=True, size=4,
@@ -117,6 +138,10 @@ class L10nEsAeatMod390Report(models.Model):
     other_fifth_activity_code = fields.Selection(
         selection=ACTIVITY_CODE_SELECTION, states=EDITABLE_ON_CALCULATED,
         string="Código 5ª actividad", readonly=True,
+    )
+    other_fifth_activity_code_id = fields.Many2one(
+        comodel_name="l10n.es.aeat.mod303.report.activity.code",
+        string="Código 5ª actividad",
     )
     other_fifth_activity_iae = fields.Char(
         string="Epígrafe I.A.E. 5ª actividad", readonly=True, size=4,
@@ -300,7 +325,7 @@ class L10nEsAeatMod390Report(models.Model):
         for report in self:
             report.casilla_33 = sum(report.tax_line_ids.filtered(
                 lambda x: x.field_number in (
-                    1, 3, 5,  # Régimen ordinario
+                    1, 3, 5, 702,  # Régimen ordinario
                     500, 502, 504,  # Intragrupo - no incluido aún
                     643, 645, 647,  # Criterio de caja - no incluido aún
                     7, 9, 11,  # Bienes usados, etc - no incluido aún
@@ -320,7 +345,7 @@ class L10nEsAeatMod390Report(models.Model):
         for report in self:
             report.casilla_34 = sum(report.tax_line_ids.filtered(
                 lambda x: x.field_number in (
-                    2, 4, 6,  # Régimen ordinario
+                    2, 4, 6, 703,  # Régimen ordinario
                     501, 503, 505,  # Intragrupo - no incluido aún
                     644, 646, 648,  # Criterio de caja - no incluido aún
                     8, 10, 12,  # Bienes usados, etc - no incluido aún
@@ -375,7 +400,7 @@ class L10nEsAeatMod390Report(models.Model):
         for report in self:
             report.casilla_48 = sum(report.tax_line_ids.filtered(
                 lambda x: x.field_number in (
-                    190, 192, 555, 603, 194, 557, 605,
+                    190, 192, 555, 603, 194, 557, 605, 724
                 )
             ).mapped('amount'))
 
@@ -385,7 +410,7 @@ class L10nEsAeatMod390Report(models.Model):
         for report in self:
             report.casilla_49 = sum(report.tax_line_ids.filtered(
                 lambda x: x.field_number in (
-                    191, 193, 556, 604, 195, 558, 606,
+                    191, 193, 556, 604, 195, 558, 606, 725
                 )
             ).mapped('amount'))
 
@@ -560,3 +585,15 @@ class L10nEsAeatMod390Report(models.Model):
             raise exceptions.UserError(
                 _("You cannot make complementary reports for this model.")
             )
+
+    def button_confirm(self):
+        """Check that the manual 303 results match the report."""
+        self.ensure_one()
+        summary = self.casilla_95 - self.casilla_97 - self.casilla_98
+        if float_compare(summary, self.casilla_86, precision_digits=2) != 0:
+            raise exceptions.UserError(_(
+                "The result of the manual 303 summary (fields [95], [97] and "
+                "[98] in the page '9. Resultado liquidaciones') doesn't match "
+                "the field [86]. Please check if you have filled such fields."
+            ))
+        return super().button_confirm()
