@@ -25,7 +25,11 @@ class L10nEsVatBookLineTax(models.Model):
 
     tax_amount = fields.Float(string="Tax fee")
 
-    total_amount = fields.Float(string="Total")
+    total_amount = fields.Float(
+        string="Total",
+        compute="_compute_total_amount",
+        store=True,
+    )
 
     move_line_ids = fields.Many2many(
         comodel_name="account.move.line", string="Move Lines"
@@ -44,6 +48,8 @@ class L10nEsVatBookLineTax(models.Model):
     )
     total_amount_special_include = fields.Float(
         string="Total w/Special",
+        compute="_compute_total_amount_special_include",
+        store=True,
     )
 
     @api.depends("tax_id")
@@ -51,20 +57,14 @@ class L10nEsVatBookLineTax(models.Model):
         for rec in self:
             rec.tax_rate = rec.tax_id.amount
 
-    def write(self, vals):
-        res = super(L10nEsVatBookLineTax, self).write(vals)
-        if vals.get('special_tax_amount') and vals.get('special_tax_amount') == 0:
-            for tax in self:
-                if tax.special_tax_id:
-                    lines = tax.move_line_ids.filtered(lambda l: l.name == tax.special_tax_id.name)
-                    tax.write({'special_tax_amount': lines.credit})
-        return res
+    @api.depends("base_amount", "tax_amount")
+    def _compute_total_amount(self):
+        for record in self:
+            record.total_amount = record.base_amount + record.tax_amount
 
-    @api.model
-    def create(self, vals):
-        tax = super(L10nEsVatBookLineTax, self).create(vals)
-        if vals.get('special_tax_amount') and vals.get('special_tax_amount') == 0:
-            if tax.special_tax_id:
-                lines = tax.move_line_ids.filtered(lambda l: l.name == tax.special_tax_id.name)
-                tax.write({'special_tax_amount': lines.credit})
-        return tax
+    @api.depends("total_amount", "special_tax_amount")
+    def _compute_total_amount_special_include(self):
+        for record in self:
+            record.total_amount_special_include = (
+                record.total_amount + record.special_tax_amount
+            )
