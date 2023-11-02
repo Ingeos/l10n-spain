@@ -96,6 +96,9 @@ class AccountStatementImport(models.TransientModel):
         }
         if line[27:28] == "1":
             st_line["importe"] *= -1
+            st_line["tipo_registro"] = "debit"
+        else:
+            st_line["tipo_registro"] = "credit"
         return st_line
 
     def _process_record_23(self, st_line, line):
@@ -127,12 +130,13 @@ class AccountStatementImport(models.TransientModel):
         credit_count = 0
         credit = 0.0
         for st_line in st_group["lines"]:
-            if st_line["importe"] < 0:
+            if st_line["tipo_registro"] == "debit":
                 debit_count += 1
                 debit -= st_line["importe"]
             else:
                 credit_count += 1
                 credit += st_line["importe"]
+        st_group["lines"] = [line for line in st_group["lines"] if line["importe"] != 0]
         if st_group["num_debe"] != debit_count:  # pragma: no cover
             raise exceptions.UserError(
                 _(
@@ -377,6 +381,7 @@ class AccountStatementImport(models.TransientModel):
                     "payment_ref": " ".join(conceptos)
                     or self._get_n43_ref(line)
                     or "/",
+                    "ref": self._get_n43_ref(line),
                     "amount": line["importe"],
                     # inject raw parsed N43 dict for later use, that will be
                     # removed before passing final values to create the record
