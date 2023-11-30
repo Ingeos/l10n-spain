@@ -43,11 +43,20 @@ class AccountInvoice(models.Model):
         string='Responses')
     tbai_datetime_invoice = fields.Datetime(
         compute='_compute_tbai_datetime_invoice', store=True, copy=False)
+    # PARA INSTALAR
+    # tbai_datetime_invoice = fields.Datetime(
+    #     compute='', default=fields.Datetime.now(), store=True, copy=False)
+
     tbai_date_operation = fields.Datetime('Operation Date', copy=False)
     tbai_description_operation = fields.Text(
         'Operation Description', default="/", copy=False,
         compute="_compute_tbai_description", store=True
     )
+    #PARA INSTALAR
+    # tbai_description_operation = fields.Text(
+    #     'Operation Description', default="/", copy=False,
+    #     compute="", store=True
+    # )
     tbai_substitute_simplified_invoice = fields.Boolean(
         'Substitute Simplified Invoice', copy=False)
     tbai_refund_key = fields.Selection(selection=[
