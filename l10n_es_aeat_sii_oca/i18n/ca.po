@@ -26,6 +26,8 @@ msgstr "Configuració AEAT SII"
 
 #. module: l10n_es_aeat_sii_oca
 #: model:ir.model.fields.selection,name:l10n_es_aeat_sii_oca.selection__account_move__sii_state__sent_w_errors
+#: model:ir.model.fields.selection,name:l10n_es_aeat_sii_oca.selection__pos_order__sii_state__sent_w_errors
+#: model:ir.model.fields.selection,name:l10n_es_aeat_sii_oca.selection__sii_mixin__sii_state__sent_w_errors
 msgid "Accepted with errors"
 msgstr "Acceptat amb errors"
 
@@ -139,8 +141,15 @@ msgstr ""
 
 #. module: l10n_es_aeat_sii_oca
 #: model:ir.model.fields.selection,name:l10n_es_aeat_sii_oca.selection__account_move__sii_refund_type__i
+#: model:ir.model.fields.selection,name:l10n_es_aeat_sii_oca.selection__pos_order__sii_refund_type__i
+#: model:ir.model.fields.selection,name:l10n_es_aeat_sii_oca.selection__sii_mixin__sii_refund_type__i
 msgid "By differences"
 msgstr "Per diferències"
+
+#. module: l10n_es_aeat_sii_oca
+#: model_terms:ir.ui.view,arch_db:l10n_es_aeat_sii_oca.view_wizard_send_sii
+msgid "Cancel"
+msgstr "Cancel·lar"
 
 #. module: l10n_es_aeat_sii_oca
 #: model_terms:ir.ui.view,arch_db:l10n_es_aeat_sii_oca.view_queue_job_sii
@@ -149,11 +158,15 @@ msgstr "Cancel·la l'enviament"
 
 #. module: l10n_es_aeat_sii_oca
 #: model:ir.model.fields.selection,name:l10n_es_aeat_sii_oca.selection__account_move__sii_state__cancelled
+#: model:ir.model.fields.selection,name:l10n_es_aeat_sii_oca.selection__pos_order__sii_state__cancelled
+#: model:ir.model.fields.selection,name:l10n_es_aeat_sii_oca.selection__sii_mixin__sii_state__cancelled
 msgid "Cancelled"
 msgstr "Cancel·lada"
 
 #. module: l10n_es_aeat_sii_oca
 #: model:ir.model.fields.selection,name:l10n_es_aeat_sii_oca.selection__account_move__sii_state__cancelled_modified
+#: model:ir.model.fields.selection,name:l10n_es_aeat_sii_oca.selection__pos_order__sii_state__cancelled_modified
+#: model:ir.model.fields.selection,name:l10n_es_aeat_sii_oca.selection__sii_mixin__sii_state__cancelled_modified
 msgid "Cancelled in SII but last modifications not sent"
 msgstr "Cancel·lat a SII però no s’han enviat les darreres modificacions"
 
@@ -188,12 +201,11 @@ msgstr ""
 #: model:ir.model.fields,help:l10n_es_aeat_sii_oca.field_account_bank_statement_line__sii_macrodata
 #: model:ir.model.fields,help:l10n_es_aeat_sii_oca.field_account_move__sii_macrodata
 #: model:ir.model.fields,help:l10n_es_aeat_sii_oca.field_account_payment__sii_macrodata
+#: model:ir.model.fields,help:l10n_es_aeat_sii_oca.field_sii_mixin__sii_macrodata
 msgid ""
-"Check to confirm that the invoice has an absolute amount greater o equal to "
+"Check to confirm that the document has an absolute amount greater o equal to "
 "100 000 000,00 euros."
 msgstr ""
-"Comproveu per confirmar que la factura té un import absolut superior o igual "
-"a 100 000 000,00 euros."
 
 #. module: l10n_es_aeat_sii_oca
 #: model:ir.model.fields,help:l10n_es_aeat_sii_oca.field_res_partner__sii_simplified_invoice
@@ -217,6 +229,14 @@ msgid "Companies"
 msgstr "Empreses"
 
 #. module: l10n_es_aeat_sii_oca
+#: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_bank_statement_line__company_id
+#: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_move__company_id
+#: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_payment__company_id
+#: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_sii_mixin__company_id
+msgid "Company"
+msgstr "Empresa"
+
+#. module: l10n_es_aeat_sii_oca
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_bank_statement_line__invoice_jobs_ids
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_move__invoice_jobs_ids
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_payment__invoice_jobs_ids
@@ -238,6 +258,7 @@ msgstr "Contacte"
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_aeat_sii_map__create_uid
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_aeat_sii_map_lines__create_uid
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_aeat_sii_mapping_registration_keys__create_uid
+#: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_wizard_send_sii__create_uid
 msgid "Created by"
 msgstr "Creat per"
 
@@ -245,11 +266,12 @@ msgstr "Creat per"
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_aeat_sii_map__create_date
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_aeat_sii_map_lines__create_date
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_aeat_sii_mapping_registration_keys__create_date
+#: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_wizard_send_sii__create_date
 msgid "Created on"
 msgstr "Creat el"
 
 #. module: l10n_es_aeat_sii_oca
-#: code:addons/l10n_es_aeat_sii_oca/models/account_move.py:0
+#: code:addons/l10n_es_aeat_sii_oca/models/sii_mixin.py:0
 #, python-format
 msgid "Currently there's no support for multiple exempt causes."
 msgstr "Actualment no hi ha suport per a diverses causes exemptes."
@@ -295,6 +317,7 @@ msgstr "Descripció config"
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_aeat_sii_map__display_name
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_aeat_sii_map_lines__display_name
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_aeat_sii_mapping_registration_keys__display_name
+#: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_wizard_send_sii__display_name
 msgid "Display Name"
 msgstr "Nom a mostrar"
 
@@ -304,6 +327,7 @@ msgstr "Nom a mostrar"
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_move__sii_enabled
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_payment__sii_enabled
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_res_company__sii_enabled
+#: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_sii_mixin__sii_enabled
 msgid "Enable SII"
 msgstr "Activa SII"
 
@@ -364,6 +388,7 @@ msgstr "Agrupar per..."
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_aeat_sii_map__id
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_aeat_sii_map_lines__id
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_aeat_sii_mapping_registration_keys__id
+#: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_wizard_send_sii__id
 msgid "ID"
 msgstr "ID"
 
@@ -377,39 +402,52 @@ msgstr ""
 #: model:ir.model.fields,help:l10n_es_aeat_sii_oca.field_account_bank_statement_line__sii_send_failed
 #: model:ir.model.fields,help:l10n_es_aeat_sii_oca.field_account_move__sii_send_failed
 #: model:ir.model.fields,help:l10n_es_aeat_sii_oca.field_account_payment__sii_send_failed
+#: model:ir.model.fields,help:l10n_es_aeat_sii_oca.field_sii_mixin__sii_send_failed
 msgid ""
-"Indicates that the last attempt to communicate this invoice to the SII has "
+"Indicates that the last attempt to communicate this document to the SII has "
 "failed. See SII return for details"
 msgstr ""
-"Indica que l'últim intent de comunicar aquesta factura al SII ha fallat. "
-"Consulteu la declaració SII per obtenir més informació"
 
 #. module: l10n_es_aeat_sii_oca
 #: model:ir.model.fields,help:l10n_es_aeat_sii_oca.field_account_bank_statement_line__sii_account_registration_date
 #: model:ir.model.fields,help:l10n_es_aeat_sii_oca.field_account_move__sii_account_registration_date
 #: model:ir.model.fields,help:l10n_es_aeat_sii_oca.field_account_payment__sii_account_registration_date
+#: model:ir.model.fields,help:l10n_es_aeat_sii_oca.field_sii_mixin__sii_account_registration_date
 msgid ""
 "Indicates the account registration date set at the SII, which must be the "
-"date when the invoice is recorded in the system and is independent of the "
-"date of the accounting entry of the invoice"
+"date when the document is recorded in the system and is independent of the "
+"date of the accounting entry of the document"
 msgstr ""
-"Indica la data de registre del compte establerta al SII, que ha de ser la "
-"data en què es registra la factura al sistema i és independent de la data de "
-"l’entrada comptable de la factura"
 
 #. module: l10n_es_aeat_sii_oca
 #: model:ir.model.fields,help:l10n_es_aeat_sii_oca.field_account_bank_statement_line__sii_state
 #: model:ir.model.fields,help:l10n_es_aeat_sii_oca.field_account_move__sii_state
 #: model:ir.model.fields,help:l10n_es_aeat_sii_oca.field_account_payment__sii_state
+#: model:ir.model.fields,help:l10n_es_aeat_sii_oca.field_sii_mixin__sii_state
 msgid ""
-"Indicates the state of this invoice in relation with the presentation at the "
-"SII"
-msgstr "Indica l’estat d’aquesta factura en relació amb la presentació al SII"
+"Indicates the state of this document in relation with the presentation at "
+"the SII"
+msgstr ""
 
 #. module: l10n_es_aeat_sii_oca
 #: model:ir.model.fields.selection,name:l10n_es_aeat_sii_oca.selection__account_fiscal_position__sii_partner_identification_type__2
 msgid "Intracom"
 msgstr "Intracom"
+
+#. module: l10n_es_aeat_sii_oca
+#: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_wizard_send_sii__account_move_ids
+msgid "Invoices"
+msgstr ""
+
+#. module: l10n_es_aeat_sii_oca
+#: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_wizard_send_sii__sending_number
+msgid "Invoices Jobs Process Sending"
+msgstr ""
+
+#. module: l10n_es_aeat_sii_oca
+#: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_wizard_send_sii__sent_number
+msgid "Invoices SII Sent"
+msgstr ""
 
 #. module: l10n_es_aeat_sii_oca
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_move_reversal__sii_refund_type_required
@@ -435,6 +473,7 @@ msgstr "Assentament"
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_aeat_sii_map____last_update
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_aeat_sii_map_lines____last_update
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_aeat_sii_mapping_registration_keys____last_update
+#: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_wizard_send_sii____last_update
 msgid "Last Modified on"
 msgstr "Darrera modificació el"
 
@@ -442,6 +481,7 @@ msgstr "Darrera modificació el"
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_aeat_sii_map__write_uid
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_aeat_sii_map_lines__write_uid
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_aeat_sii_mapping_registration_keys__write_uid
+#: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_wizard_send_sii__write_uid
 msgid "Last Updated by"
 msgstr "Darrera Actualització per"
 
@@ -449,6 +489,7 @@ msgstr "Darrera Actualització per"
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_aeat_sii_map__write_date
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_aeat_sii_map_lines__write_date
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_aeat_sii_mapping_registration_keys__write_date
+#: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_wizard_send_sii__write_date
 msgid "Last Updated on"
 msgstr "Darrera Actualització el"
 
@@ -461,6 +502,7 @@ msgstr "Línies"
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_bank_statement_line__sii_macrodata
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_move__sii_macrodata
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_payment__sii_macrodata
+#: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_sii_mixin__sii_macrodata
 msgid "MacroData"
 msgstr "MacroDades"
 
@@ -525,7 +567,7 @@ msgid "Never sent to SII"
 msgstr "Mai enviat a SII"
 
 #. module: l10n_es_aeat_sii_oca
-#: code:addons/l10n_es_aeat_sii_oca/models/account_move.py:0
+#: code:addons/l10n_es_aeat_sii_oca/models/sii_mixin.py:0
 #, python-format
 msgid "No VAT configured for the company '{}'"
 msgstr "No hi ha cap IVA configurat per a l'empresa \"{}\""
@@ -542,6 +584,8 @@ msgstr "None"
 
 #. module: l10n_es_aeat_sii_oca
 #: model:ir.model.fields.selection,name:l10n_es_aeat_sii_oca.selection__account_move__sii_state__not_sent
+#: model:ir.model.fields.selection,name:l10n_es_aeat_sii_oca.selection__pos_order__sii_state__not_sent
+#: model:ir.model.fields.selection,name:l10n_es_aeat_sii_oca.selection__sii_mixin__sii_state__not_sent
 msgid "Not sent"
 msgstr "No enviat"
 
@@ -586,6 +630,8 @@ msgstr "Ubicació de la propietat immobiliària"
 
 #. module: l10n_es_aeat_sii_oca
 #: model:ir.model.fields.selection,name:l10n_es_aeat_sii_oca.selection__account_move__sii_state__sent_modified
+#: model:ir.model.fields.selection,name:l10n_es_aeat_sii_oca.selection__pos_order__sii_state__sent_modified
+#: model:ir.model.fields.selection,name:l10n_es_aeat_sii_oca.selection__sii_mixin__sii_state__sent_modified
 msgid "Registered in SII but last modifications not sent"
 msgstr "Registrat a SII però no s’han enviat les darreres modificacions"
 
@@ -617,6 +663,7 @@ msgstr "SII Actiu"
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_bank_statement_line__sii_csv
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_move__sii_csv
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_payment__sii_csv
+#: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_sii_mixin__sii_csv
 msgid "SII CSV"
 msgstr "SII CSV"
 
@@ -624,6 +671,7 @@ msgstr "SII CSV"
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_bank_statement_line__sii_registration_key_code
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_move__sii_registration_key_code
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_payment__sii_registration_key_code
+#: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_sii_mixin__sii_registration_key_code
 msgid "SII Code"
 msgstr "Codi SII"
 
@@ -655,6 +703,11 @@ msgid "SII Information"
 msgstr "Informació SII"
 
 #. module: l10n_es_aeat_sii_oca
+#: model:ir.model,name:l10n_es_aeat_sii_oca.model_sii_mixin
+msgid "SII Mixin"
+msgstr ""
+
+#. module: l10n_es_aeat_sii_oca
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_fiscal_position__sii_no_taxable_cause
 msgid "SII No taxable cause"
 msgstr "SII No hi ha causa imposable"
@@ -664,6 +717,7 @@ msgstr "SII No hi ha causa imposable"
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_move__sii_refund_type
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_move_reversal__sii_refund_type
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_payment__sii_refund_type
+#: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_sii_mixin__sii_refund_type
 msgid "SII Refund Type"
 msgstr "Tipus d'abonament SII"
 
@@ -676,6 +730,7 @@ msgstr "Resultat SII"
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_bank_statement_line__sii_return
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_move__sii_return
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_payment__sii_return
+#: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_sii_mixin__sii_return
 msgid "SII Return"
 msgstr "Retorn SII"
 
@@ -683,6 +738,7 @@ msgstr "Retorn SII"
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_bank_statement_line__sii_send_error
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_move__sii_send_error
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_payment__sii_send_error
+#: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_sii_mixin__sii_send_error
 msgid "SII Send Error"
 msgstr "Error d’enviament SII"
 
@@ -695,6 +751,7 @@ msgstr "Capçalera del proveïdor SII"
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_bank_statement_line__sii_account_registration_date
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_move__sii_account_registration_date
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_payment__sii_account_registration_date
+#: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_sii_mixin__sii_account_registration_date
 msgid "SII account registration date"
 msgstr "Data de registre del compte SII"
 
@@ -707,6 +764,7 @@ msgstr "SII cancel·lat"
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_bank_statement_line__sii_description
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_move__sii_description
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_payment__sii_description
+#: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_sii_mixin__sii_description
 msgid "SII computed description"
 msgstr "Descripció calculada SII"
 
@@ -729,6 +787,7 @@ msgstr "Filtres SII"
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_bank_statement_line__sii_content_sent
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_move__sii_content_sent
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_payment__sii_content_sent
+#: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_sii_mixin__sii_content_sent
 msgid "SII last content sent"
 msgstr "SII darrer contingut enviat"
 
@@ -736,6 +795,7 @@ msgstr "SII darrer contingut enviat"
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_bank_statement_line__sii_header_sent
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_move__sii_header_sent
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_payment__sii_header_sent
+#: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_sii_mixin__sii_header_sent
 msgid "SII last header sent"
 msgstr "SII darrera capçalera enviada"
 
@@ -753,6 +813,7 @@ msgstr "Tipus d'identificació d'associat SII"
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_bank_statement_line__sii_registration_key
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_move__sii_registration_key
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_payment__sii_registration_key
+#: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_sii_mixin__sii_registration_key
 msgid "SII registration key"
 msgstr "Clau de registre SII"
 
@@ -760,6 +821,7 @@ msgstr "Clau de registre SII"
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_bank_statement_line__sii_registration_key_domain
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_move__sii_registration_key_domain
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_payment__sii_registration_key_domain
+#: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_sii_mixin__sii_registration_key_domain
 msgid "SII registration key domain"
 msgstr "Clau de registre de domini SII"
 
@@ -767,6 +829,7 @@ msgstr "Clau de registre de domini SII"
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_bank_statement_line__sii_send_failed
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_move__sii_send_failed
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_payment__sii_send_failed
+#: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_sii_mixin__sii_send_failed
 msgid "SII send failed"
 msgstr "L'enviament SII ha fallat"
 
@@ -774,6 +837,7 @@ msgstr "L'enviament SII ha fallat"
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_bank_statement_line__sii_state
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_move__sii_state
 #: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_account_payment__sii_state
+#: model:ir.model.fields,field_description:l10n_es_aeat_sii_oca.field_sii_mixin__sii_state
 msgid "SII send state"
 msgstr "Estat d’enviament SII"
 
@@ -798,6 +862,11 @@ msgid "Send Mode"
 msgstr "Mode de tramesa"
 
 #. module: l10n_es_aeat_sii_oca
+#: model:ir.model,name:l10n_es_aeat_sii_oca.model_wizard_send_sii
+msgid "Send SII Wizard"
+msgstr ""
+
+#. module: l10n_es_aeat_sii_oca
 #: model_terms:ir.ui.view,arch_db:l10n_es_aeat_sii_oca.invoice_sii_form
 msgid "Send cancellation to SII"
 msgstr "Enviar la cancel·lació a SII"
@@ -809,11 +878,14 @@ msgstr "Envia ara"
 
 #. module: l10n_es_aeat_sii_oca
 #: model_terms:ir.ui.view,arch_db:l10n_es_aeat_sii_oca.invoice_sii_form
+#: model_terms:ir.ui.view,arch_db:l10n_es_aeat_sii_oca.view_wizard_send_sii
 msgid "Send to SII"
 msgstr "Envia a SII"
 
 #. module: l10n_es_aeat_sii_oca
 #: model:ir.model.fields.selection,name:l10n_es_aeat_sii_oca.selection__account_move__sii_state__sent
+#: model:ir.model.fields.selection,name:l10n_es_aeat_sii_oca.selection__pos_order__sii_state__sent
+#: model:ir.model.fields.selection,name:l10n_es_aeat_sii_oca.selection__sii_mixin__sii_state__sent
 msgid "Sent"
 msgstr "Enviat"
 
@@ -981,7 +1053,7 @@ msgid "The last attemp to sent to SII has failed"
 msgstr "L'últim intent d'enviar a SII ha fallat"
 
 #. module: l10n_es_aeat_sii_oca
-#: code:addons/l10n_es_aeat_sii_oca/models/account_move.py:0
+#: code:addons/l10n_es_aeat_sii_oca/models/sii_mixin.py:0
 #, python-format
 msgid "The partner has not a VAT configured."
 msgstr "L'empresa no té configurada cap ID d'impost."
@@ -999,13 +1071,13 @@ msgid "There's a mismatch in taxes for RE. Check them."
 msgstr "Hi ha un desajust en els impostos per a RE. Comproveu-los."
 
 #. module: l10n_es_aeat_sii_oca
-#: code:addons/l10n_es_aeat_sii_oca/models/account_move.py:0
+#: code:addons/l10n_es_aeat_sii_oca/models/sii_mixin.py:0
 #, python-format
 msgid "This company doesn't have SII enabled."
 msgstr "Aquesta empresa no té SII habilitat."
 
 #. module: l10n_es_aeat_sii_oca
-#: code:addons/l10n_es_aeat_sii_oca/models/account_move.py:0
+#: code:addons/l10n_es_aeat_sii_oca/models/sii_mixin.py:0
 #, python-format
 msgid "This invoice is not SII enabled."
 msgstr "Aquesta factura no té SII habilitat."
@@ -1053,14 +1125,12 @@ msgstr ""
 "hi ha un job en marxa!"
 
 #. module: l10n_es_aeat_sii_oca
-#: code:addons/l10n_es_aeat_sii_oca/models/account_move.py:0
+#: code:addons/l10n_es_aeat_sii_oca/models/sii_mixin.py:0
 #, python-format
 msgid ""
-"You can not communicate this invoice at this moment because there is a job "
+"You can not communicate this document at this moment because there is a job "
 "running!"
 msgstr ""
-"No podeu comunicar aquesta factura en aquest moment perquè hi ha un job en "
-"marxa!"
 
 #. module: l10n_es_aeat_sii_oca
 #: code:addons/l10n_es_aeat_sii_oca/models/account_move.py:0
@@ -1085,13 +1155,13 @@ msgid ""
 msgstr ""
 
 #. module: l10n_es_aeat_sii_oca
-#: code:addons/l10n_es_aeat_sii_oca/models/account_move.py:0
+#: code:addons/l10n_es_aeat_sii_oca/models/sii_mixin.py:0
 #, python-format
 msgid "You cannot delete an invoice already registered at the SII."
 msgstr "No es pot eliminar una factura ja registrada al SII."
 
 #. module: l10n_es_aeat_sii_oca
-#: code:addons/l10n_es_aeat_sii_oca/models/account_move.py:0
+#: code:addons/l10n_es_aeat_sii_oca/models/sii_mixin.py:0
 #, python-format
 msgid "You have to select what account chart template use this company."
 msgstr ""
@@ -1184,6 +1254,20 @@ msgid "invoice number"
 msgstr ""
 
 #. module: l10n_es_aeat_sii_oca
+#: model_terms:ir.ui.view,arch_db:l10n_es_aeat_sii_oca.view_wizard_send_sii
+msgid ""
+"of the selected invoices are being processed to be sent to the SII. If you "
+"confirm, they will be resent."
+msgstr ""
+
+#. module: l10n_es_aeat_sii_oca
+#: model_terms:ir.ui.view,arch_db:l10n_es_aeat_sii_oca.view_wizard_send_sii
+msgid ""
+"of the selected invoices have been correctly sent to the SII. If you "
+"confirm, they will be resent."
+msgstr ""
+
+#. module: l10n_es_aeat_sii_oca
 #: code:addons/l10n_es_aeat_sii_oca/models/account_move.py:0
 #, python-format
 msgid "supplier"
@@ -1200,6 +1284,43 @@ msgstr ""
 #, python-format
 msgid "third-party number"
 msgstr ""
+
+#~ msgid ""
+#~ "Check to confirm that the invoice has an absolute amount greater o equal "
+#~ "to 100 000 000,00 euros."
+#~ msgstr ""
+#~ "Comproveu per confirmar que la factura té un import absolut superior o "
+#~ "igual a 100 000 000,00 euros."
+
+#~ msgid ""
+#~ "Indicates that the last attempt to communicate this invoice to the SII "
+#~ "has failed. See SII return for details"
+#~ msgstr ""
+#~ "Indica que l'últim intent de comunicar aquesta factura al SII ha fallat. "
+#~ "Consulteu la declaració SII per obtenir més informació"
+
+#~ msgid ""
+#~ "Indicates the account registration date set at the SII, which must be the "
+#~ "date when the invoice is recorded in the system and is independent of the "
+#~ "date of the accounting entry of the invoice"
+#~ msgstr ""
+#~ "Indica la data de registre del compte establerta al SII, que ha de ser la "
+#~ "data en què es registra la factura al sistema i és independent de la data "
+#~ "de l’entrada comptable de la factura"
+
+#~ msgid ""
+#~ "Indicates the state of this invoice in relation with the presentation at "
+#~ "the SII"
+#~ msgstr ""
+#~ "Indica l’estat d’aquesta factura en relació amb la presentació al SII"
+
+#, python-format
+#~ msgid ""
+#~ "You can not communicate this invoice at this moment because there is a "
+#~ "job running!"
+#~ msgstr ""
+#~ "No podeu comunicar aquesta factura en aquest moment perquè hi ha un job "
+#~ "en marxa!"
 
 #~ msgid "SII third-party invoice"
 #~ msgstr "Factura de tercers SII"
@@ -1285,12 +1406,6 @@ msgstr ""
 
 #~ msgid "Aeat SII password"
 #~ msgstr "Contrasenya Aeat SII"
-
-#~ msgid "Cancel"
-#~ msgstr "Cancel·lar"
-
-#~ msgid "Company"
-#~ msgstr "Empresa"
 
 #~ msgid "Draft"
 #~ msgstr "Esborrany"

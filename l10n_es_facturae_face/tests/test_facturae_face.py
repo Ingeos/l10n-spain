@@ -256,7 +256,9 @@ class EDIBackendTestCase(
                 return self.value
 
         self._activate_certificate(self.certificate_password)
-        client = Client(wsdl=self.env.ref("l10n_es_facturae_face.face_webservice").url)
+        client = Client(
+            wsdl=self.env["ir.config_parameter"].sudo().get_param("facturae.face.ws")
+        )
         integration_code = "1234567890"
         response_ok = client.get_type("ns0:EnviarFacturaResponse")(
             client.get_type("ns0:Resultado")(codigo="0", descripcion="OK"),
@@ -284,7 +286,7 @@ class EDIBackendTestCase(
         self.assertTrue(self.move.exchange_record_ids)
         self.assertIn(
             str(self.face_update_type.id),
-            self.move.expected_edi_configuration,
+            self.move.edi_config,
         )
         with self.assertRaises(exceptions.UserError):
             self.move.edi_create_exchange_record(self.face_update_type.id)
@@ -307,7 +309,9 @@ class EDIBackendTestCase(
                 return self.value
 
         self._activate_certificate(self.certificate_password)
-        client = Client(wsdl=self.env.ref("l10n_es_facturae_face.face_webservice").url)
+        client = Client(
+            wsdl=self.env["ir.config_parameter"].sudo().get_param("facturae.face.ws")
+        )
         integration_code = "1234567890"
         response_ok = client.get_type("ns0:EnviarFacturaResponse")(
             client.get_type("ns0:Resultado")(codigo="0", descripcion="OK"),
@@ -345,7 +349,7 @@ class EDIBackendTestCase(
         self.move.refresh()
         self.assertIn(
             str(self.face_update_type.id),
-            self.move.expected_edi_configuration,
+            self.move.edi_config,
         )
         try:
             self.move.edi_create_exchange_record(self.face_update_type.id)

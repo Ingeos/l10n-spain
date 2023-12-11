@@ -220,6 +220,9 @@ class AccountMove(models.Model):
                 if self.tbai_refund_origin_ids:
                     refund_id_dicts = []
                     for refund_origin_id in self.tbai_refund_origin_ids:
+                        expedition_date = fields.Date.from_string(
+                            refund_origin_id.expedition_date
+                        ).strftime("%d-%m-%Y")
                         refund_id_dicts.append(
                             (
                                 0,
@@ -227,7 +230,7 @@ class AccountMove(models.Model):
                                 {
                                     "number_prefix": refund_origin_id.number_prefix,
                                     "number": refund_origin_id.number,
-                                    "expedition_date": refund_origin_id.expedition_date,
+                                    "expedition_date": expedition_date,
                                 },
                             )
                         )
@@ -297,7 +300,7 @@ class AccountMove(models.Model):
         tax_agency = self.company_id.tbai_tax_agency_id
         if tax_agency in (gipuzkoa_tax_agency, araba_tax_agency):
             lines = []
-            for line in self.invoice_line_ids:
+            for line in self.invoice_line_ids.filtered(lambda l: not l.display_type):
                 description_line = line.name[:250]
                 if (
                     self.company_id.tbai_protected_data
@@ -412,7 +415,9 @@ class AccountMove(models.Model):
 
     def button_cancel(self):
         if self.company_id.tbai_enabled:
-            for record in self:
+            for record in self.filtered(
+                lambda m: m.move_type in self.get_invoice_types()
+            ):
                 non_cancelled_refunds = record.reversal_move_id.filtered(
                     lambda x: "cancel" != x.state
                 )
@@ -425,10 +430,12 @@ class AccountMove(models.Model):
                         )
                     )
 
-            tbai_invoices = record.sudo().filtered(
-                lambda x: x.tbai_enabled and "posted" == x.state and x.tbai_invoice_id
-            )
-            tbai_invoices._tbai_invoice_cancel()
+                tbai_invoices = record.sudo().filtered(
+                    lambda x: x.tbai_enabled
+                    and "posted" == x.state
+                    and x.tbai_invoice_id
+                )
+                tbai_invoices._tbai_invoice_cancel()
         return super().button_cancel()
 
     def _post(self, soft=True):
@@ -653,6 +660,14 @@ class AccountMoveLine(models.Model):
             partner=self.move_id.partner_id,
         )
         price_total = taxes["total_included"] if taxes else self.price_subtotal
+        invoice_id = self.move_id
+        if invoice_id.currency_id.id != invoice_id.company_id.currency_id.id:
+            price_total = currency._convert(
+                price_total,
+                invoice_id.company_id.currency_id,
+                invoice_id.company_id,
+                invoice_id.date or invoice_id.invoice_date,
+            )
         if RefundType.differences.value == self.move_id.tbai_refund_type:
             sign = -1
         else:
@@ -664,6 +679,15 @@ class AccountMoveLine(models.Model):
         for tax in self.tax_ids.filtered(lambda t: t.price_include):
             price_unit = price_unit - (
                 self.price_unit * tax.amount / (100 + tax.amount)
+            )
+        currency = self.move_id and self.move_id.currency_id or None
+        invoice_id = self.move_id
+        if invoice_id.currency_id.id != invoice_id.company_id.currency_id.id:
+            price_unit = currency._convert(
+                price_unit,
+                invoice_id.company_id.currency_id,
+                invoice_id.company_id,
+                invoice_id.date or invoice_id.invoice_date,
             )
         return price_unit
 

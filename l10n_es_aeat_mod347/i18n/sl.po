@@ -8,16 +8,17 @@ msgstr ""
 "Project-Id-Version: l10n-spain (8.0)\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-11-13 10:45+0000\n"
-"PO-Revision-Date: 2016-11-28 06:20+0000\n"
-"Last-Translator: OCA Transbot <transbot@odoo-community.org>\n"
+"PO-Revision-Date: 2023-03-31 21:23+0000\n"
+"Last-Translator: Matjaz Mozetic <matjaz@luxim.si>\n"
 "Language-Team: Slovenian (http://www.transifex.com/oca/OCA-l10n-spain-8-0/"
 "language/sl/)\n"
 "Language: sl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
-"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
-"%100==4 ? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
+"%100==4 ? 2 : 3;\n"
+"X-Generator: Weblate 4.14.1\n"
 
 #. module: l10n_es_aeat_mod347
 #: model:mail.template,body_html:l10n_es_aeat_mod347.email_template_347
@@ -160,27 +161,34 @@ msgstr ""
 
 #. module: l10n_es_aeat_mod347
 #: model_terms:ir.ui.view,arch_db:l10n_es_aeat_mod347.report_347_partner_document
-msgid "<strong class=\"text-right\">Amount 1Q:</strong>"
+msgid "<strong>Amount 1Q:</strong>"
 msgstr ""
 
 #. module: l10n_es_aeat_mod347
 #: model_terms:ir.ui.view,arch_db:l10n_es_aeat_mod347.report_347_partner_document
-msgid "<strong class=\"text-right\">Amount 2Q:</strong>"
+msgid "<strong>Amount 2Q:</strong>"
 msgstr ""
 
 #. module: l10n_es_aeat_mod347
 #: model_terms:ir.ui.view,arch_db:l10n_es_aeat_mod347.report_347_partner_document
-msgid "<strong class=\"text-right\">Amount 3Q:</strong>"
+msgid "<strong>Amount 3Q:</strong>"
 msgstr ""
 
 #. module: l10n_es_aeat_mod347
 #: model_terms:ir.ui.view,arch_db:l10n_es_aeat_mod347.report_347_partner_document
-msgid "<strong class=\"text-right\">Amount 4Q:</strong>"
+msgid "<strong>Amount 4Q:</strong>"
 msgstr ""
 
 #. module: l10n_es_aeat_mod347
 #: model_terms:ir.ui.view,arch_db:l10n_es_aeat_mod347.report_347_partner_document
-msgid "<strong class=\"text-right\">Amount:</strong>"
+msgid "<strong>Amount:</strong>"
+msgstr ""
+
+#. module: l10n_es_aeat_mod347
+#: model_terms:ir.ui.view,arch_db:l10n_es_aeat_mod347.view_l10n_es_aeat_mod347_partner_record_form
+msgid ""
+"<strong>Color codes: </strong> <span class=\"text-info\">Normal invoices</"
+"span> - Refund invoices"
 msgstr ""
 
 #. module: l10n_es_aeat_mod347
@@ -278,31 +286,6 @@ msgstr ""
 #: model:ir.model.fields,field_description:l10n_es_aeat_mod347.field_l10n_es_aeat_mod347_report__total_amount
 #: model_terms:ir.ui.view,arch_db:l10n_es_aeat_mod347.report_347_partner_document
 msgid "Amount"
-msgstr ""
-
-#. module: l10n_es_aeat_mod347
-#: model_terms:ir.ui.view,arch_db:l10n_es_aeat_mod347.report_347_partner_document
-msgid "Amount 1Q:"
-msgstr ""
-
-#. module: l10n_es_aeat_mod347
-#: model_terms:ir.ui.view,arch_db:l10n_es_aeat_mod347.report_347_partner_document
-msgid "Amount 2Q:"
-msgstr ""
-
-#. module: l10n_es_aeat_mod347
-#: model_terms:ir.ui.view,arch_db:l10n_es_aeat_mod347.report_347_partner_document
-msgid "Amount 3Q:"
-msgstr ""
-
-#. module: l10n_es_aeat_mod347
-#: model_terms:ir.ui.view,arch_db:l10n_es_aeat_mod347.report_347_partner_document
-msgid "Amount 4Q:"
-msgstr ""
-
-#. module: l10n_es_aeat_mod347
-#: model_terms:ir.ui.view,arch_db:l10n_es_aeat_mod347.report_347_partner_document
-msgid "Amount:"
 msgstr ""
 
 #. module: l10n_es_aeat_mod347
@@ -528,7 +511,7 @@ msgstr "Podrobnosti"
 #: model:ir.model.fields,field_description:l10n_es_aeat_mod347.field_l10n_es_aeat_mod347_real_estate_record__display_name
 #: model:ir.model.fields,field_description:l10n_es_aeat_mod347.field_l10n_es_aeat_mod347_report__display_name
 msgid "Display Name"
-msgstr "Prikazni naziv"
+msgstr "Prikazani naziv"
 
 #. module: l10n_es_aeat_mod347
 #: model:ir.model.fields,field_description:l10n_es_aeat_mod347.field_l10n_es_aeat_mod347_real_estate_record__door
@@ -693,9 +676,7 @@ msgstr ""
 
 #. module: l10n_es_aeat_mod347
 #: model:ir.model.fields,help:l10n_es_aeat_mod347.field_l10n_es_aeat_mod347_partner_record__message_has_error
-#: model:ir.model.fields,help:l10n_es_aeat_mod347.field_l10n_es_aeat_mod347_partner_record__message_has_sms_error
 #: model:ir.model.fields,help:l10n_es_aeat_mod347.field_l10n_es_aeat_mod347_report__message_has_error
-#: model:ir.model.fields,help:l10n_es_aeat_mod347.field_l10n_es_aeat_mod347_report__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
 msgstr ""
 
@@ -842,11 +823,6 @@ msgstr ""
 #: model:ir.model.fields.selection,name:l10n_es_aeat_mod347.selection__l10n_es_aeat_mod347_real_estate_record__number_calification__mod
 msgid "Mod"
 msgstr ""
-
-#. module: l10n_es_aeat_mod347
-#: model:ir.model.fields,field_description:l10n_es_aeat_mod347.field_l10n_es_aeat_mod347_report__model_id
-msgid "Model"
-msgstr "Model"
 
 #. module: l10n_es_aeat_mod347
 #: model:ir.model.fields,field_description:l10n_es_aeat_mod347.field_l10n_es_aeat_mod347_report__number
@@ -1240,12 +1216,6 @@ msgid ""
 msgstr ""
 
 #. module: l10n_es_aeat_mod347
-#: model:ir.model.fields,field_description:l10n_es_aeat_mod347.field_l10n_es_aeat_mod347_partner_record__message_has_sms_error
-#: model:ir.model.fields,field_description:l10n_es_aeat_mod347.field_l10n_es_aeat_mod347_report__message_has_sms_error
-msgid "SMS Delivery error"
-msgstr ""
-
-#. module: l10n_es_aeat_mod347
 #: model:ir.model.fields,field_description:l10n_es_aeat_mod347.field_l10n_es_aeat_mod347_partner_record__user_id
 msgid "Salesperson"
 msgstr ""
@@ -1356,6 +1326,11 @@ msgstr ""
 #. module: l10n_es_aeat_mod347
 #: model:ir.model.fields,field_description:l10n_es_aeat_mod347.field_l10n_es_aeat_mod347_report__support_type
 msgid "Support Type"
+msgstr ""
+
+#. module: l10n_es_aeat_mod347
+#: model_terms:ir.ui.view,arch_db:l10n_es_aeat_mod347.report_347_partner_document
+msgid "Tax ID"
 msgstr ""
 
 #. module: l10n_es_aeat_mod347
@@ -1547,6 +1522,9 @@ msgstr ""
 #: model:ir.model.fields,field_description:l10n_es_aeat_mod347.field_l10n_es_aeat_mod347_report__year
 msgid "Year"
 msgstr ""
+
+#~ msgid "Model"
+#~ msgstr "Model"
 
 #~ msgid "Calculation date"
 #~ msgstr "Datum izračuna"
