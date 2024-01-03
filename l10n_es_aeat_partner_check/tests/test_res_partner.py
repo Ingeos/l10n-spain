@@ -4,9 +4,9 @@ from unittest import mock
 
 from odoo.tests import common
 
-soap_model = "odoo.addons.l10n_es_aeat.models.aeat_soap.L10nEsAeatSoap"
-cert_model = "odoo.addons.l10n_es_aeat.models.aeat_certificate.L10nEsAeatCertificate"
-partner_model = "odoo.addons.l10n_es_aeat_partner_check.models.res_partner.ResPartner"
+soap_model = "odoo.addons.l10n_es_aeat.wizard.aeat_soap.L10nEsAeatSoap"
+cert_model = "odoo.addons.l10n_es_aeat.wizard.aeat_certificate.L10nEsAeatCertificate"
+partner_model = "odoo.addons.l10n_es_aeat_partner_check.wizard.res_partner.ResPartner"
 
 # We mock all API requests here as to not send unnecessary load to an external API
 # nor risk a blocked repo if said API is down

@@ -18,7 +18,3 @@
 * `Studio73 <https://www.studio73.es/>`_:
 
   * Rafa Ferri <rafa.ferri@studio73.es>
-
-* `Factor Libre <https://factorlibre.com/>`_:
-
-  * Pablo De Andrés <pablo.deandres@factorlibre.com>

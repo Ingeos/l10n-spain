@@ -26,9 +26,7 @@ class L10nEsAeatReport(models.AbstractModel):
     SPANISH_STATES = ss
 
     def _default_journal(self):
-        return self.env["account.journal"].search(
-            [("type", "=", "general"), ("company_id", "=", self.env.company.id)]
-        )[:1]
+        return self.env["account.journal"].search([("type", "=", "general")])[:1]
 
     def get_period_type_selection(self):
         period_types = []
@@ -222,7 +220,7 @@ class L10nEsAeatReport(models.AbstractModel):
     journal_id = fields.Many2one(
         comodel_name="account.journal",
         string="Journal",
-        domain="[('type', '=', 'general'), ('company_id', '=', company_id)]",
+        domain=[("type", "=", "general")],
         default=_default_journal,
         help="Journal in which post the move.",
         states={"done": [("readonly", True)]},
@@ -248,7 +246,6 @@ class L10nEsAeatReport(models.AbstractModel):
     error_count = fields.Integer(
         compute="_compute_error_count",
     )
-    tax_agency_ids = fields.Many2many("aeat.tax.agency", string="Tax Agency")
     _sql_constraints = [
         (
             "name_uniq",
@@ -300,8 +297,6 @@ class L10nEsAeatReport(models.AbstractModel):
             or self.env.user.partner_id.mobile
             or self.env.user.company_id.phone
         )
-        if self.journal_id.company_id != self.company_id:
-            self.journal_id = self.with_company(self.company_id.id)._default_journal()
 
     @api.depends("year", "period_type")
     def _compute_dates(self):
@@ -401,7 +396,7 @@ class L10nEsAeatReport(models.AbstractModel):
         return self.search([("year", "=", self.year), ("date_start", "<", date)])
 
     def calculate(self):
-        """To be overrided by inherit models"""
+        """To be overrided by inherit wizard"""
         return True
 
     def button_confirm(self):

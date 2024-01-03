@@ -265,7 +265,7 @@ class CommonTest(CommonTestBase):
         self.move.name = "2999/99999"
         self.partner.attach_invoice_as_annex = True
         with mock.patch(
-            "odoo.addons.base.models.ir_actions_report.IrActionsReport._render_qweb_pdf"
+            "odoo.addons.base.wizard.ir_actions_report.IrActionsReport._render_qweb_pdf"
         ) as ptch:
             ptch.return_value = (b"1234", "pdf")
             self.wizard.with_context(

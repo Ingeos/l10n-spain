@@ -46,7 +46,7 @@ class RedsysTest(RedsysCommon):
         tx = self._create_transaction(flow="redirect", reference="Valid transaction")
         expected_values = self._get_expected_values(tx.reference)
 
-        with mute_logger("odoo.addons.payment.models.payment_transaction"):
+        with mute_logger("odoo.addons.payment.wizard.payment_transaction"):
             processing_values = tx._get_processing_values()
 
         form_info = self._extract_values_from_html_form(
