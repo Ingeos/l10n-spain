@@ -33,11 +33,11 @@
         "security/l10n_es_ticketbai_security.xml",
         "data/tax_agency_data.xml",
         "data/ticketbai_invoice.xml",
-        #"views/l10n_es_ticketbai_api_views.xml",
-        #"views/res_company_views.xml",
-        #"views/res_config_settings_views.xml",
-        #"views/ticketbai_certificate_views.xml",
-        #"views/ticketbai_installation_views.xml"
+        "views/l10n_es_ticketbai_api_views.xml",
+        "views/res_company_views.xml",
+        "views/res_config_settings_views.xml",
+        "views/ticketbai_certificate_views.xml",
+        "views/ticketbai_installation_views.xml"
     ],
     "demo": [
         "demo/res_partner_demo.xml"

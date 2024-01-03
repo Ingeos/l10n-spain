@@ -20,6 +20,6 @@
         "data/tax_code_map_dua_ticketbai_data.xml",
     ],
     "application": False,
-    "installable": False,
+    "installable": True,
     "auto_install": True,
 }

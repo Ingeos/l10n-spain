@@ -10,7 +10,7 @@
               "Odoo Community Association (OCA)",
     "license": "AGPL-3",
     "application": False,
-    "installable": False,
+    "installable": True,
     "auto_install": False,
     "maintainers": [
         "xAdrianC-Kernet",
