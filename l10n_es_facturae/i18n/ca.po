@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Odoo Server 11.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-02-26 12:00+0000\n"
-"PO-Revision-Date: 2022-10-07 09:36+0000\n"
+"PO-Revision-Date: 2023-11-26 22:35+0000\n"
 "Last-Translator: Eugeni Chafer <eugeni@chafer.cat>\n"
 "Language-Team: Catalan (https://www.transifex.com/oca/teams/23907/ca/)\n"
 "Language: ca\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.3.2\n"
+"X-Generator: Weblate 4.17\n"
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields,help:l10n_es_facturae.field_account_invoice_line__invoice_state
@@ -54,13 +54,11 @@ msgstr "# d'integracions"
 
 #. module: l10n_es_facturae
 #: model_terms:ir.ui.view,arch_db:l10n_es_facturae.facturae_header
-#, fuzzy
 msgid "&lt;/fe:Facturae&gt;"
 msgstr "&lt;/fe:Facturae&gt;"
 
 #. module: l10n_es_facturae
 #: model_terms:ir.ui.view,arch_db:l10n_es_facturae.facturae_header
-#, fuzzy
 msgid ""
 "&lt;fe:Facturae xmlns:fe=\"http://www.facturae.es/Facturae/2009/v3.2/Facturae"
 "\" xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\"&gt;"
@@ -208,29 +206,6 @@ msgid "Cancellation Status"
 msgstr ""
 
 #. module: l10n_es_facturae
-#: selection:account.invoice.integration,cancellation_status:0
-#, fuzzy
-msgid "Cancellation accepted"
-msgstr "Cancelada"
-
-#. module: l10n_es_facturae
-#: selection:account.invoice.integration,integration_status:0
-#, fuzzy
-msgid "Cancellation approved"
-msgstr "Cancelada"
-
-#. module: l10n_es_facturae
-#: selection:account.invoice.integration,cancellation_status:0
-#, fuzzy
-msgid "Cancellation rejected"
-msgstr "Cancelada"
-
-#. module: l10n_es_facturae
-#: selection:account.invoice.integration,cancellation_status:0
-msgid "Cancellation requested"
-msgstr ""
-
-#. module: l10n_es_facturae
 #: selection:account.invoice.integration,state:0
 msgid "Cancelled"
 msgstr "Cancelada"
@@ -319,7 +294,7 @@ msgstr ""
 #. module: l10n_es_facturae
 #: model:ir.model,name:l10n_es_facturae.model_create_facturae
 msgid "Create Facturae Wizard"
-msgstr ""
+msgstr "Assistent de creació de Factura electrònica"
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields,field_description:l10n_es_facturae.field_account_invoice_integration__create_uid
@@ -422,7 +397,7 @@ msgstr ""
 #. module: l10n_es_facturae
 #: model_terms:ir.ui.view,arch_db:l10n_es_facturae.view_partner_form
 msgid "FACe"
-msgstr ""
+msgstr "FACe"
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields,field_description:l10n_es_facturae.field_account_invoice__facturae
@@ -885,11 +860,6 @@ msgid "Nombre y apellidos/Razón social - Receptor"
 msgstr ""
 
 #. module: l10n_es_facturae
-#: selection:account.invoice.integration,cancellation_status:0
-msgid "Not requested"
-msgstr ""
-
-#. module: l10n_es_facturae
 #: selection:account.invoice,facturae_refund_reason:0
 #: selection:account.invoice.refund,refund_reason:0
 msgid "Número de la factura"
@@ -928,11 +898,6 @@ msgstr ""
 #: code:addons/l10n_es_facturae/models/account_invoice.py:221
 #, python-format
 msgid "Partner vat not provided"
-msgstr ""
-
-#. module: l10n_es_facturae
-#: selection:account.invoice.integration,integration_status:0
-msgid "Payed"
 msgstr ""
 
 #. module: l10n_es_facturae
@@ -1023,16 +988,6 @@ msgstr ""
 
 #. module: l10n_es_facturae
 #: selection:account.invoice.integration,integration_status:0
-msgid "Registered on RCF"
-msgstr ""
-
-#. module: l10n_es_facturae
-#: selection:account.invoice.integration,integration_status:0
-msgid "Registered on REC"
-msgstr ""
-
-#. module: l10n_es_facturae
-#: selection:account.invoice.integration,integration_status:0
 msgid "Registered on RFC"
 msgstr ""
 
@@ -1098,7 +1053,7 @@ msgstr ""
 #. module: l10n_es_facturae
 #: model:ir.model.fields,field_description:l10n_es_facturae.field_account_invoice_integration_method__sequence_id
 msgid "Sequence"
-msgstr "Secuencia"
+msgstr "Seqüència"
 
 #. module: l10n_es_facturae
 #: selection:account.invoice,facturae_refund_reason:0
@@ -1329,3 +1284,15 @@ msgstr ""
 #: model:ir.model.fields,field_description:l10n_es_facturae.field_res_users__organo_proponente
 msgid "Órgano proponente"
 msgstr ""
+
+#, fuzzy
+#~ msgid "Cancellation accepted"
+#~ msgstr "Cancelada"
+
+#, fuzzy
+#~ msgid "Cancellation approved"
+#~ msgstr "Cancelada"
+
+#, fuzzy
+#~ msgid "Cancellation rejected"
+#~ msgstr "Cancelada"
