@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Odoo Server 15.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-07-06 09:01+0000\n"
-"PO-Revision-Date: 2023-09-20 17:46+0000\n"
+"PO-Revision-Date: 2024-02-28 21:36+0000\n"
 "Last-Translator: Ivorra78 <informatica@totmaterial.es>\n"
 "Language-Team: \n"
 "Language: es\n"
@@ -151,6 +151,34 @@ msgstr "Compañías"
 #. odoo-python
 #: code:addons/l10n_es_facturae/models/account_move.py:0
 #, python-format
+msgid "Company city not provided"
+msgstr "Ciudad de la empresa no proporcionada"
+
+#. module: l10n_es_facturae
+#. odoo-python
+#: code:addons/l10n_es_facturae/models/account_move.py:0
+#, python-format
+msgid "Company country not provided"
+msgstr "País de la empresa no proporcionado"
+
+#. module: l10n_es_facturae
+#. odoo-python
+#: code:addons/l10n_es_facturae/models/account_move.py:0
+#, python-format
+msgid "Company state not provided"
+msgstr "Estado de la empresa no proporcionado"
+
+#. module: l10n_es_facturae
+#. odoo-python
+#: code:addons/l10n_es_facturae/models/account_move.py:0
+#, python-format
+msgid "Company street not provided"
+msgstr "Calle de la empresa no proporcionada"
+
+#. module: l10n_es_facturae
+#. odoo-python
+#: code:addons/l10n_es_facturae/models/account_move.py:0
+#, python-format
 msgid "Company vat is too small"
 msgstr "El identificador fiscal de la compañía es demasiado corto"
 
@@ -160,6 +188,13 @@ msgstr "El identificador fiscal de la compañía es demasiado corto"
 #, python-format
 msgid "Company vat not provided"
 msgstr "Es necesario el identificador fiscal de la compañía"
+
+#. module: l10n_es_facturae
+#. odoo-python
+#: code:addons/l10n_es_facturae/models/account_move.py:0
+#, python-format
+msgid "Company zip not provided"
+msgstr "Código postal de la empresa no proporcionado"
 
 #. module: l10n_es_facturae
 #: model:ir.model,name:l10n_es_facturae.model_res_partner
@@ -178,8 +213,8 @@ msgstr "Método de corrección"
 #. odoo-python
 #: code:addons/l10n_es_facturae/models/res_partner.py:0
 #, python-format
-msgid "Country must be defined"
-msgstr "Se debe definir el país"
+msgid "Country must be defined for factura-e enabled partners."
+msgstr "Debe definirse el país para factura-e de los socios habilitados."
 
 #. module: l10n_es_facturae
 #: model_terms:ir.ui.view,arch_db:l10n_es_facturae.wizard_create_facturae
@@ -335,7 +370,10 @@ msgid "Facturae File Date"
 msgstr "Fecha Fichero Facturae"
 
 #. module: l10n_es_facturae
+#: model:ir.model.fields,field_description:l10n_es_facturae.field_account_bank_statement_line__facturae_file_reference
+#: model:ir.model.fields,field_description:l10n_es_facturae.field_account_move__facturae_file_reference
 #: model:ir.model.fields,field_description:l10n_es_facturae.field_account_move_line__facturae_file_reference
+#: model:ir.model.fields,field_description:l10n_es_facturae.field_account_payment__facturae_file_reference
 msgid "Facturae File Reference"
 msgstr "Referencia de fichero Facturae"
 
@@ -365,7 +403,10 @@ msgid "Facturae Receiver Contract Date"
 msgstr "Receptor Facturae Fecha de contrato"
 
 #. module: l10n_es_facturae
+#: model:ir.model.fields,field_description:l10n_es_facturae.field_account_bank_statement_line__facturae_receiver_contract_reference
+#: model:ir.model.fields,field_description:l10n_es_facturae.field_account_move__facturae_receiver_contract_reference
 #: model:ir.model.fields,field_description:l10n_es_facturae.field_account_move_line__facturae_receiver_contract_reference
+#: model:ir.model.fields,field_description:l10n_es_facturae.field_account_payment__facturae_receiver_contract_reference
 msgid "Facturae Receiver Contract Reference"
 msgstr "Referencia de contrato de receptor de Facturae"
 
@@ -375,7 +416,10 @@ msgid "Facturae Receiver Transaction Date"
 msgstr "Fecha de transacción del receptor de Facturae"
 
 #. module: l10n_es_facturae
+#: model:ir.model.fields,field_description:l10n_es_facturae.field_account_bank_statement_line__facturae_receiver_transaction_reference
+#: model:ir.model.fields,field_description:l10n_es_facturae.field_account_move__facturae_receiver_transaction_reference
 #: model:ir.model.fields,field_description:l10n_es_facturae.field_account_move_line__facturae_receiver_transaction_reference
+#: model:ir.model.fields,field_description:l10n_es_facturae.field_account_payment__facturae_receiver_transaction_reference
 msgid "Facturae Receiver Transaction Reference"
 msgstr "Referencia de transacciones del receptor de Facturae"
 
@@ -461,6 +505,13 @@ msgstr "Nombre de archivo"
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__create_facturae__state__first
 msgid "First"
 msgstr "Primero"
+
+#. module: l10n_es_facturae
+#: model:ir.model.fields,field_description:l10n_es_facturae.field_res_company__facturae_hide_discount
+#: model:ir.model.fields,field_description:l10n_es_facturae.field_res_partner__facturae_hide_discount
+#: model:ir.model.fields,field_description:l10n_es_facturae.field_res_users__facturae_hide_discount
+msgid "Hide Facturae discount"
+msgstr "Ocultar descuentos en Facturae"
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__12
@@ -588,6 +639,11 @@ msgid "Invoice %s"
 msgstr "Factura %s"
 
 #. module: l10n_es_facturae
+#: model_terms:ir.ui.view,arch_db:l10n_es_facturae.view_move_form
+msgid "Invoicing Period"
+msgstr "Período de facturación"
+
+#. module: l10n_es_facturae
 #: model:ir.model,name:l10n_es_facturae.model_account_move
 msgid "Journal Entry"
 msgstr "Asiento contable"
@@ -669,6 +725,11 @@ msgid "Organo Gestor"
 msgstr "Órgano Gestor"
 
 #. module: l10n_es_facturae
+#: model_terms:ir.ui.view,arch_db:l10n_es_facturae.view_move_form
+msgid "Other facturae fields"
+msgstr "Otros campos de facturae"
+
+#. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__05
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__05
 msgid "Otro"
@@ -678,7 +739,7 @@ msgstr "Otro"
 #: model:ir.model.fields,field_description:l10n_es_facturae.field_res_partner__parent_facturae
 #: model:ir.model.fields,field_description:l10n_es_facturae.field_res_users__parent_facturae
 msgid "Parent Facturae"
-msgstr ""
+msgstr "Facturae Parental"
 
 #. module: l10n_es_facturae
 #. odoo-python
@@ -686,6 +747,13 @@ msgstr ""
 #, python-format
 msgid "Partner state not provided"
 msgstr "El estado es obligatorio"
+
+#. module: l10n_es_facturae
+#. odoo-python
+#: code:addons/l10n_es_facturae/models/account_move.py:0
+#, python-format
+msgid "Partner street address is not provided"
+msgstr "No se facilita la dirección del socio"
 
 #. module: l10n_es_facturae
 #. odoo-python
@@ -814,8 +882,15 @@ msgstr "Estado"
 #. odoo-python
 #: code:addons/l10n_es_facturae/models/res_partner.py:0
 #, python-format
-msgid "State must be defined"
-msgstr "La provincia es obligatoria"
+msgid "State must be defined for factura-e enabled partners."
+msgstr "Debe definirse el estado para los socios habilitados para factura-e."
+
+#. module: l10n_es_facturae
+#. odoo-python
+#: code:addons/l10n_es_facturae/models/res_partner.py:0
+#, python-format
+msgid "Street must be defined for factura-e enabled partners."
+msgstr "Se debe definir la calle para los socios habilitados para factura-e."
 
 #. module: l10n_es_facturae
 #: model:ir.model,name:l10n_es_facturae.model_account_tax
@@ -849,6 +924,13 @@ msgstr ""
 "logs del servidor. el error que puede dar una idea del problema es: %s"
 
 #. module: l10n_es_facturae
+#: model:ir.model.fields,help:l10n_es_facturae.field_res_company__facturae_hide_discount
+#: model:ir.model.fields,help:l10n_es_facturae.field_res_partner__facturae_hide_discount
+#: model:ir.model.fields,help:l10n_es_facturae.field_res_users__facturae_hide_discount
+msgid "The unit price will be recalculated applying the discount"
+msgstr "El precio unitario será recalculado aplicando el descuento"
+
+#. module: l10n_es_facturae
 #: model_terms:ir.ui.view,arch_db:l10n_es_facturae.wizard_create_facturae
 msgid "This process will create the electronic invoice"
 msgstr "Este proceso creará la factura electrónica"
@@ -863,8 +945,8 @@ msgstr "Unidad Tramitadora"
 #. odoo-python
 #: code:addons/l10n_es_facturae/models/res_partner.py:0
 #, python-format
-msgid "Vat must be defined"
-msgstr "El número de IVA debe estar definido"
+msgid "Vat must be defined for factura-e enabled partners."
+msgstr "El iva debe definirse para los socios habilitados para factura-e."
 
 #. module: l10n_es_facturae
 #. odoo-python
@@ -982,6 +1064,18 @@ msgstr "[19] Pago mediante tarjeta"
 #: model:ir.model.fields,field_description:l10n_es_facturae.field_res_users__organo_proponente
 msgid "Órgano proponente"
 msgstr "Órgano proponente"
+
+#, python-format
+#~ msgid "Country must be defined"
+#~ msgstr "Se debe definir el país"
+
+#, python-format
+#~ msgid "State must be defined"
+#~ msgstr "La provincia es obligatoria"
+
+#, python-format
+#~ msgid "Vat must be defined"
+#~ msgstr "El número de IVA debe estar definido"
 
 #~ msgid "Journal"
 #~ msgstr "Libro diario"

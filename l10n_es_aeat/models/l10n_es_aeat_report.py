@@ -18,6 +18,7 @@ class L10nEsAeatReport(models.AbstractModel):
     _name = "l10n.es.aeat.report"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _description = "AEAT report base module"
+    _order = "date_start,id"
     _rec_name = "name"
     _aeat_number = False
     _period_quarterly = True
@@ -176,7 +177,7 @@ class L10nEsAeatReport(models.AbstractModel):
             (
                 "model_id",
                 "=",
-                self.env["ir.model"].search([("model", "=", self._name)]).id,
+                self.env["ir.model"].sudo().search([("model", "=", self._name)]).id,
             )
         ],
         compute="_compute_export_config_id",
