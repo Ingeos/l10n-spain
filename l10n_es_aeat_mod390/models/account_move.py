@@ -11,5 +11,6 @@ class AccountMove(models.Model):
         string="Bankrupcy/uncollectible debt",
         help="When this is set, the tax base and rate will "
         "be reflected in fields 31 and 32 of the AEAT 390 model",
-        readonly=False,
+        readonly=True,
+        states={"draft": [("readonly", False)]},
     )

@@ -84,7 +84,7 @@ class IntrastatProductDeclaration(models.Model):
         attach_id = super()._attach_xml_file(xml_string, declaration_name)
         self.ensure_one()
         attach = self.env["ir.attachment"].browse(attach_id)
-        filename = f"{self.year_month}_{declaration_name}.csv"
+        filename = "{}_{}.csv".format(self.year_month, declaration_name)
         attach.write({"name": filename})
         return attach.id
 
@@ -197,8 +197,8 @@ class IntrastatProductComputationLine(models.Model):
             vals["partner_vat"] = self.partner_vat
         return vals
 
-    def _prepare_declaration_line(self, line_number):
-        vals = super()._prepare_declaration_line(line_number)
+    def _prepare_declaration_line(self):
+        vals = super()._prepare_declaration_line()
         # Avoid rounding in weight and fiscal value
         vals["weight"] = 0.0
         vals["amount_company_currency"] = 0.0

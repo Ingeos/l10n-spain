@@ -10,7 +10,7 @@ class AccountPaymentMode(models.Model):
     _inherit = "account.payment.mode"
 
     conf_sabadell_type = fields.Selection(
-        string="Tipo de pago (Sabadell)",
+        string="Tipo de pago",
         default="56",
         selection=[
             ("56", "Tranferencia"),

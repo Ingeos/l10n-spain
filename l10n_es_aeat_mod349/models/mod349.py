@@ -24,7 +24,7 @@ class Mod349(models.Model):
     _period_yearly = True
     _aeat_number = "349"
 
-    frequency_change = fields.Boolean()
+    frequency_change = fields.Boolean(states={"confirmed": [("readonly", True)]})
     total_partner_records = fields.Integer(
         compute="_compute_report_regular_totals",
         string="Partners records",
@@ -55,6 +55,7 @@ class Mod349(models.Model):
         comodel_name="l10n.es.aeat.mod349.partner_record_detail",
         inverse_name="report_id",
         string="Partner record details",
+        states={"confirmed": [("readonly", True)]},
     )
     partner_refund_ids = fields.One2many(
         comodel_name="l10n.es.aeat.mod349.partner_refund",
@@ -66,6 +67,7 @@ class Mod349(models.Model):
         comodel_name="l10n.es.aeat.mod349.partner_refund_detail",
         inverse_name="report_id",
         string="Partner refund details",
+        states={"confirmed": [("readonly", True)]},
     )
     number = fields.Char(default="349")
 
@@ -220,19 +222,14 @@ class Mod349(models.Model):
             # we add all of them to visited, as we don't want to repeat
             visited_details |= original_details
             if original_details:
-                original_amls = move_line_obj.search(
-                    [
-                        ("tax_ids", "in", taxes.ids),
-                        ("l10n_es_aeat_349_operation_key", "=", op_key),
-                        ("move_id", "=", origin_invoice.id),
-                    ]
-                )
                 # There's at least one previous 349 declaration report
                 report = original_details.mapped("report_id")[:1]
                 original_details = original_details.filtered(
-                    lambda d, report=report: d.report_id == report
+                    lambda d: d.report_id == report
                 )
-                origin_amount = sum(original_details.mapped("amount_untaxed"))
+                origin_amount = (
+                    original_details.partner_record_id.total_operation_amount
+                )
                 period_type = report.period_type
                 year = str(report.year)
                 # If there are intermediate periods between the original
@@ -284,9 +281,9 @@ class Mod349(models.Model):
                     period_type = month
             key = (partner, op_key, period_type, year)
             key_vals = data.setdefault(
-                key, {"original_amount": 0, "refund_details": refund_detail_obj}
+                key,
+                {"original_amount": origin_amount, "refund_details": refund_detail_obj},
             )
-            key_vals["original_amount"] += origin_amount
             key_vals["refund_details"] += refund_details
         for key, key_vals in data.items():
             partner, op_key, period_type, year = key
@@ -320,13 +317,10 @@ class Mod349(models.Model):
     def _get_taxes(self):
         """Obtain all the taxes to be considered for 349."""
         map_lines = self.env["aeat.349.map.line"].search([])
-        tax_templates = map_lines.mapped("tax_xmlid_ids")
+        tax_templates = map_lines.mapped("tax_tmpl_ids")
         if not tax_templates:
             raise exceptions.UserError(_("No Tax Mapping was found"))
-        taxes_ids = self.env["aeat.349.map.line"]._get_tax_ids_from_xmlids(
-            tax_templates, self.company_id
-        )
-        return self.env["account.tax"].search([("id", "in", taxes_ids)])
+        return self.get_taxes_from_templates(tax_templates)
 
     def _cleanup_report(self):
         """Remove previous partner records and partner refunds in report."""
@@ -339,33 +333,35 @@ class Mod349(models.Model):
     def calculate(self):
         """Computes the records in report."""
         self.ensure_one()
-        self._cleanup_report()
-        taxes = self._get_taxes()
-        # Get all the account moves
-        move_lines = self.env["account.move.line"].search(
-            self._account_move_line_domain(taxes)
-        )
-        # If the type of presentation is complementary, remove records that
-        # already exist in other presentations
-        if self.statement_type == "C":
-            prev_details = self.partner_record_detail_ids.search(
-                [
-                    ("move_line_id", "in", move_lines.ids),
-                    ("report_id", "!=", self.id),
-                ]
+        with self.env.norecompute():
+            self._cleanup_report()
+            taxes = self._get_taxes()
+            # Get all the account moves
+            move_lines = self.env["account.move.line"].search(
+                self._account_move_line_domain(taxes)
             )
-            move_lines -= prev_details.mapped("move_line_id")
-            prev_details = self.partner_refund_detail_ids.search(
-                [
-                    ("refund_line_id", "in", move_lines.ids),
-                    ("report_id", "!=", self.id),
-                ]
-            )
-            move_lines -= prev_details.mapped("refund_line_id")
-        self._create_349_details(move_lines)
-        self._create_349_invoice_records()
-        self._create_349_refund_records()
-        self.env.flush_all()
+            # If the type of presentation is complementary, remove records that
+            # already exist in other presentations
+            if self.statement_type == "C":
+                prev_details = self.partner_record_detail_ids.search(
+                    [
+                        ("move_line_id", "in", move_lines.ids),
+                        ("report_id", "!=", self.id),
+                    ]
+                )
+                move_lines -= prev_details.mapped("move_line_id")
+                prev_details = self.partner_refund_detail_ids.search(
+                    [
+                        ("refund_line_id", "in", move_lines.ids),
+                        ("report_id", "!=", self.id),
+                    ]
+                )
+                move_lines -= prev_details.mapped("refund_line_id")
+            self._create_349_details(move_lines)
+            self._create_349_invoice_records()
+            self._create_349_refund_records()
+        # Recompute all pending computed fields
+        self.flush_recordset()
         return True
 
     def button_recover(self):

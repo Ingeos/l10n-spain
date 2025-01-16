@@ -10,20 +10,17 @@
             <page id="aeat" position="inside">
                 <group string="Partner Data Quality">
                     <button
-                        icon="oi-search"
-                        class="btn btn-link p-0"
+                        colspan="2"
                         type="object"
                         string="Check Partner Data"
                         name="aeat_check_partner"
                     />
-                    <group>
-                        <field name="aeat_partner_name" />
-                        <field name="aeat_partner_vat" />
-                        <field name="aeat_partner_check_result" />
-                        <field name="aeat_data_diff" />
-                        <field name="aeat_last_checked" />
-                        <field name="aeat_partner_type" />
-                    </group>
+                    <field name="aeat_partner_name" />
+                    <field name="aeat_partner_vat" />
+                    <field name="aeat_partner_check_result" />
+                    <field name="aeat_data_diff" />
+                    <field name="aeat_last_checked" />
+                    <field name="aeat_partner_type" />
                 </group>
             </page>
         </field>

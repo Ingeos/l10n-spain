@@ -11,8 +11,7 @@
                         <field name="aeat_identification_type" />
                         <field
                             name="aeat_identification"
-                            required="aeat_identification_type"
-                            invisible="not aeat_identification_type"
+                            attrs="{'required': [('aeat_identification_type', '!=', False)], 'invisible': [('aeat_identification_type', '=', False)]}"
                         />
                     </group>
                 </page>
@@ -21,7 +20,7 @@
                 <field name="aeat_sending_enabled" invisible="1" />
                 <field
                     name="aeat_simplified_invoice"
-                    invisible="not aeat_sending_enabled"
+                    attrs="{'invisible': [('aeat_sending_enabled', '=', False)]}"
                 />
             </xpath>
         </field>

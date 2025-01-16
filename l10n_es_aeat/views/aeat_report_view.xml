@@ -27,42 +27,42 @@
                         name="button_calculate"
                         type="object"
                         string="Calculate"
-                        invisible="state != 'draft'"
+                        states="draft"
                         icon="fa-cogs"
                     />
                     <button
                         name="button_recalculate"
                         type="object"
                         string="Recalculate"
-                        invisible="state != 'calculated'"
+                        states="calculated"
                         icon="fa-refresh"
                     />
                     <button
                         name="button_confirm"
                         string="Confirm"
                         type="object"
-                        invisible="state != 'calculated'"
+                        states="calculated"
                         icon="fa-check"
                     />
                     <button
                         name="%(action_wizard_aeat_export)d"
                         type="action"
                         string="Export to BOE"
-                        invisible="state not in ('posted', 'done')"
+                        states="done,posted"
                         icon="fa-share"
                     />
                     <button
                         name="button_recover"
                         string="Draft"
                         type="object"
-                        invisible="state != 'cancelled'"
+                        states="cancelled"
                         icon="fa-undo"
                     />
                     <button
                         name="button_open_move"
                         string="Show move"
                         type="object"
-                        invisible="state != 'posted'"
+                        states="posted"
                     />
                     <button
                         name="button_post"
@@ -70,20 +70,20 @@
                         help="This button creates the regularization move for the selected report"
                         type="object"
                         class="oe_highlight"
-                        invisible="state != 'done' or not allow_posting"
+                        attrs="{'invisible': ['|', ('state', '!=', 'done'), ('allow_posting', '=', False)]}"
                     />
                     <button
                         name="button_cancel"
                         string="Cancel"
                         type="object"
-                        invisible="state not in ('calculated', 'done')"
+                        states="calculated,done"
                         icon="fa-times"
                     />
                     <button
                         name="button_unpost"
                         string="Cancel"
                         type="object"
-                        invisible="state != 'posted'"
+                        states="posted"
                         icon="fa-times"
                     />
                     <field
@@ -95,7 +95,7 @@
                 </header>
                 <div
                     class="alert alert-warning text-center"
-                    invisible="not error_count or state != 'calculated'"
+                    attrs="{'invisible': ['|', ('error_count', '=', 0), ('state', '!=', 'calculated')]}"
                     role="alert"
                 >
                     <span>
@@ -120,48 +120,31 @@
                     </h1>
                     <group string="Declaración" colspan="4" name="group_declaration">
                         <group>
-                            <field
-                                name="company_vat"
-                                required="1"
-                                readonly="state != 'draft'"
-                            />
-                            <field name="year" readonly="state != 'draft'" />
-                            <field name="period_type" readonly="state != 'draft'" />
-                            <label
-                                for="date_start"
-                                string="Dates"
-                                readonly="state != 'draft'"
-                            />
+                            <field name="company_vat" required="1" />
+                            <field name="year" />
+                            <field name="period_type" />
+                            <label for="date_start" string="Dates" />
                             <div>
-                                <field
-                                    name="date_start"
-                                    class="oe_inline"
-                                    readonly="state != 'draft'"
-                                />
+                                <field name="date_start" class="oe_inline" />
                                 <span class="oe_inline"> - </span>
-                                <field
-                                    name="date_end"
-                                    class="oe_inline"
-                                    readonly="state != 'draft'"
-                                />
+                                <field name="date_end" class="oe_inline" />
                             </div>
                             <field name="export_config_id" groups="base.group_no_one" />
                         </group>
                         <group>
                             <field
                                 name="journal_id"
-                                invisible="not allow_posting"
-                                readonly="state == 'done'"
+                                attrs="{'invisible': [('allow_posting', '=', False)]}"
                             />
                             <field
                                 name="counterpart_account_id"
-                                invisible="not allow_posting"
+                                attrs="{'invisible': [('allow_posting', '=', False)]}"
                             />
                             <field
                                 name="representative_vat"
-                                readonly="state != 'draft'"
+                                attrs="{'readonly': [('state', '!=', 'draft')]}"
                             />
-                            <field name="support_type" readonly="state != 'draft'" />
+                            <field name="support_type" />
                             <field name="calculation_date" readonly="1" />
                             <field name="partner_id" invisible="1" />
                             <field name="partner_bank_id" />
@@ -169,21 +152,18 @@
                                 name="company_id"
                                 required="1"
                                 groups="base.group_multi_company"
-                                readonly="state != 'draft'"
                             />
                         </group>
                         <group string="Contact data" name="group_contact_data">
-                            <field name="contact_name" readonly="state != 'draft'" />
-                            <field name="contact_phone" readonly="state != 'draft'" />
-                            <field name="contact_email" readonly="state != 'draft'" />
+                            <field name="contact_name" />
+                            <field name="contact_phone" />
+                            <field name="contact_email" />
                         </group>
                         <group string="Other parameters" name="group_other_parameters">
-                            <field name="statement_type" readonly="state != 'draft'" />
+                            <field name="statement_type" />
                             <field
                                 name="previous_number"
-                                invisible="statement_type == 'N'"
-                                required="statement_type in ('S', 'C')"
-                                readonly="state == 'done'"
+                                attrs="{'invisible': [('statement_type', '==', 'N')], 'required': [('statement_type', 'in', ('S', 'C'))]}"
                             />
                         </group>
                     </group>

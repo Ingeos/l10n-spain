@@ -404,6 +404,16 @@ msgid "L.R. VAT number"
 msgstr "NIF repr. legal"
 
 #. module: l10n_es_vat_book
+#: model:ir.model.fields,field_description:l10n_es_vat_book.field_aeat_vat_book_map_line____last_update
+#: model:ir.model.fields,field_description:l10n_es_vat_book.field_l10n_es_vat_book____last_update
+#: model:ir.model.fields,field_description:l10n_es_vat_book.field_l10n_es_vat_book_line____last_update
+#: model:ir.model.fields,field_description:l10n_es_vat_book.field_l10n_es_vat_book_line_tax____last_update
+#: model:ir.model.fields,field_description:l10n_es_vat_book.field_l10n_es_vat_book_summary____last_update
+#: model:ir.model.fields,field_description:l10n_es_vat_book.field_l10n_es_vat_book_tax_summary____last_update
+msgid "Last Modified on"
+msgstr "Última modificación el"
+
+#. module: l10n_es_vat_book
 #: model:ir.model.fields,field_description:l10n_es_vat_book.field_aeat_vat_book_map_line__write_uid
 #: model:ir.model.fields,field_description:l10n_es_vat_book.field_l10n_es_vat_book__write_uid
 #: model:ir.model.fields,field_description:l10n_es_vat_book.field_l10n_es_vat_book_line__write_uid
@@ -437,6 +447,11 @@ msgstr "Libro de IVA"
 #: model:ir.model.fields,field_description:l10n_es_vat_book.field_l10n_es_vat_book_line__line_type
 msgid "Line Type"
 msgstr "Tipo línea"
+
+#. module: l10n_es_vat_book
+#: model:ir.model.fields,field_description:l10n_es_vat_book.field_l10n_es_vat_book__message_main_attachment_id
+msgid "Main Attachment"
+msgstr "Adjunto principal"
 
 #. module: l10n_es_vat_book
 #: model:ir.model.fields,field_description:l10n_es_vat_book.field_l10n_es_vat_book__message_has_error
@@ -543,11 +558,6 @@ msgstr "Número declaración previa"
 #: model:ir.model.fields.selection,name:l10n_es_vat_book.selection__l10n_es_vat_book_line_tax__special_tax_group__req
 msgid "R.Eq."
 msgstr "R.Eq."
-
-#. module: l10n_es_vat_book
-#: model:ir.model.fields,field_description:l10n_es_vat_book.field_l10n_es_vat_book__rating_ids
-msgid "Ratings"
-msgstr ""
 
 #. module: l10n_es_vat_book
 #: model:ir.model.fields.selection,name:l10n_es_vat_book.selection__aeat_vat_book_map_line__book_type__received
@@ -719,7 +729,7 @@ msgid "Tax"
 msgstr "Impuesto"
 
 #. module: l10n_es_vat_book
-#: model:ir.model.fields,field_description:l10n_es_vat_book.field_aeat_vat_book_map_line__account_xmlid_id
+#: model:ir.model.fields,field_description:l10n_es_vat_book.field_aeat_vat_book_map_line__tax_account_id
 msgid "Tax Account Restriction"
 msgstr "Restricción de la cuenta de impuestos"
 
@@ -757,7 +767,7 @@ msgid "Tax fee"
 msgstr "Cuota"
 
 #. module: l10n_es_vat_book
-#: model:ir.model.fields,field_description:l10n_es_vat_book.field_aeat_vat_book_map_line__tax_xmlid_ids
+#: model:ir.model.fields,field_description:l10n_es_vat_book.field_aeat_vat_book_map_line__tax_tmpl_ids
 #: model_terms:ir.ui.view,arch_db:l10n_es_vat_book.view_vat_book_line_form
 msgid "Taxes"
 msgstr "Impuestos"
@@ -915,12 +925,6 @@ msgstr "object.get_report_file_name()"
 
 #~ msgid "SMS Delivery error"
 #~ msgstr "SMS Error de entrega"
-
-#~ msgid "Last Modified on"
-#~ msgstr "Última modificación el"
-
-#~ msgid "Main Attachment"
-#~ msgstr "Adjunto principal"
 
 #~ msgid "Number of messages which requires an action"
 #~ msgstr "Nº de mensajes que requieren acción"

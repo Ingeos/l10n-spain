@@ -9,7 +9,7 @@ class AccountPaymentMode(models.Model):
     _inherit = "account.payment.mode"
 
     aef_confirming_type = fields.Selection(
-        string="Tipo de pago (AEF)",
+        string="Tipo de pago",
         default="T",
         selection=[
             ("T", "Transferencia"),

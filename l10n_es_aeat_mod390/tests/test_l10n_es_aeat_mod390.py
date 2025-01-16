@@ -233,7 +233,7 @@ class TestL10nEsAeatMod390Base(TestL10nEsAeatModBase):
                 "journal_id": cls.journal_misc.id,
             }
         )
-        cls.model390_2023 = cls.env["l10n.es.aeat.mod390.report"].create(
+        cls.model390_2018 = cls.env["l10n.es.aeat.mod390.report"].create(
             {
                 "name": "999000001390",
                 "company_id": cls.company.id,
@@ -242,10 +242,10 @@ class TestL10nEsAeatMod390Base(TestL10nEsAeatModBase):
                 "statement_type": "N",
                 "support_type": "T",
                 "contact_phone": "911234455",
-                "year": 2023,
+                "year": 2018,
                 "period_type": "0A",
-                "date_start": "2023-01-01",
-                "date_end": "2023-12-31",
+                "date_start": "2018-01-01",
+                "date_end": "2018-12-31",
                 "journal_id": cls.journal_misc.id,
                 "use_303": True,
             }
@@ -275,13 +275,13 @@ class TestL10nEsAeatMod390(TestL10nEsAeatMod390Base):
         # Check tax lines
         for field, result in self.taxes_result.items():
             lines = self.model390.tax_line_ids.filtered(
-                lambda x, field=field: x.field_number == int(field)
+                lambda x: x.field_number == int(field)
             )
             self.assertAlmostEqual(
                 sum(lines.mapped("amount")),
                 result,
                 2,
-                f"Incorrect result in field {field} {ex.exception}",
+                "Incorrect result in field %s %s" % (field, ex.exception),
             )
         # Check computed fields
         self.assertAlmostEqual(self.model390.casilla_33, 17700.0, 2)
@@ -315,7 +315,9 @@ class TestL10nEsAeatMod390(TestL10nEsAeatMod390Base):
             {"name": "test_export_to_boe.txt"}
         )
         export_config_xml_ids = [
-            "l10n_es_aeat_mod390.aeat_mod390_2023_main_export_config",
+            "l10n_es_aeat_mod390.aeat_mod390_2019_main_export_config",
+            "l10n_es_aeat_mod390.aeat_mod390_2021_main_export_config",
+            "l10n_es_aeat_mod390.aeat_mod390_2022_main_export_config",
             "l10n_es_aeat_mod390.aeat_mod390_2024_main_export_config",
         ]
         for xml_id in export_config_xml_ids:
@@ -325,28 +327,28 @@ class TestL10nEsAeatMod390(TestL10nEsAeatMod390Base):
     def test_model_390_using_303_01(self):
         # Check use 303 activated but no 303 reports exist
         # Purchase invoices
-        self._invoice_purchase_create("2023-01-01")
-        self._invoice_purchase_create("2023-04-01")
-        self._invoice_purchase_create("2023-07-01")
-        self._invoice_purchase_create("2023-10-01")
+        self._invoice_purchase_create("2018-01-01")
+        self._invoice_purchase_create("2018-04-01")
+        self._invoice_purchase_create("2018-07-01")
+        self._invoice_purchase_create("2018-10-01")
         # Sale invoices
-        self._invoice_sale_create("2023-01-01")
-        self._invoice_sale_create("2023-07-01")
-        self._invoice_sale_create("2023-10-01")
+        self._invoice_sale_create("2018-01-01")
+        self._invoice_sale_create("2018-07-01")
+        self._invoice_sale_create("2018-10-01")
         # Calculate 390
-        self.model390_2023.button_calculate()
-        self.assertAlmostEqual(self.model390_2023.casilla_85, 0.0, 2)
-        self.assertAlmostEqual(self.model390_2023.casilla_95, 0.0, 2)
-        self.assertAlmostEqual(self.model390_2023.casilla_97, 0.0, 2)
-        self.assertAlmostEqual(self.model390_2023.casilla_98, 0.0, 2)
-        self.assertAlmostEqual(self.model390_2023.casilla_662, 0.0, 2)
+        self.model390_2018.button_calculate()
+        self.assertAlmostEqual(self.model390_2018.casilla_85, 0.0, 2)
+        self.assertAlmostEqual(self.model390_2018.casilla_95, 0.0, 2)
+        self.assertAlmostEqual(self.model390_2018.casilla_97, 0.0, 2)
+        self.assertAlmostEqual(self.model390_2018.casilla_98, 0.0, 2)
+        self.assertAlmostEqual(self.model390_2018.casilla_662, 0.0, 2)
 
     def test_model_390_using_303_02(self):
         # Check use 303 activated and 303 reports exist but none are to be enter
         # and last period is to return with remaining compensation
         # Purchase invoices
-        self._invoice_purchase_create("2023-01-01")
-        self._invoice_purchase_create("2023-10-01")
+        self._invoice_purchase_create("2018-01-01")
+        self._invoice_purchase_create("2018-10-01")
         # Reports 303
         model303_1T = self.env["l10n.es.aeat.mod303.report"].create(
             {
@@ -357,10 +359,10 @@ class TestL10nEsAeatMod390(TestL10nEsAeatMod390Base):
                 "statement_type": "N",
                 "support_type": "T",
                 "contact_phone": "911234455",
-                "year": 2023,
+                "year": 2018,
                 "period_type": "1T",
-                "date_start": "2023-01-01",
-                "date_end": "2023-03-31",
+                "date_start": "2018-01-01",
+                "date_end": "2018-03-31",
                 "journal_id": self.journal_misc.id,
             }
         )
@@ -368,24 +370,24 @@ class TestL10nEsAeatMod390(TestL10nEsAeatMod390Base):
             {
                 "name": "9992000000303",
                 "period_type": "2T",
-                "date_start": "2023-04-01",
-                "date_end": "2023-06-30",
+                "date_start": "2018-04-01",
+                "date_end": "2018-06-30",
             }
         )
         model303_3T = model303_1T.copy(
             {
                 "name": "9993000000303",
                 "period_type": "3T",
-                "date_start": "2023-07-01",
-                "date_end": "2023-09-30",
+                "date_start": "2018-07-01",
+                "date_end": "2018-09-30",
             }
         )
         model303_4T = model303_1T.copy(
             {
                 "name": "9994000000303",
                 "period_type": "4T",
-                "date_start": "2023-10-01",
-                "date_end": "2023-12-31",
+                "date_start": "2018-10-01",
+                "date_end": "2018-12-31",
             }
         )
         # Calculate reports
@@ -393,36 +395,37 @@ class TestL10nEsAeatMod390(TestL10nEsAeatMod390Base):
         model303_2T.button_calculate()
         model303_3T.button_calculate()
         model303_4T.button_calculate()
-        self.model390_2023.button_calculate()
+        # model303_4T.cuota_compensar = 0
+        self.model390_2018.button_calculate()
         # Check casilla_85, casilla_95, casilla_97, casilla_98, casilla_662
-        self.assertAlmostEqual(self.model390_2023.casilla_85, 0.0, 2)
-        self.assertAlmostEqual(self.model390_2023.casilla_95, 0.0, 2)
-        self.assertAlmostEqual(self.model390_2023.casilla_97, 560.85, 2)
-        self.assertAlmostEqual(self.model390_2023.casilla_98, 0.0, 2)
-        self.assertAlmostEqual(self.model390_2023.casilla_662, 0.0, 2)
+        self.assertAlmostEqual(self.model390_2018.casilla_85, 0.0, 2)
+        self.assertAlmostEqual(self.model390_2018.casilla_95, 0.0, 2)
+        self.assertAlmostEqual(self.model390_2018.casilla_97, 560.85, 2)
+        self.assertAlmostEqual(self.model390_2018.casilla_98, 0.0, 2)
+        self.assertAlmostEqual(self.model390_2018.casilla_662, 0.0, 2)
 
         model303_4T.return_last_period = True
         model303_4T.button_calculate()
-        self.model390_2023.button_calculate()
+        self.model390_2018.button_calculate()
         # Check casilla_85, casilla_95, casilla_97, casilla_98, casilla_662
-        self.assertAlmostEqual(self.model390_2023.casilla_85, 560.85, 2)
-        self.assertAlmostEqual(self.model390_2023.casilla_95, 0.0, 2)
-        self.assertAlmostEqual(self.model390_2023.casilla_97, 0.0, 2)
-        self.assertAlmostEqual(self.model390_2023.casilla_98, 1121.7, 2)
-        self.assertAlmostEqual(self.model390_2023.casilla_662, 0.0, 2)
+        self.assertAlmostEqual(self.model390_2018.casilla_85, 674.48, 2)
+        self.assertAlmostEqual(self.model390_2018.casilla_95, 0.0, 2)
+        self.assertAlmostEqual(self.model390_2018.casilla_97, 0.0, 2)
+        self.assertAlmostEqual(self.model390_2018.casilla_98, 1235.33, 2)
+        self.assertAlmostEqual(self.model390_2018.casilla_662, 0.0, 2)
 
     def test_model_390_using_303_03(self):
         # Check use 303 activated, 303 reports exist and last period is to compensate
         # Purchase invoices
-        self._invoice_purchase_create("2023-01-01")
-        self._invoice_purchase_create("2023-04-01")
-        self._invoice_purchase_create("2023-07-01")
-        self._invoice_purchase_create("2023-10-01")
+        self._invoice_purchase_create("2018-01-01")
+        self._invoice_purchase_create("2018-04-01")
+        self._invoice_purchase_create("2018-07-01")
+        self._invoice_purchase_create("2018-10-01")
         # # Sale invoices
-        self._invoice_sale_create("2023-01-01")
-        self._invoice_sale_create("2023-04-01")
-        self._invoice_sale_create("2023-07-01")
-        self._invoice_sale_create("2023-10-01")
+        self._invoice_sale_create("2018-01-01")
+        self._invoice_sale_create("2018-04-01")
+        self._invoice_sale_create("2018-07-01")
+        self._invoice_sale_create("2018-10-01")
         # Reports 303
         model303_1T = self.env["l10n.es.aeat.mod303.report"].create(
             {
@@ -433,10 +436,10 @@ class TestL10nEsAeatMod390(TestL10nEsAeatMod390Base):
                 "statement_type": "N",
                 "support_type": "T",
                 "contact_phone": "911234455",
-                "year": 2023,
+                "year": 2018,
                 "period_type": "1T",
-                "date_start": "2023-01-01",
-                "date_end": "2023-03-31",
+                "date_start": "2018-01-01",
+                "date_end": "2018-03-31",
                 "journal_id": self.journal_misc.id,
             }
         )
@@ -444,16 +447,16 @@ class TestL10nEsAeatMod390(TestL10nEsAeatMod390Base):
             {
                 "name": "9992000000303",
                 "period_type": "2T",
-                "date_start": "2023-04-01",
-                "date_end": "2023-06-30",
+                "date_start": "2018-04-01",
+                "date_end": "2018-06-30",
             }
         )
         model303_3T = model303_1T.copy(
             {
                 "name": "9993000000303",
                 "period_type": "3T",
-                "date_start": "2023-07-01",
-                "date_end": "2023-09-30",
+                "date_start": "2018-07-01",
+                "date_end": "2018-09-30",
             }
         )
 
@@ -461,8 +464,8 @@ class TestL10nEsAeatMod390(TestL10nEsAeatMod390Base):
             {
                 "name": "9994000000303",
                 "period_type": "4T",
-                "date_start": "2023-10-01",
-                "date_end": "2023-12-31",
+                "date_start": "2018-10-01",
+                "date_end": "2018-12-31",
             }
         )
         # Calculate reports
@@ -472,20 +475,20 @@ class TestL10nEsAeatMod390(TestL10nEsAeatMod390Base):
         model303_4T.potential_cuota_compensar = 905.25
         model303_4T.cuota_compensar = 805.25
         model303_4T.button_calculate()
-        self.model390_2023.button_calculate()
+        self.model390_2018.button_calculate()
         # Check casilla_85, casilla_95, casilla_97, casilla_98, casilla_662
-        self.assertAlmostEqual(self.model390_2023.casilla_85, 805.25, 2)
-        self.assertAlmostEqual(self.model390_2023.casilla_95, 2415.75, 2)
-        self.assertAlmostEqual(self.model390_2023.casilla_97, 100.0, 2)
-        self.assertAlmostEqual(self.model390_2023.casilla_98, 0.0, 2)
-        self.assertAlmostEqual(self.model390_2023.casilla_662, 0.0, 2)
+        self.assertAlmostEqual(self.model390_2018.casilla_85, 805.25, 2)
+        self.assertAlmostEqual(self.model390_2018.casilla_95, 2302.12, 2)
+        self.assertAlmostEqual(self.model390_2018.casilla_97, 100.0, 2)
+        self.assertAlmostEqual(self.model390_2018.casilla_98, 0.0, 2)
+        self.assertAlmostEqual(self.model390_2018.casilla_662, 0.0, 2)
 
         model303_4T.return_last_period = True
         model303_4T.button_calculate()
-        self.model390_2023.button_calculate()
+        self.model390_2018.button_calculate()
         # Check casilla_85, casilla_95, casilla_97, casilla_98, casilla_662
-        self.assertAlmostEqual(self.model390_2023.casilla_85, 905.25, 2)
-        self.assertAlmostEqual(self.model390_2023.casilla_95, 2415.75, 2)
-        self.assertAlmostEqual(self.model390_2023.casilla_97, 0.0, 2)
-        self.assertAlmostEqual(self.model390_2023.casilla_98, 100.00, 2)
-        self.assertAlmostEqual(self.model390_2023.casilla_662, 0.0, 2)
+        self.assertAlmostEqual(self.model390_2018.casilla_85, 905.25, 2)
+        self.assertAlmostEqual(self.model390_2018.casilla_95, 2302.12, 2)
+        self.assertAlmostEqual(self.model390_2018.casilla_97, 0.0, 2)
+        self.assertAlmostEqual(self.model390_2018.casilla_98, 100.00, 2)
+        self.assertAlmostEqual(self.model390_2018.casilla_662, 0.0, 2)

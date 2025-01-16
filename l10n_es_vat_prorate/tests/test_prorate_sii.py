@@ -2,16 +2,11 @@ from datetime import date
 
 from odoo.tests.common import tagged
 
-try:
-    from odoo.addons.l10n_es_aeat_sii_oca.tests.test_l10n_es_aeat_sii import (
-        TestL10nEsAeatSiiBase,
-    )
-except ImportError:
-    TestL10nEsAeatSiiBase = object
+from odoo.addons.l10n_es_aeat_sii_oca.tests import test_l10n_es_aeat_sii
 
 
 @tagged("-at_install", "post_install")
-class TestSIIVatProrate(TestL10nEsAeatSiiBase):
+class TestSIIVatProrate(test_l10n_es_aeat_sii.TestL10nEsAeatSiiBase):
     @classmethod
     def setUpClass(cls):
         try:

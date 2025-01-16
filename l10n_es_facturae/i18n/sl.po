@@ -69,11 +69,6 @@ msgid "3.2.2"
 msgstr ""
 
 #. module: l10n_es_facturae
-#: model:ir.model,name:l10n_es_facturae.model_account_chart_template
-msgid "Account Chart Template"
-msgstr ""
-
-#. module: l10n_es_facturae
 #: model:ir.model,name:l10n_es_facturae.model_report_l10n_es_facturae_facturae_signed
 msgid "Account Move Facturae Signed"
 msgstr ""
@@ -338,6 +333,7 @@ msgstr ""
 #. module: l10n_es_facturae
 #: model:ir.model.fields,field_description:l10n_es_facturae.field_account_payment_mode__facturae_code
 #: model:ir.model.fields,field_description:l10n_es_facturae.field_account_tax__facturae_code
+#: model:ir.model.fields,field_description:l10n_es_facturae.field_account_tax_template__facturae_code
 msgid "Facturae Code"
 msgstr ""
 
@@ -505,6 +501,7 @@ msgstr ""
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__12
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__12
 msgid "ICIO: Impuesto sobre las construcciones, instalaciones y obras"
 msgstr ""
 
@@ -516,11 +513,13 @@ msgstr "ID"
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__07
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__07
 msgid "IE: Impuestos especiales"
 msgstr ""
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__10
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__10
 msgid ""
 "IECDPCAC: Impuesto especial sobre los combustibles derivados del petróleo en "
 "la Comunidad Autonoma Canaria"
@@ -528,11 +527,13 @@ msgstr ""
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__03
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__03
 msgid "IGIC: Impuesto general indirecto de Canarias"
 msgstr ""
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__09
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__09
 msgid ""
 "IGTECM: Impuesto general sobre el tráfico de empresas que se aplica en Ceuta "
 "y Melilla"
@@ -540,6 +541,7 @@ msgstr ""
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__11
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__11
 msgid ""
 "IIIMAB: Impuesto sobre las instalaciones que inciden sobre el medio ambiente "
 "en la Baleares"
@@ -547,36 +549,43 @@ msgstr ""
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__15
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__15
 msgid "IMGSN: Impuesto municipal sobre gastos suntuarios en Navarra"
 msgstr ""
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__16
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__16
 msgid "IMPN: Impuesto municipal sobre publicidad en Navarra"
 msgstr ""
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__14
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__14
 msgid "IMSN: Impuesto municipal sobre solares en Navarra"
 msgstr ""
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__13
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__13
 msgid "IMVDN: Impuesto municipal sobre las viviendas desocupadas en Navarra"
 msgstr ""
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__02
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__02
 msgid "IPSI: Impuesto sobre la producción, los servicios y la importación"
 msgstr ""
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__04
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__04
 msgid "IRPF: Impuesto sobre la Renta de las personas físicas"
 msgstr ""
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__06
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__06
 msgid ""
 "ITPAJD: Impuesto sobre transmisiones patrimoniales y actos jurídicos "
 "documentados"
@@ -584,6 +593,7 @@ msgstr ""
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__01
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__01
 msgid "IVA: Impuesto sobre el valor añadido"
 msgstr ""
 
@@ -627,6 +637,12 @@ msgstr ""
 #: model:ir.model.fields,field_description:l10n_es_facturae.field_account_payment__l10n_es_facturae_attachment_ids
 msgid "L10N Es Facturae Attachment"
 msgstr ""
+
+#. module: l10n_es_facturae
+#: model:ir.model.fields,field_description:l10n_es_facturae.field_create_facturae____last_update
+#: model:ir.model.fields,field_description:l10n_es_facturae.field_l10n_es_facturae_attachment____last_update
+msgid "Last Modified on"
+msgstr "Zadnjič spremenjeno"
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields,field_description:l10n_es_facturae.field_create_facturae__write_uid
@@ -700,6 +716,7 @@ msgstr ""
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__05
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__05
 msgid "Otro"
 msgstr ""
 
@@ -751,21 +768,25 @@ msgstr ""
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__18
-msgid "REIGIC: Régimen especial de IGIC: para agencias de viajes"
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__18
+msgid "REIGIC: Régimen especial de IGIC: para agencias deviajes"
 msgstr ""
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__19
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__19
 msgid "REIPSI: Régimen especial de IPSI para agencias de viajes"
 msgstr ""
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__17
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__17
 msgid "REIVA: Régimen especial de IVA para agencias de viajes"
 msgstr ""
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__08
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__08
 msgid "Ra: Renta aduanas"
 msgstr ""
 
@@ -859,6 +880,11 @@ msgstr ""
 #: code:addons/l10n_es_facturae/models/account_move.py:0
 #, python-format
 msgid "Taxes not provided in move line %s"
+msgstr ""
+
+#. module: l10n_es_facturae
+#: model:ir.model,name:l10n_es_facturae.model_account_tax_template
+msgid "Templates for Taxes"
 msgstr ""
 
 #. module: l10n_es_facturae
@@ -1025,9 +1051,6 @@ msgstr ""
 #: model:ir.model.fields,field_description:l10n_es_facturae.field_res_users__organo_proponente
 msgid "Órgano proponente"
 msgstr ""
-
-#~ msgid "Last Modified on"
-#~ msgstr "Zadnjič spremenjeno"
 
 #~ msgid "Cancel"
 #~ msgstr "Preklic"

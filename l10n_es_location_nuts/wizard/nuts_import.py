@@ -54,7 +54,7 @@ class NutsImport(models.TransientModel):
         "ES617": "base.state_es_ma",  # Málaga
         "ES532": "base.state_es_pm",  # Mallorca
         "ES640": "base.state_es_ml",  # Melilla
-        "ES533": "base.state_es_pm",  # Menorca
+        "ES533": "base.state_es_ba",  # Menorca
         "ES620": "base.state_es_mu",  # Murcia
         "ES220": "base.state_es_na",  # Navarra
         "ES113": "base.state_es_or",  # Ourense

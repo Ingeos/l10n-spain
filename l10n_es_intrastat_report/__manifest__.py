@@ -8,7 +8,7 @@
 
 {
     "name": "Intrastat Product Declaration for Spain",
-    "version": "17.0.1.0.0",
+    "version": "16.0.1.3.3",
     "category": "Intrastat",
     "license": "AGPL-3",
     "summary": "Spanish Intrastat Product Declaration",
@@ -17,8 +17,10 @@
     "depends": ["intrastat_product", "l10n_es_aeat"],
     "conflicts": ["report_intrastat"],
     "data": [
+        "security/l10n_es_intrastat_report_security.xml",
         "security/ir.model.access.csv",
         "data/intrastat_transaction.xml",
+        "data/account_fiscal_position_template.xml",
         "views/l10n_es_intrastat_product.xml",
         "wizards/l10n_es_intrastat_code_import.xml",
     ],

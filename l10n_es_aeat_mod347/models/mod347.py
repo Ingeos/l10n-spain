@@ -171,7 +171,7 @@ class L10nEsAeatMod347Report(models.Model):
                 error += "\n".join(real_state_errors)
             if partner_errors or real_state_errors:
                 raise exceptions.ValidationError(error)
-        return super().button_confirm()
+        return super(L10nEsAeatMod347Report, self).button_confirm()
 
     def button_send_mails(self):
         self.partner_record_ids.filtered(
@@ -204,6 +204,15 @@ class L10nEsAeatMod347Report(models.Model):
         ]
 
     @api.model
+    def _get_taxes(self, map_rec):
+        """Obtain all the taxes to be considered for 347."""
+        self.ensure_one()
+        tax_templates = map_rec.mapped("tax_ids")
+        if not tax_templates:
+            raise exceptions.UserError(_("No Tax Mapping was found"))
+        return self.get_taxes_from_templates(tax_templates)
+
+    @api.model
     def _get_partner_347_identification(self, partner):
         country_code, _, vat = partner._parse_aeat_vat_info()
         if country_code == "ES":
@@ -229,7 +238,7 @@ class L10nEsAeatMod347Report(models.Model):
         partner_record_obj = self.env["l10n.es.aeat.mod347.partner_record"]
         partner_obj = self.env["res.partner"]
         map_line = self.env.ref(map_ref)
-        taxes = map_line.get_taxes_for_company(self.company_id)
+        taxes = self._get_taxes(map_line)
         domain = self._account_move_line_domain(taxes)
         if partner_record:
             domain += [("partner_id", "=", partner_record.partner_id.id)]
@@ -330,9 +339,10 @@ class L10nEsAeatMod347Report(models.Model):
         for report in self:
             # Delete previous partner records
             report.partner_record_ids.unlink()
-            self._create_partner_records("A", KEY_TAX_MAPPING["A"])
-            self._create_partner_records("B", KEY_TAX_MAPPING["B"])
-            self._create_cash_moves()
+            with self.env.norecompute():
+                self._create_partner_records("A", KEY_TAX_MAPPING["A"])
+                self._create_partner_records("B", KEY_TAX_MAPPING["B"])
+                self._create_cash_moves()
             self.env.flush_all()
             report.partner_record_ids.calculate_quarter_totals()
         return True
@@ -585,7 +595,7 @@ class L10nEsAeatMod347PartnerRecord(models.Model):
         compose_form = self.env.ref("mail.email_compose_message_wizard_form")
         ctx = dict(
             default_model=self._name,
-            default_res_ids=self.ids,
+            default_res_id=self.id,
             default_use_template=bool(template),
             default_template_id=template and template.id or False,
             default_composition_mode="comment",
@@ -736,6 +746,10 @@ class L10nEsAeatMod347RealStateRecord(models.Model):
         """Loads some partner data when the selected partner changes."""
         if self.partner_id:
             vals = self.report_id._get_partner_347_identification(self.partner_id)
+            if not vals.get("partner_vat") or not vals.get("partner_state_code"):
+                raise exceptions.ValidationError(
+                    _("The selected partner doesn't have a VAT or a state code")
+                )
             self.update(
                 {
                     "partner_vat": vals.pop("partner_vat"),

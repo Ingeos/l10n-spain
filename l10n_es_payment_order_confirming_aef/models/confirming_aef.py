@@ -6,7 +6,7 @@ from odoo import _, fields
 from odoo.exceptions import UserError
 
 
-class ConfirmingAEF:
+class ConfirmingAEF(object):
     def __init__(self, record):
         self.record = record
         self.partner_bank = record.company_partner_bank_id.partner_id
@@ -62,8 +62,7 @@ class ConfirmingAEF:
             if not line.partner_bank_id.bank_bic:
                 validation_errors.append(
                     _(
-                        "- La cuenta bancaria del Proveedor %s no tiene establecido "
-                        "el SWIFT."
+                        "- La cuenta bancaria del Proveedor %s no tiene establecido el SWIFT."
                     )
                     % line.partner_id.name
                 )

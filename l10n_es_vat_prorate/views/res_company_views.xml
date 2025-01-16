@@ -11,13 +11,21 @@
                 <page
                     name="vat_prorate"
                     string="VAT Prorate"
-                    invisible="not with_vat_prorate"
+                    attrs="{'invisible': [('with_vat_prorate', '=', False)]}"
                 >
                     <field name="vat_prorate_ids" />
                 </page>
             </notebook>
             <field name="company_registry" position="after">
                 <field name="with_vat_prorate" />
+                <field
+                    name="prorrate_asset_account_id"
+                    attrs="{'invisible': [('with_vat_prorate', '=', False)]}"
+                />
+                <field
+                    name="prorrate_investment_account_id"
+                    attrs="{'invisible': [('with_vat_prorate', '=', False)]}"
+                />
             </field>
         </field>
     </record>

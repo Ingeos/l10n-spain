@@ -28,14 +28,6 @@ class TestL10nEsAeatMod349Base(TestL10nEsAeatModBase):
     }
 
     @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        # Compatibility with account_edi_ubl_cii
-        # It is necessary to set the value of company_registry so that if we define
-        # as country_id=BE the tests do not fail.
-        cls.customer.write({"company_registry": "0411905847"})
-
-    @classmethod
     def _invoice_refund(cls, invoice, dt, price_unit=None):
         _logger.debug(
             "Refund {} invoice: date = {}: price_unit = {}".format(
@@ -318,6 +310,59 @@ class TestL10nEsAeatMod349Base(TestL10nEsAeatModBase):
         self.assertEqual(model349_3.partner_refund_ids.total_origin_amount, 200)
         self.assertEqual(model349_3.partner_refund_ids.total_operation_amount, 100)
 
+    def test_model_349_refund_with_multiple_origin_invoices(self):
+        # Create 2 vendor bill and 1 refunds in different periods
+        self._invoice_purchase_create("2017-01-01")
+        inv = self._invoice_purchase_create("2017-01-01")
+        self._invoice_refund(inv, "2017-02-01", price_unit=50.0)
+        # Create model
+        model349_model = self.env["l10n.es.aeat.mod349.report"].with_user(
+            self.account_manager
+        )
+        model349_1 = model349_model.create(
+            {
+                "name": "3490000000001",
+                "company_id": self.company.id,
+                "company_vat": "1234567890",
+                "contact_name": "Test owner",
+                "statement_type": "N",
+                "support_type": "T",
+                "contact_phone": "911234455",
+                "year": 2017,
+                "period_type": "01",
+                "date_start": "2017-01-01",
+                "date_end": "2017-01-31",
+            }
+        )
+        # Calculate
+        _logger.debug("Calculate AEAT 349 January 2017")
+        model349_1.button_calculate()
+        self.assertEqual(model349_1.total_partner_records, 1)
+        self.assertEqual(model349_1.partner_record_ids.total_operation_amount, 600)
+
+        model349_2 = model349_model.create(
+            {
+                "name": "3490000000002",
+                "company_id": self.company.id,
+                "company_vat": "1234567890",
+                "contact_name": "Test owner",
+                "statement_type": "N",
+                "support_type": "T",
+                "contact_phone": "911234455",
+                "year": 2017,
+                "period_type": "02",
+                "date_start": "2017-02-01",
+                "date_end": "2017-02-28",
+            }
+        )
+        # Calculate
+        _logger.debug("Calculate AEAT 349 February 2017")
+        model349_2.button_calculate()
+        self.assertEqual(model349_2.total_partner_records, 0)
+        self.assertEqual(model349_2.total_partner_refunds, 1)
+        self.assertEqual(model349_2.partner_refund_ids.total_origin_amount, 600)
+        self.assertEqual(model349_2.partner_refund_ids.total_operation_amount, 500)
+
     def test_mod349_errors(self):
         # Add some test data
         self.customer.write(
@@ -405,6 +450,7 @@ class TestL10nEsAeatMod349Base(TestL10nEsAeatModBase):
             lambda x: x.partner_vat == "BE0477472701"
         )
         self.assertTrue(partner_record.partner_record_ok)
+
         # No country code in vat and GR country
         self.customer.write(
             {"vat": "12345670", "country_id": self.env.ref("base.gr").id}
@@ -414,6 +460,7 @@ class TestL10nEsAeatMod349Base(TestL10nEsAeatModBase):
             lambda x: x.partner_vat == "EL12345670"
         )
         self.assertTrue(partner_record.partner_record_ok)
+
         # Reset vat and country
         self.customer.write(
             {"vat": "BE0411905847", "country_id": self.env.ref("base.be").id}

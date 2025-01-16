@@ -4,8 +4,8 @@
 import base64
 
 from odoo import fields
+from odoo.modules.module import get_module_resource
 from odoo.tests import common
-from odoo.tools.misc import file_path
 
 
 class L10nEsAccountStatementImportN43(common.TransactionCase):
@@ -30,7 +30,6 @@ class L10nEsAccountStatementImportN43(common.TransactionCase):
             }
         )
         eur_currency = cls.env.ref("base.EUR")
-        eur_currency.write({"active": True})
         cls.journal = cls.env["account.journal"].create(
             {
                 "type": "bank",
@@ -51,7 +50,9 @@ class L10nEsAccountStatementImportN43(common.TransactionCase):
                 "currency_id": eur_currency.id,
             }
         )
-        n43_file_path = file_path("l10n_es_account_statement_import_n43/tests/test.n43")
+        n43_file_path = get_module_resource(
+            "l10n_es_account_statement_import_n43", "tests", "test.n43"
+        )
         n43_file = base64.b64encode(open(n43_file_path, "rb").read())
         cls.import_wizard = (
             cls.env["account.statement.import"]
@@ -60,8 +61,8 @@ class L10nEsAccountStatementImportN43(common.TransactionCase):
         )
 
     def test_import_n43_multi(self):
-        n43_file_path = file_path(
-            "l10n_es_account_statement_import_n43/tests/testmulti.n43"
+        n43_file_path = get_module_resource(
+            "l10n_es_account_statement_import_n43", "tests", "testmulti.n43"
         )
         n43_file = base64.b64encode(open(n43_file_path, "rb").read())
         self.import_wizard.statement_file = n43_file

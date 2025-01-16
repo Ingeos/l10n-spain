@@ -13,6 +13,7 @@ from odoo import api, fields, models
 
 
 class L10nEsAeatMod111Report(models.Model):
+
     _description = "AEAT 111 report"
     _inherit = "l10n.es.aeat.report.tax.mapping"
     _name = "l10n.es.aeat.mod111.report"
@@ -28,6 +29,7 @@ class L10nEsAeatMod111Report(models.Model):
     )
     casilla_02 = fields.Monetary(
         string="[02] Taxable",
+        readonly=True,
         compute_sudo=True,
         compute="_compute_casilla_02",
         store=True,
@@ -35,6 +37,7 @@ class L10nEsAeatMod111Report(models.Model):
     )
     casilla_03 = fields.Monetary(
         string="[03] Amount retained",
+        readonly=True,
         compute_sudo=True,
         compute="_compute_casilla_03",
         store=True,
@@ -50,6 +53,7 @@ class L10nEsAeatMod111Report(models.Model):
     )
     casilla_05 = fields.Monetary(
         string="[05] Taxable",
+        readonly=True,
         compute_sudo=True,
         compute="_compute_casilla_05",
         store=True,
@@ -57,6 +61,7 @@ class L10nEsAeatMod111Report(models.Model):
     )
     casilla_06 = fields.Monetary(
         string="[06] Amount retained",
+        readonly=True,
         compute_sudo=True,
         compute="_compute_casilla_06",
         store=True,
@@ -72,6 +77,7 @@ class L10nEsAeatMod111Report(models.Model):
     )
     casilla_08 = fields.Monetary(
         string="[08] Taxable",
+        readonly=True,
         compute_sudo=True,
         compute="_compute_casilla_08",
         store=True,
@@ -79,6 +85,7 @@ class L10nEsAeatMod111Report(models.Model):
     )
     casilla_09 = fields.Monetary(
         string="[09] Amount retained",
+        readonly=True,
         compute_sudo=True,
         compute="_compute_casilla_09",
         store=True,
@@ -94,6 +101,7 @@ class L10nEsAeatMod111Report(models.Model):
     )
     casilla_11 = fields.Monetary(
         string="[11] Taxable",
+        readonly=True,
         compute_sudo=True,
         compute="_compute_casilla_11",
         store=True,
@@ -101,6 +109,7 @@ class L10nEsAeatMod111Report(models.Model):
     )
     casilla_12 = fields.Monetary(
         string="[12] Amount retained",
+        readonly=True,
         compute_sudo=True,
         compute="_compute_casilla_12",
         store=True,
@@ -108,78 +117,108 @@ class L10nEsAeatMod111Report(models.Model):
     )
     casilla_13 = fields.Integer(
         string="[13] # Recipients",
+        readonly=True,
+        states={"calculated": [("readonly", False)]},
         help="Awards for participation in games, contests, raffles or "
         "random combinations - Monetary - Number of recipients",
     )
     casilla_14 = fields.Monetary(
         string="[14] Taxable",
+        readonly=True,
+        states={"calculated": [("readonly", False)]},
         help="Awards for participation in games, contests, raffles or "
         "random combinations - Monetary - Base taxable value",
     )
     casilla_15 = fields.Monetary(
         string="[15] Amount retained",
+        readonly=True,
+        states={"calculated": [("readonly", False)]},
         help="Awards for participation in games, contests, raffles or "
         "random combinations - Monetary - Amount retained",
     )
     casilla_16 = fields.Integer(
         string="[16] # Recipients",
+        readonly=True,
+        states={"calculated": [("readonly", False)]},
         help="Awards for participation in games, contests, raffles or "
         "random combinations - In kind - Number of recipients",
     )
     casilla_17 = fields.Monetary(
         string="[17] Taxable",
+        readonly=True,
+        states={"calculated": [("readonly", False)]},
         help="Awards for participation in games, contests, raffles or "
         "random combinations - In kind - Base taxable value",
     )
     casilla_18 = fields.Monetary(
         string="[18] Amount retained",
+        readonly=True,
+        states={"calculated": [("readonly", False)]},
         help="Awards for participation in games, contests, raffles or "
         "random combinations - In kind - Amount retained",
     )
     casilla_19 = fields.Integer(
         string="[19] # Recipients",
+        readonly=True,
+        states={"calculated": [("readonly", False)]},
         help="Capital gains derived from the forest exploitation of "
         "residents in public forests - Monetary - Number of recipients",
     )
     casilla_20 = fields.Monetary(
         string="[20] Taxable",
+        readonly=True,
+        states={"calculated": [("readonly", False)]},
         help="Capital gains derived from the forest exploitation of "
         "residents in public forests - Monetary - Base taxable value",
     )
     casilla_21 = fields.Monetary(
         string="[21] Amount retained",
+        readonly=True,
+        states={"calculated": [("readonly", False)]},
         help="Capital gains derived from the forest exploitation of "
         "residents in public forests - Monetary - Amount retained",
     )
     casilla_22 = fields.Integer(
         string="[22] # Recipients",
+        readonly=True,
+        states={"calculated": [("readonly", False)]},
         help="Capital gains derived from the forest exploitation of "
         "residents in public forests - In kind - Number of recipients",
     )
     casilla_23 = fields.Monetary(
         string="[23] Taxable",
+        readonly=True,
+        states={"calculated": [("readonly", False)]},
         help="Capital gains derived from the forest exploitation of "
         "residents in public forests - In kind - Base taxable value",
     )
     casilla_24 = fields.Monetary(
         string="[24] Amount retained",
+        readonly=True,
+        states={"calculated": [("readonly", False)]},
         help="Capital gains derived from the forest exploitation of "
         "residents in public forests - In kind - Amount retained",
     )
     casilla_25 = fields.Integer(
         string="[25] # Recipients",
+        readonly=True,
+        states={"calculated": [("readonly", False)]},
         help="Consideration for the transfer of image rights: income "
         "account provided in Article 92.8 of the Tax Law - "
         "Monetary or in kind - Number of recipients",
     )
     casilla_26 = fields.Monetary(
         string="[26] Taxable",
+        readonly=True,
+        states={"calculated": [("readonly", False)]},
         help="Consideration for the transfer of image rights: income "
         "account provided in Article 92.8 of the Tax Law - "
         "Monetary or in kind - Base taxable value",
     )
     casilla_27 = fields.Monetary(
         string="[27] Amount retained",
+        readonly=True,
+        states={"calculated": [("readonly", False)]},
         help="Consideration for the transfer of image rights: income "
         "account provided in Article 92.8 of the Tax Law - "
         "Monetary or in kind - Amount retained",
@@ -187,18 +226,22 @@ class L10nEsAeatMod111Report(models.Model):
     casilla_28 = fields.Monetary(
         string="[28] Amount of retentions",
         compute_sudo=True,
+        readonly=True,
         compute="_compute_casilla_28",
         help="Amount of retentions: "
         "([03] + [06] + [09] + [12] + [15] + [18] + [21] + [24] + [27])",
     )
     casilla_29 = fields.Monetary(
         string="[29] Fees to compensate",
+        readonly=True,
+        states={"calculated": [("readonly", False)]},
         help="Fee to compensate for prior results with same subject, "
         "fiscal year and period (in which his statement was to return "
         "and compensation back option was chosen).",
     )
     casilla_30 = fields.Monetary(
         string="[30] Result",
+        readonly=True,
         compute="_compute_casilla_30",
         help="Result: ([28] - [29])",
     )
@@ -210,10 +253,17 @@ class L10nEsAeatMod111Report(models.Model):
             ("N", "To return"),
         ],
         string="Result type",
+        readonly=True,
         default="I",
+        states={"draft": [("readonly", False)]},
         required=True,
     )
-    colegio_concertado = fields.Boolean(string="College concerted", default=False)
+    colegio_concertado = fields.Boolean(
+        string="College concerted",
+        readonly=True,
+        states={"draft": [("readonly", False)]},
+        default=False,
+    )
 
     @api.depends("tax_line_ids", "tax_line_ids.move_line_ids.partner_id")
     def _compute_casilla_01(self):

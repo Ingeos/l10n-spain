@@ -98,9 +98,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/l10n_es_payment_order_confirming_sabadell/models/confirming_sabadell.py:0
 #, python-format
-msgid ""
-"La cuenta bancaria del Proveedor %s                         no tiene "
-"establecido el SWIFT."
+msgid "La cuenta bancaria del Proveedor %s no tiene establecido el SWIFT."
 msgstr ""
 
 #. module: l10n_es_payment_order_confirming_sabadell
@@ -147,14 +145,9 @@ msgid "Sabadell Confirming Configuration"
 msgstr ""
 
 #. module: l10n_es_payment_order_confirming_sabadell
-#: model_terms:ir.ui.view,arch_db:l10n_es_payment_order_confirming_sabadell.account_payment_mode_form
+#: model:ir.model.fields,field_description:l10n_es_payment_order_confirming_sabadell.field_account_payment_mode__conf_sabadell_type
 msgid "Tipo de pago"
 msgstr "Tipus de pagament"
-
-#. module: l10n_es_payment_order_confirming_sabadell
-#: model:ir.model.fields,field_description:l10n_es_payment_order_confirming_sabadell.field_account_payment_mode__conf_sabadell_type
-msgid "Tipo de pago (Sabadell)"
-msgstr ""
 
 #. module: l10n_es_payment_order_confirming_sabadell
 #: model:ir.model.fields,field_description:l10n_es_payment_order_confirming_sabadell.field_account_payment_mode__tipo_envio_info

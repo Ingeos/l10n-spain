@@ -493,6 +493,11 @@ msgid "L.R. VAT number"
 msgstr "NIF repr. legal"
 
 #. module: l10n_es_aeat_mod390
+#: model:ir.model.fields,field_description:l10n_es_aeat_mod390.field_l10n_es_aeat_mod390_report____last_update
+msgid "Last Modified on"
+msgstr "Darrera modificació el"
+
+#. module: l10n_es_aeat_mod390
 #: model:ir.model.fields,field_description:l10n_es_aeat_mod390.field_l10n_es_aeat_mod390_report__write_uid
 msgid "Last Updated by"
 msgstr "Darrera actualització per"
@@ -506,6 +511,11 @@ msgstr "Darrera actualització el"
 #: model:ir.model.fields,help:l10n_es_aeat_mod390.field_l10n_es_aeat_mod390_report__representative_vat
 msgid "Legal Representative VAT number."
 msgstr "NIF del representant legal."
+
+#. module: l10n_es_aeat_mod390
+#: model:ir.model.fields,field_description:l10n_es_aeat_mod390.field_l10n_es_aeat_mod390_report__message_main_attachment_id
+msgid "Main Attachment"
+msgstr "Adjunt principal"
 
 #. module: l10n_es_aeat_mod390
 #: model:ir.model.fields,help:l10n_es_aeat_mod390.field_l10n_es_aeat_mod390_report__has_347
@@ -682,11 +692,6 @@ msgstr "Núm. de la declaració prèvia"
 #: model_terms:ir.ui.view,arch_db:l10n_es_aeat_mod390.view_l10n_es_aeat_mod390_report_form
 msgid "Primer representante"
 msgstr "Primer representant"
-
-#. module: l10n_es_aeat_mod390
-#: model:ir.model.fields,field_description:l10n_es_aeat_mod390.field_l10n_es_aeat_mod390_report__rating_ids
-msgid "Ratings"
-msgstr ""
 
 #. module: l10n_es_aeat_mod390
 #: model:ir.model.fields,field_description:l10n_es_aeat_mod390.field_l10n_es_aeat_mod390_report__name
@@ -1031,8 +1036,32 @@ msgstr "Obligació del 347?"
 #~ "pàgina '9. Resultat liquidacions') no casa amb la casella [86]. Si us "
 #~ "plau, comproveu que les heu omplert."
 
-#~ msgid "Last Modified on"
-#~ msgstr "Darrera modificació el"
+#~ msgid "SMS Delivery error"
+#~ msgstr "Error de lliurament SMS"
 
-#~ msgid "Main Attachment"
-#~ msgstr "Adjunt principal"
+#~ msgid "Number of messages which requires an action"
+#~ msgstr "Nombre de missatges que requereixen una acció"
+
+#~ msgid "Model"
+#~ msgstr "Model"
+
+#~ msgid "Number of unread messages"
+#~ msgstr "Nombre de missatges no llegits"
+
+#~ msgid "Unread Messages"
+#~ msgstr "Missatges per llegir"
+
+#~ msgid "Unread Messages Counter"
+#~ msgstr "Nombre de missatges per llegir"
+
+#~ msgid "Calculation date"
+#~ msgstr "Data de càlcul"
+
+#~ msgid "Contact email"
+#~ msgstr "Email de contacte"
+
+#~ msgid "Followers (Channels)"
+#~ msgstr "Seguidors (canals)"
+
+#~ msgid "Period type"
+#~ msgstr "Tipus de període"

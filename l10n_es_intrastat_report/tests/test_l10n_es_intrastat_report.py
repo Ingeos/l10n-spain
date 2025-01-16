@@ -16,7 +16,7 @@ from ..hooks import post_init_hook
 @tagged("post_install", "-at_install")
 class TestL10nIntraStatReport(AccountTestInvoicingCommon):
     @classmethod
-    def _create_invoice(cls, inv_type, partner, fiscal_pos, product=None):
+    def _create_invoice_for_intrastat(cls, inv_type, partner, fiscal_pos, product=None):
         product = product or cls.product
         if inv_type in ("out_invoice", "in_refund"):
             account = cls.company_data["default_account_revenue"]
@@ -57,7 +57,10 @@ class TestL10nIntraStatReport(AccountTestInvoicingCommon):
 
     @classmethod
     def setUpClass(cls, chart_template_ref=None):
-        super().setUpClass(chart_template_ref="es_full")
+        chart_template_ref = (
+            "l10n_es.account_chart_template_common" or chart_template_ref
+        )
+        super().setUpClass(chart_template_ref=chart_template_ref)
         cls.env = cls.env(context=dict(cls.env.context, **DISABLED_MAIL_CONTEXT))
         # Set current company to Spanish
         intrastat_transport = cls.env["intrastat.transport_mode"].search([], limit=1)
@@ -133,9 +136,8 @@ class TestL10nIntraStatReport(AccountTestInvoicingCommon):
             for partner, fiscal in zip(
                 (cls.partner_1, cls.partner_2),
                 (cls.fiscal_position_b2b, cls.fiscal_position_b2c),
-                strict=True,
             ):
-                invoice = cls._create_invoice(inv_type, partner, fiscal)
+                invoice = cls._create_invoice_for_intrastat(inv_type, partner, fiscal)
                 cls.invoices[declaration_type]["invoices"].append(invoice)
                 cls.invoices[declaration_type][partner.country_id] += 1
 
@@ -154,7 +156,7 @@ class TestL10nIntraStatReport(AccountTestInvoicingCommon):
                 "res_id": fp.id,
             }
         )
-        post_init_hook(self.env)
+        post_init_hook(self.env.cr, None)
         fp = self.env["account.fiscal.position"].browse(item.res_id)
         self.assertTrue(fp.intrastat)
 

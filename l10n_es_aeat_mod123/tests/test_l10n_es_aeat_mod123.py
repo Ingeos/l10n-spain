@@ -63,9 +63,7 @@ class TestL10nEsAeatMod123(TestL10nEsAeatModBase):
         # Check tax lines
         for box, result in self.taxes_result.items():
             _logger.debug("Checking tax line: %s" % box)
-            lines = model123.tax_line_ids.filtered(
-                lambda x, box=box: x.field_number == int(box)
-            )
+            lines = model123.tax_line_ids.filtered(lambda x: x.field_number == int(box))
             self.assertAlmostEqual(sum(lines.mapped("amount")), result, 2)
         self.assertEqual(model123.casilla_08, 627.0)
         self.assertEqual(model123.amount_result, 627.0)
@@ -117,9 +115,7 @@ class TestL10nEsAeatMod123(TestL10nEsAeatModBase):
         # Check tax lines
         for box, result in self.taxes_result.items():
             _logger.debug("Checking tax line: %s" % box)
-            lines = model123.tax_line_ids.filtered(
-                lambda x, box=box: x.field_number == int(box)
-            )
+            lines = model123.tax_line_ids.filtered(lambda x: x.field_number == int(box))
             self.assertAlmostEqual(sum(lines.mapped("amount")), result, 2)
         # Check result
         _logger.debug("Checking results")

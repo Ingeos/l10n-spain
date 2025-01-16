@@ -8,6 +8,7 @@ from odoo.exceptions import UserError, ValidationError
 
 
 class L10nEsAeatMod115Report(models.Model):
+
     _description = "AEAT 115 report"
     _inherit = "l10n.es.aeat.report.tax.mapping"
     _name = "l10n.es.aeat.mod115.report"
@@ -15,22 +16,27 @@ class L10nEsAeatMod115Report(models.Model):
 
     casilla_01 = fields.Integer(
         string="[01] # Recipients",
+        readonly=True,
         compute="_compute_casilla_01",
         help="Number of recipients",
     )
     casilla_03 = fields.Float(
         string="[03] Amount of retentions",
+        readonly=True,
         compute="_compute_casilla_03",
         help="Amount of retentions",
     )
     casilla_04 = fields.Float(
         string="[04] Fees to compensate",
+        readonly=True,
+        states={"calculated": [("readonly", False)]},
         help="Fee to compensate for prior results with same subject, "
         "fiscal year and period (in which his statement was to return "
         "and compensation back option was chosen).",
     )
     casilla_05 = fields.Float(
         string="[05] Result",
+        readonly=True,
         compute="_compute_casilla_05",
         help="Result: ([03] - [04])",
     )
@@ -43,6 +49,8 @@ class L10nEsAeatMod115Report(models.Model):
         ],
         string="Result type",
         default="N",
+        readonly=True,
+        states={"draft": [("readonly", False)]},
         required=True,
     )
     tipo_declaracion_positiva = fields.Selection(

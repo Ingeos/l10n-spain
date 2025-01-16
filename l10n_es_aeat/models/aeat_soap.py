@@ -12,7 +12,7 @@ try:
     from zeep import Client
     from zeep.plugins import HistoryPlugin
     from zeep.transports import Transport
-except (OSError, ImportError) as err:
+except (ImportError, IOError) as err:
     _logger.debug(err)
 
 

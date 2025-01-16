@@ -42,7 +42,7 @@ class TestDeliveryGlsAsm(common.TransactionCase):
         cls.sale_order.carrier_id = cls.carrier_gls_asm.id
         cls.sale_order.action_confirm()
         cls.picking = cls.sale_order.picking_ids
-        cls.picking.move_ids.quantity = 20
+        cls.picking.move_ids.quantity_done = 20
         cls.picking.number_of_packages = 1
 
     def test_01_gls_picking_confirm_simple(self):
@@ -50,10 +50,10 @@ class TestDeliveryGlsAsm(common.TransactionCase):
         # GLS API prevents duplicated references so in order to test we need a
         # unique key that doesn't collide with any CI around, as every test really
         # records an expedition
-        self.picking.name = f"ODOO-TEST-{time.time()}"
+        self.picking.name = "ODOO-TEST-{}".format(time.time())
         with self.assertRaises(UserError):
             self.picking.button_validate()
-        self.picking.name = f"ODOO-{int(time.time())}"
+        self.picking.name = "ODOO-{}".format(int(time.time()))
         self.picking.button_validate()
         self.assertTrue(self.picking.carrier_tracking_ref)
         self.assertTrue(self.picking.gls_asm_public_tracking_ref)
