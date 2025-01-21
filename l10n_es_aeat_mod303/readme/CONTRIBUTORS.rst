@@ -14,8 +14,3 @@
 * `Ozono Multimedia <https://www.ozonomultimedia.com>`__:
 
   * Iván Antón
-
-* `Moduon <https://www.moduon.team/>`__:
-
-  * Arantxa Sudón
-  * Rafael Blasco

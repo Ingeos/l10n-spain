@@ -17,9 +17,9 @@
                 <separator position="replace">
                     <group attrs="{'invisible': [('import_fail', '=', True)]}">
                         <p
-                            colspan="2"
+                            colspan="4"
                         >This wizard will import spanish bank data. You can choose to import it from:</p>
-                        <ul colspan="2">
+                        <ul>
                             <li
                             >Internet (from Bank of Spain). Maybe this source will be not available from certain moment in time. You will need xlrd Python library.</li>
                             <li
@@ -27,7 +27,7 @@
                         </ul>
                     </group>
                     <label
-                        colspan="2"
+                        colspan="4"
                         for="import_fail"
                         attrs="{'invisible': [('import_fail', '=', False)]}"
                         string="Something has failed importing data from Internet. You will need to import local data instead."

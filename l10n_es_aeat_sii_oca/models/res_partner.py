@@ -8,18 +8,18 @@ class ResPartner(models.Model):
     _inherit = "res.partner"
 
     sii_enabled = fields.Boolean(
-        compute="_compute_aeat_sending_enabled",
+        compute="_compute_sii_enabled",
+    )
+    sii_simplified_invoice = fields.Boolean(
+        string="Simplified invoices in SII?",
+        help="Checking this mark, invoices done to this partner will be "
+        "sent to SII as simplified invoices.",
     )
 
     @api.depends("company_id")
-    def _compute_aeat_sending_enabled(self):
-        res = super()._compute_aeat_sending_enabled()
+    def _compute_sii_enabled(self):
         sii_enabled = any(self.env.companies.mapped("sii_enabled"))
         for partner in self:
-            sii_enabled = (
+            partner.sii_enabled = (
                 partner.company_id.sii_enabled if partner.company_id else sii_enabled
             )
-            partner.sii_enabled = sii_enabled
-            if sii_enabled:
-                partner.aeat_sending_enabled = True
-        return res

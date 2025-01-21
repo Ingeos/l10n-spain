@@ -12,7 +12,6 @@
                     <group>
                         <group name="aeat_config">
                             <field name="tax_agency_id" />
-                            <field name="representative_vat" />
                         </group>
                     </group>
                 </page>

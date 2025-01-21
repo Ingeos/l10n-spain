@@ -1,14 +1,14 @@
 # Copyright 2021 Tecnativa - João Marques
-# Copyright 2023 Tecnativa - Víctor Martínez
 
 from datetime import datetime
+
+from psycopg2.errors import NotNullViolation
 
 from odoo import _
 from odoo.tests import tagged
 from odoo.tests.common import Form
 
 from odoo.addons.account.tests.common import AccountTestInvoicingCommon
-from odoo.addons.base.tests.common import DISABLED_MAIL_CONTEXT
 
 from ..hooks import post_init_hook
 
@@ -16,7 +16,7 @@ from ..hooks import post_init_hook
 @tagged("post_install", "-at_install")
 class TestL10nIntraStatReport(AccountTestInvoicingCommon):
     @classmethod
-    def _create_invoice_for_intrastat(cls, inv_type, partner, fiscal_pos, product=None):
+    def _create_invoice(cls, inv_type, partner, product=None):
         product = product or cls.product
         if inv_type in ("out_invoice", "in_refund"):
             account = cls.company_data["default_account_revenue"]
@@ -32,7 +32,7 @@ class TestL10nIntraStatReport(AccountTestInvoicingCommon):
             move_form.partner_shipping_id = (
                 partner_shipping if partner_shipping else partner
             )
-        move_form.fiscal_position_id = fiscal_pos
+        move_form.fiscal_position_id = cls.fiscal_position
         move_form.invoice_date = datetime.today()
         with move_form.invoice_line_ids.new() as line_form:
             line_form.name = "test"
@@ -61,38 +61,24 @@ class TestL10nIntraStatReport(AccountTestInvoicingCommon):
             "l10n_es.account_chart_template_common" or chart_template_ref
         )
         super().setUpClass(chart_template_ref=chart_template_ref)
-        cls.env = cls.env(context=dict(cls.env.context, **DISABLED_MAIL_CONTEXT))
         # Set current company to Spanish
         intrastat_transport = cls.env["intrastat.transport_mode"].search([], limit=1)
         cls.env.user.company_id.write(
             {
                 "country_id": cls.env.ref("base.es").id,
-                "state_id": cls.env.ref("base.state_es_a").id,
                 "incoterm_id": cls.env.ref("account.incoterm_FCA").id,
                 "intrastat_transport_id": intrastat_transport.id,
-                "vat": "ESA12345674",
             }
         )
         cls.env.user.groups_id += cls.env.ref("account.group_delivery_invoice_address")
-        cls.fiscal_position_b2b = cls.env["account.fiscal.position"].create(
-            {
-                "name": "B2B FP",
-                "company_id": cls.env.company.id,
-                "intrastat": "b2b",
-                "vat_required": True,
-            }
+        cls.fiscal_position = cls.env["account.fiscal.position"].search(
+            [("name", "=", "EU privado"), ("company_id", "=", cls.env.company.id)],
+            limit=1,
         )
-        cls.fiscal_position_b2c = cls.env["account.fiscal.position"].create(
-            {
-                "name": "B2C FP",
-                "company_id": cls.env.company.id,
-                "intrastat": "b2c",
-                "vat_required": False,
-            }
-        )
+        cls.fiscal_position.write({"intrastat": "b2b", "vat_required": True})
         # Create Intrastat partners
         cls.partner_1 = cls.env["res.partner"].create(
-            {"name": "Test Partner FR", "country_id": cls.env.ref("base.fr").id}
+            {"name": "Test Partner FR", "country_id": cls.env.ref("base.es").id}
         )
         cls.env["res.partner"].create(
             {
@@ -133,11 +119,8 @@ class TestL10nIntraStatReport(AccountTestInvoicingCommon):
             declaration_type = (
                 "dispatches" if inv_type in ("out_invoice", "in_refund") else "arrivals"
             )
-            for partner, fiscal in zip(
-                (cls.partner_1, cls.partner_2),
-                (cls.fiscal_position_b2b, cls.fiscal_position_b2c),
-            ):
-                invoice = cls._create_invoice_for_intrastat(inv_type, partner, fiscal)
+            for partner in (cls.partner_1, cls.partner_2):
+                invoice = cls._create_invoice(inv_type, partner)
                 cls.invoices[declaration_type]["invoices"].append(invoice)
                 cls.invoices[declaration_type][partner.country_id] += 1
 
@@ -171,10 +154,6 @@ class TestL10nIntraStatReport(AccountTestInvoicingCommon):
                 self.assertEqual(line.suppl_unit_qty, fr_qty)
             if line.src_dest_country_code == self.env.ref("base.pt").code:
                 self.assertEqual(line.suppl_unit_qty, pt_qty)
-            self.assertTrue(line.intrastat_state_id)
-            self.assertTrue(line.incoterm_id)
-            if line.declaration_type == "dispatches":
-                self.assertTrue(line.partner_vat)
 
     def test_report_creation_dispatches(self):
         # Generate report
@@ -184,9 +163,7 @@ class TestL10nIntraStatReport(AccountTestInvoicingCommon):
             self.invoices["dispatches"]["invoices"],
             report_dispatches.computation_line_ids,
         )
-        report_dispatches.draft2confirmed()
-        report_dispatches.confirmed2done()
-        self.assertEqual(report_dispatches.state, "done")
+        report_dispatches.generate_declaration()
         self.assertEqual(
             len(report_dispatches.declaration_line_ids), 2
         )  # One line for each country
@@ -207,7 +184,6 @@ class TestL10nIntraStatReport(AccountTestInvoicingCommon):
             self.assertTrue(items[0] in ("PT", "FR"))
             self.assertEqual(items[6], self.hs_code.local_code)
 
-    # TODO: Remove if a test is added in intrastat_product to test it
     def test_report_creation_dispatches_notes_and_lines(self):
         # Generate report
         self.product.origin_country_id = False
@@ -220,14 +196,15 @@ class TestL10nIntraStatReport(AccountTestInvoicingCommon):
         report_dispatches.action_gather()
         for expected_note in expected_notes:
             self.assertIn(expected_note, report_dispatches.note)
+        with self.assertRaises(NotNullViolation):
+            report_dispatches.generate_declaration()
+        self.assertEqual(len(report_dispatches.declaration_line_ids), 0)
         # # Change data to remove some notes and create lines
         self.product.origin_country_id = self.env.ref("base.fr")
         self.partner_1.vat = "FR23334175221"
         self.partner_2.vat = "FR23334175221"
         report_dispatches.action_gather()
-        report_dispatches.draft2confirmed()
-        report_dispatches.confirmed2done()
-        self.assertEqual(report_dispatches.state, "done")
+        report_dispatches.generate_declaration()
         self.assertEqual(
             len(report_dispatches.declaration_line_ids), len(expected_invoices) / 2
         )
@@ -241,9 +218,7 @@ class TestL10nIntraStatReport(AccountTestInvoicingCommon):
         self._check_move_lines_present(
             self.invoices["arrivals"]["invoices"], report_arrivals.computation_line_ids
         )
-        report_arrivals.draft2confirmed()
-        report_arrivals.confirmed2done()
-        self.assertEqual(report_arrivals.state, "done")
+        report_arrivals.generate_declaration()
         self.assertEqual(
             len(report_arrivals.declaration_line_ids), 2
         )  # One line for each country

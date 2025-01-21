@@ -73,9 +73,6 @@ class AccountMove(models.Model):
         inverse_name="move_id",
         copy=False,
     )
-    facturae_file_reference = fields.Char()
-    facturae_receiver_transaction_reference = fields.Char()
-    facturae_receiver_contract_reference = fields.Char()
 
     @api.constrains("facturae_start_date", "facturae_end_date")
     def _check_facturae_date(self):
@@ -142,25 +139,16 @@ class AccountMove(models.Model):
                 raise ValidationError(
                     _("Taxes not provided in move line " "%s") % line.name
                 )
-        if self.state not in self._get_valid_move_statuses():
-            raise ValidationError(
-                _(
-                    "You can only create Facturae files for "
-                    "moves that have been validated."
-                )
-            )
         if not self.partner_id.vat:
             raise ValidationError(_("Partner vat not provided"))
-        if not self.partner_id.street:
-            raise ValidationError(_("Partner street address is not provided"))
+        if not self.company_id.partner_id.vat:
+            raise ValidationError(_("Company vat not provided"))
         if len(self.partner_id.vat) < 3:
             raise ValidationError(_("Partner vat is too small"))
         if not self.partner_id.state_id:
             raise ValidationError(_("Partner state not provided"))
-        if not self.partner_id.unidad_tramitadora:
-            raise ValidationError(_("Unidad Tramitadora not provided"))
-        if not self.partner_id.oficina_contable:
-            raise ValidationError(_("Oficina Contable not provided"))
+        if len(self.company_id.vat) < 3:
+            raise ValidationError(_("Company vat is too small"))
         if not self.payment_mode_id:
             raise ValidationError(_("Payment mode is required"))
         if self.payment_mode_id.facturae_code:
@@ -173,24 +161,13 @@ class AccountMove(models.Model):
                 raise ValidationError(_("Selected account BIC must be 11"))
             if partner_bank and len(partner_bank.acc_number) < 5:
                 raise ValidationError(_("Selected account is too small"))
-        self.validate_company_facturae_fields(self.company_id)
-        return
-
-    def validate_company_facturae_fields(self, company_id):
-        if not company_id.partner_id.vat:
-            raise ValidationError(_("Company vat not provided"))
-        if not company_id.partner_id.street:
-            raise ValidationError(_("Company street not provided"))
-        if not company_id.partner_id.city:
-            raise ValidationError(_("Company city not provided"))
-        if not company_id.partner_id.state_id:
-            raise ValidationError(_("Company state not provided"))
-        if not company_id.partner_id.country_id:
-            raise ValidationError(_("Company country not provided"))
-        if not company_id.partner_id.zip:
-            raise ValidationError(_("Company zip not provided"))
-        if len(company_id.vat) < 3:
-            raise ValidationError(_("Company vat is too small"))
+        if self.state not in self._get_valid_move_statuses():
+            raise ValidationError(
+                _(
+                    "You can only create Facturae files for "
+                    "moves that have been validated."
+                )
+            )
         return
 
     def _get_facturae_move_attachments(self):
@@ -201,7 +178,7 @@ class AccountMove(models.Model):
             )
             result.append(
                 {
-                    "data": base64.b64encode(content).decode("utf-8"),
+                    "data": base64.b64encode(content),
                     "content_type": content_type,
                     "encoding": "BASE64",
                     "description": _("Invoice %s") % self.name,
@@ -250,22 +227,9 @@ class AccountMove(models.Model):
                     withheld_taxes[tax]["amount"] += tax_amount
         return output_taxes, withheld_taxes
 
-    def get_facturae_hide_discount(self):
-        return (
-            self.partner_id.facturae_hide_discount
-            or self.commercial_partner_id.facturae_hide_discount
-            or self.company_id.facturae_hide_discount
-        )
-
     def get_narration(self):
         self.ensure_one()
         return html2plaintext(self.narration)
-
-    def _get_facturae_headers(self):
-        return 'xmlns:ds="http://www.w3.org/2000/09/xmldsig#"'
-
-    def _facturae_has_extensions(self):
-        return False
 
 
 class AccountMoveLine(models.Model):
@@ -333,24 +297,6 @@ class AccountMoveLine(models.Model):
             return taxes_res["total_excluded"]
         else:
             return subtotal
-
-    def _facturae_get_price_unit(self):
-        # Se añade esta funcionalidad para el caso en el cual algún impuesto de la
-        # factura sea con el precio incluido. De esta forma se obtiene siemrpe el
-        # precio sin impuestos. Como es el precio unitario lo que se calcula, no se
-        # deben tener en cuenta los descuentos que pueda tener la factura
-        self.ensure_one()
-        if any(tax.price_include for tax in self.tax_ids):
-            taxes_res = self.tax_ids.compute_all(
-                self.price_unit,
-                quantity=1.0,
-                currency=self.currency_id,
-                product=self.product_id,
-                partner=self.partner_id,
-                is_refund=self.is_refund,
-            )
-            return taxes_res["total_excluded"]
-        return self.price_unit
 
 
 class L10nEsFacturaeAttachment(models.Model):

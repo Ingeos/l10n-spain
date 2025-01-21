@@ -16,26 +16,26 @@
                     name="group_sii"
                     attrs="{'invisible': [('sii_enabled', '=', False)]}"
                 >
-                    <field name="aeat_active" />
+                    <field name="sii_active" />
                     <field
                         name="sii_registration_key_sale"
-                        attrs="{'invisible': [('aeat_active', '!=', True)]}"
+                        attrs="{'invisible': [('sii_active', '!=', True)]}"
                     />
                     <field
                         name="sii_registration_key_purchase"
-                        attrs="{'invisible': [('aeat_active', '!=', True)]}"
+                        attrs="{'invisible': [('sii_active', '!=', True)]}"
                     />
                     <field
                         name="sii_no_taxable_cause"
-                        attrs="{'invisible': [('aeat_active', '!=', True)]}"
+                        attrs="{'invisible': [('sii_active', '!=', True)]}"
                     />
                     <field
                         name="sii_exempt_cause"
-                        attrs="{'invisible': [('aeat_active', '!=', True)]}"
+                        attrs="{'invisible': [('sii_active', '!=', True)]}"
                     />
                     <field
                         name="sii_partner_identification_type"
-                        attrs="{'invisible': [('aeat_active', '!=', True)]}"
+                        attrs="{'invisible': [('sii_active', '!=', True)]}"
                     />
                 </group>
             </xpath>

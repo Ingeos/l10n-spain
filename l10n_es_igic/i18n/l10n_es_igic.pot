@@ -34,11 +34,6 @@ msgid "IGIC 3%"
 msgstr ""
 
 #. module: l10n_es_igic
-#: model:account.tax.group,name:l10n_es_igic.tax_group_igic_5
-msgid "IGIC 5%"
-msgstr ""
-
-#. module: l10n_es_igic
 #: model:account.tax.group,name:l10n_es_igic.tax_group_igic_7
 msgid "IGIC 7%"
 msgstr ""
@@ -66,11 +61,6 @@ msgstr ""
 #. module: l10n_es_igic
 #: model:account.tax.group,name:l10n_es_igic.tax_group_igic_re_03
 msgid "IGIC Recargo de Equivalencia 0,3%"
-msgstr ""
-
-#. module: l10n_es_igic
-#: model:account.tax.group,name:l10n_es_igic.tax_group_igic_re_05
-msgid "IGIC Recargo de Equivalencia 0,5%"
 msgstr ""
 
 #. module: l10n_es_igic

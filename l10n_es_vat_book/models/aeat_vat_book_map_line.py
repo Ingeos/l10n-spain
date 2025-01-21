@@ -32,7 +32,6 @@ class AeatVatBookMapLines(models.Model):
         comodel_name="account.account.template",
         string="Tax Account Restriction",
     )
-    tax_agency_ids = fields.Many2many("aeat.tax.agency", string="Tax Agency")
 
     def get_taxes(self, report):
         self.ensure_one()

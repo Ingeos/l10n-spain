@@ -3,11 +3,7 @@
 # (c) 2019 Acysos S.L.
 # License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html
 
-from cryptography import x509
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives.serialization import Encoding
-
-from odoo import _, api, exceptions, fields, models
+from odoo import _, exceptions, fields, models
 
 
 class L10nEsAeatCertificate(models.Model):
@@ -24,8 +20,6 @@ class L10nEsAeatCertificate(models.Model):
     date_start = fields.Date(string="Start Date")
     date_end = fields.Date(string="End Date")
     public_key = fields.Char(readonly=True)
-    show_public_key = fields.Boolean(store=False)
-    public_key_data = fields.Text(readonly=True, store=False)
     private_key = fields.Char(readonly=True)
     company_id = fields.Many2one(
         comodel_name="res.company",
@@ -33,17 +27,6 @@ class L10nEsAeatCertificate(models.Model):
         required=True,
         default=lambda self: self.env.company,
     )
-
-    @api.onchange("show_public_key")
-    def onchange_public_key_data(self):
-        if not self.show_public_key:
-            self.public_key_data = ""
-            return
-        with open(self.public_key, "rb") as f:
-            certificate = x509.load_pem_x509_certificate(
-                f.read(), backend=default_backend()
-            )
-        self.public_key_data = certificate.public_bytes(Encoding.PEM)
 
     def load_password_wizard(self):
         self.ensure_one()

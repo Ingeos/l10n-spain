@@ -334,12 +334,9 @@ class L10nEsVatBook(models.Model):
 
     @ormcache("self.id")
     def get_special_taxes_dic(self):
-        domain = [("special_tax_group", "!=", False)]
-        if self.tax_agency_ids:
-            domain += [
-                ("tax_agency_ids", "in", [False] + self.tax_agency_ids.ids),
-            ]
-        map_lines = self.env["aeat.vat.book.map.line"].search(domain)
+        map_lines = self.env["aeat.vat.book.map.line"].search(
+            [("special_tax_group", "!=", False)]
+        )
         special_dic = {}
         for map_line in map_lines:
             for tax in map_line.get_taxes(self):
@@ -440,12 +437,9 @@ class L10nEsVatBook(models.Model):
             # Searches for all possible usable lines to report
             moves = rec._get_account_move_lines()
             for book_type in ["issued", "received"]:
-                domain = [("book_type", "=", book_type)]
-                if rec.tax_agency_ids:
-                    domain += [
-                        ("tax_agency_ids", "in", [False] + rec.tax_agency_ids.ids),
-                    ]
-                map_lines = self.env["aeat.vat.book.map.line"].search(domain)
+                map_lines = self.env["aeat.vat.book.map.line"].search(
+                    [("book_type", "=", book_type)]
+                )
                 taxes = self.env["account.tax"]
                 accounts = {}
                 for map_line in map_lines:
@@ -468,8 +462,7 @@ class L10nEsVatBook(models.Model):
                     lines = moves.filtered(
                         lambda line: (line.tax_ids | line.tax_line_id) & taxes
                     )
-                if map_lines:
-                    rec.create_vat_book_lines(lines, map_lines[:1].book_type, taxes)
+                rec.create_vat_book_lines(lines, map_line.book_type, taxes)
             # Issued
             book_type = "issued"
             issued_tax_lines = rec.issued_line_ids.mapped("tax_line_ids")

@@ -104,5 +104,4 @@ class TestPaymentOrderOutboundBaseAEF(TestPaymentOrderOutboundBase):
                 ],
             }
         )
-        self.invoice.partner_bank_id = self.partner.bank_ids[-1].id
         self.order_creation(False)
