@@ -400,6 +400,16 @@ msgid "Journal in which post the move."
 msgstr ""
 
 #. module: l10n_es_vat_book
+#: model:ir.model.fields,field_description:l10n_es_vat_book.field_l10n_es_vat_book_tax_summary__move_line_ids
+msgid "Journal items"
+msgstr ""
+
+#. module: l10n_es_vat_book
+#: model:ir.model.fields,field_description:l10n_es_vat_book.field_l10n_es_vat_book_tax_summary__base_move_line_ids
+msgid "Journal items (Base)"
+msgstr ""
+
+#. module: l10n_es_vat_book
 #: model:ir.model.fields,field_description:l10n_es_vat_book.field_l10n_es_vat_book__representative_vat
 msgid "L.R. VAT number"
 msgstr ""
@@ -473,6 +483,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:l10n_es_vat_book.field_l10n_es_vat_book_line_tax__move_line_ids
 #: model_terms:ir.ui.view,arch_db:l10n_es_vat_book.view_vat_book_line_form
 msgid "Move Lines"
+msgstr ""
+
+#. module: l10n_es_vat_book
+#: model:ir.model.fields,field_description:l10n_es_vat_book.field_l10n_es_vat_book_line_tax__base_move_line_ids
+msgid "Move Lines (Base)"
 msgstr ""
 
 #. module: l10n_es_vat_book
@@ -623,6 +638,11 @@ msgid "Responsible User"
 msgstr ""
 
 #. module: l10n_es_vat_book
+#: model_terms:ir.ui.view,arch_db:l10n_es_vat_book.view_vat_book_tax_summary_tree
+msgid "Show journal items"
+msgstr ""
+
+#. module: l10n_es_vat_book
 #: model:ir.model,name:l10n_es_vat_book.model_l10n_es_vat_book_line
 msgid "Spanish VAT book line"
 msgstr ""
@@ -728,6 +748,12 @@ msgstr ""
 #. module: l10n_es_vat_book
 #: model:ir.model.fields,field_description:l10n_es_vat_book.field_aeat_vat_book_map_line__tax_account_id
 msgid "Tax Account Restriction"
+msgstr ""
+
+#. module: l10n_es_vat_book
+#: model:ir.model.fields,field_description:l10n_es_vat_book.field_aeat_vat_book_map_line__tax_agency_ids
+#: model:ir.model.fields,field_description:l10n_es_vat_book.field_l10n_es_vat_book__tax_agency_ids
+msgid "Tax Agency"
 msgstr ""
 
 #. module: l10n_es_vat_book

@@ -21,6 +21,7 @@
                             string="Razón social"
                             options="{'no_create_edit': True}"
                         />
+                        <field name="state" invisible="1" />
                     </group>
                     <group>
                         <group>
@@ -84,6 +85,7 @@
                             <field
                                 name="ingresos_a_cuenta_repercutidos"
                                 string="Ingresos a cuenta repercutidos"
+                                attrs="{'readonly': [('state', '!=', 'calculated')]}"
                             />
                         </group>
                         <group
@@ -112,6 +114,7 @@
                             <field
                                 name="ingresos_a_cuenta_repercutidos_incap"
                                 string="Ingresos a cuenta en especie"
+                                attrs="{'readonly': [('state', '!=', 'calculated')]}"
                             />
                         </group>
                     </group>
@@ -130,6 +133,7 @@
                                         string="Movilidad geográfica"
                                     />
                                 </group>
+                                <!-- TODO: Limitar a las claves A, B.01, B.03 y C-->
                                 <group>
                                     <field
                                         name="situacion_familiar"
@@ -174,6 +178,7 @@
                                 </group>
                             </group>
                         </page>
+                        <!-- TODO: Limitar a las claves A, B.01, B.03 y C-->
                         <page string="Decendents">
                             <group col="3">
                                 <group string="Lower than 3 years">

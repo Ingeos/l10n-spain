@@ -432,6 +432,11 @@ msgid "Support Type"
 msgstr ""
 
 #. module: l10n_es_aeat_mod115
+#: model:ir.model.fields,field_description:l10n_es_aeat_mod115.field_l10n_es_aeat_mod115_report__tax_agency_ids
+msgid "Tax Agency"
+msgstr ""
+
+#. module: l10n_es_aeat_mod115
 #: model:ir.model.fields,field_description:l10n_es_aeat_mod115.field_l10n_es_aeat_mod115_report__tax_line_ids
 #: model_terms:ir.ui.view,arch_db:l10n_es_aeat_mod115.view_l10n_es_aeat_mod115_report_form
 msgid "Tax lines"
@@ -493,6 +498,11 @@ msgstr ""
 #. module: l10n_es_aeat_mod115
 #: model:ir.model.fields,field_description:l10n_es_aeat_mod115.field_l10n_es_aeat_mod115_report__company_vat
 msgid "VAT number"
+msgstr ""
+
+#. module: l10n_es_aeat_mod115
+#: model:ir.model.fields,field_description:l10n_es_aeat_mod115.field_l10n_es_aeat_mod115_report__valued_tax_line_ids
+msgid "Valued tax lines"
 msgstr ""
 
 #. module: l10n_es_aeat_mod115

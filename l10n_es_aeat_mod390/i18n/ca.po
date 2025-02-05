@@ -212,6 +212,13 @@ msgid "Bank account"
 msgstr "Compte bancari"
 
 #. module: l10n_es_aeat_mod390
+#: model:ir.model.fields,field_description:l10n_es_aeat_mod390.field_account_bank_statement_line__is_bankrupcy_uncollectible_debt
+#: model:ir.model.fields,field_description:l10n_es_aeat_mod390.field_account_move__is_bankrupcy_uncollectible_debt
+#: model:ir.model.fields,field_description:l10n_es_aeat_mod390.field_account_payment__is_bankrupcy_uncollectible_debt
+msgid "Bankrupcy/uncollectible debt"
+msgstr ""
+
+#. module: l10n_es_aeat_mod390
 #: model:ir.model.fields,field_description:l10n_es_aeat_mod390.field_l10n_es_aeat_mod390_report__calculation_date
 msgid "Calculation Date"
 msgstr "Data de càlcul"
@@ -446,6 +453,21 @@ msgid "If checked, some messages have a delivery error."
 msgstr "Si està marcat, hi ha missatges que tenen un error de lliurament."
 
 #. module: l10n_es_aeat_mod390
+#: model:ir.model.fields,help:l10n_es_aeat_mod390.field_l10n_es_aeat_mod390_report__use_303
+msgid ""
+"If it's checked, this report uses 303 reports for calculate fields 85, 95, "
+"97, 98 and 662. When it's unchecked, you should fill them in. If you "
+"calculated first and then checked this option, you must calculate it again."
+msgstr ""
+
+#. module: l10n_es_aeat_mod390
+#: model_terms:ir.ui.view,arch_db:l10n_es_aeat_mod390.view_l10n_es_aeat_mod390_report_form
+msgid ""
+"If you do not want to use the 303 reports for the automatic calculation,\n"
+"                        uncheck \"<b>Use 303 reports</b>\" option."
+msgstr ""
+
+#. module: l10n_es_aeat_mod390
 #: model:ir.model.fields,field_description:l10n_es_aeat_mod390.field_l10n_es_aeat_mod390_report__message_is_follower
 msgid "Is Follower"
 msgstr "És seguidor"
@@ -454,6 +476,11 @@ msgstr "És seguidor"
 #: model:ir.model.fields,field_description:l10n_es_aeat_mod390.field_l10n_es_aeat_mod390_report__journal_id
 msgid "Journal"
 msgstr "Diari"
+
+#. module: l10n_es_aeat_mod390
+#: model:ir.model,name:l10n_es_aeat_mod390.model_account_move
+msgid "Journal Entry"
+msgstr ""
 
 #. module: l10n_es_aeat_mod390
 #: model:ir.model.fields,help:l10n_es_aeat_mod390.field_l10n_es_aeat_mod390_report__journal_id
@@ -761,6 +788,11 @@ msgid "Support Type"
 msgstr "Tipus de suport"
 
 #. module: l10n_es_aeat_mod390
+#: model:ir.model.fields,field_description:l10n_es_aeat_mod390.field_l10n_es_aeat_mod390_report__tax_agency_ids
+msgid "Tax Agency"
+msgstr ""
+
+#. module: l10n_es_aeat_mod390
 #: model:ir.model.fields,field_description:l10n_es_aeat_mod390.field_l10n_es_aeat_mod390_report__tax_line_ids
 #: model_terms:ir.ui.view,arch_db:l10n_es_aeat_mod390.view_l10n_es_aeat_mod390_report_form
 msgid "Tax lines"
@@ -776,13 +808,10 @@ msgstr "Tercer representant"
 #: code:addons/l10n_es_aeat_mod390/models/mod390.py:0
 #, python-format
 msgid ""
-"The result of the manual 303 summary (fields [95], [97] and [98] in the page "
-"'9. Resultado liquidaciones') doesn't match the field [86]. Please check if "
-"you have filled such fields."
+"The result of the manual 303 summary (fields [95], [97], [98] and [662] in "
+"the page '9. Resultado liquidaciones') doesn't match the field [86]. Please "
+"check if you have filled such fields."
 msgstr ""
-"El resultat del resum manual del 303 (caselles [95], [97] i [98] a la pàgina "
-"'9. Resultat liquidacions') no casa amb la casella [86]. Si us plau, "
-"comproveu que les heu omplert."
 
 #. module: l10n_es_aeat_mod390
 #: model:ir.model.fields,help:l10n_es_aeat_mod390.field_l10n_es_aeat_mod390_report__counterpart_account_id
@@ -794,14 +823,34 @@ msgstr ""
 "estan regularitzats al comptabilitzar l'informe."
 
 #. module: l10n_es_aeat_mod390
+#: model_terms:ir.ui.view,arch_db:l10n_es_aeat_mod390.view_l10n_es_aeat_mod390_report_form
+msgid ""
+"This is using the 303 reports for automatic calculations in the <b>fields "
+"85, 95, 97, 98 and 662</b>. The calculations\n"
+"                        may not be correct if there are duplicated or out-of-"
+"date 303 reports."
+msgstr ""
+
+#. module: l10n_es_aeat_mod390
 #: model:ir.model.fields,help:l10n_es_aeat_mod390.field_l10n_es_aeat_mod390_report__activity_exception_decoration
 msgid "Type of the exception activity on record."
 msgstr "Tipus d'activitat d'excepció al registre."
 
 #. module: l10n_es_aeat_mod390
+#: model:ir.model.fields,field_description:l10n_es_aeat_mod390.field_l10n_es_aeat_mod390_report__use_303
+msgid "Use 303 reports"
+msgstr ""
+
+#. module: l10n_es_aeat_mod390
 #: model:ir.model.fields,field_description:l10n_es_aeat_mod390.field_l10n_es_aeat_mod390_report__company_vat
 msgid "VAT number"
 msgstr "NIF"
+
+#. module: l10n_es_aeat_mod390
+#: model:ir.model.fields,field_description:l10n_es_aeat_mod390.field_l10n_es_aeat_mod390_report__valued_tax_line_ids
+#: model_terms:ir.ui.view,arch_db:l10n_es_aeat_mod390.view_l10n_es_aeat_mod390_report_form
+msgid "Valued tax lines"
+msgstr ""
 
 #. module: l10n_es_aeat_mod390
 #: model:ir.model.fields,field_description:l10n_es_aeat_mod390.field_l10n_es_aeat_mod390_report__website_message_ids
@@ -812,6 +861,15 @@ msgstr "Missatges del lloc web"
 #: model:ir.model.fields,help:l10n_es_aeat_mod390.field_l10n_es_aeat_mod390_report__website_message_ids
 msgid "Website communication history"
 msgstr "Historial de comunicacions del lloc web"
+
+#. module: l10n_es_aeat_mod390
+#: model:ir.model.fields,help:l10n_es_aeat_mod390.field_account_bank_statement_line__is_bankrupcy_uncollectible_debt
+#: model:ir.model.fields,help:l10n_es_aeat_mod390.field_account_move__is_bankrupcy_uncollectible_debt
+#: model:ir.model.fields,help:l10n_es_aeat_mod390.field_account_payment__is_bankrupcy_uncollectible_debt
+msgid ""
+"When this is set, the tax base and rate will be reflected in fields 31 and "
+"32 of the AEAT 390 model"
+msgstr ""
 
 #. module: l10n_es_aeat_mod390
 #: model:ir.model.fields,field_description:l10n_es_aeat_mod390.field_l10n_es_aeat_mod390_report__year
@@ -928,9 +986,31 @@ msgid "[64] Suma de deducciones"
 msgstr "[64] Suma de deduccions"
 
 #. module: l10n_es_aeat_mod390
+#: model:ir.model.fields,field_description:l10n_es_aeat_mod390.field_l10n_es_aeat_mod390_report__casilla_658
+msgid "[658] Regularización cuotas art. 80. Cinco.5ª LIVA"
+msgstr ""
+
+#. module: l10n_es_aeat_mod390
 #: model:ir.model.fields,field_description:l10n_es_aeat_mod390.field_l10n_es_aeat_mod390_report__casilla_65
 msgid "[65] Result. rég. gral."
 msgstr "[65] Result. règ. gral."
+
+#. module: l10n_es_aeat_mod390
+#: model:ir.model.fields,field_description:l10n_es_aeat_mod390.field_l10n_es_aeat_mod390_report__casilla_662
+msgid "[662] Cuotas pendientes de compensación al término del ejercicio"
+msgstr ""
+
+#. module: l10n_es_aeat_mod390
+#: model:ir.model.fields,help:l10n_es_aeat_mod390.field_l10n_es_aeat_mod390_report__casilla_662
+msgid ""
+"[662] Cuotas pendientes de compensación generadas en el ejercicio y "
+"distintas de las incluidas en la casilla 97"
+msgstr ""
+
+#. module: l10n_es_aeat_mod390
+#: model:ir.model.fields,field_description:l10n_es_aeat_mod390.field_l10n_es_aeat_mod390_report__casilla_84
+msgid "[84] Suma de resultados"
+msgstr ""
 
 #. module: l10n_es_aeat_mod390
 #: model:ir.model.fields,field_description:l10n_es_aeat_mod390.field_l10n_es_aeat_mod390_report__casilla_85
@@ -961,6 +1041,16 @@ msgstr "[98] Result. 303 darrer període a tornar"
 #: model:ir.model.fields,field_description:l10n_es_aeat_mod390.field_l10n_es_aeat_mod390_report__has_347
 msgid "¿Obligación del 347?"
 msgstr "Obligació del 347?"
+
+#, python-format
+#~ msgid ""
+#~ "The result of the manual 303 summary (fields [95], [97] and [98] in the "
+#~ "page '9. Resultado liquidaciones') doesn't match the field [86]. Please "
+#~ "check if you have filled such fields."
+#~ msgstr ""
+#~ "El resultat del resum manual del 303 (caselles [95], [97] i [98] a la "
+#~ "pàgina '9. Resultat liquidacions') no casa amb la casella [86]. Si us "
+#~ "plau, comproveu que les heu omplert."
 
 #~ msgid "SMS Delivery error"
 #~ msgstr "Error de lliurament SMS"

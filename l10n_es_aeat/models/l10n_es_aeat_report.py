@@ -18,6 +18,7 @@ class L10nEsAeatReport(models.AbstractModel):
     _name = "l10n.es.aeat.report"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _description = "AEAT report base module"
+    _order = "date_start desc,id desc"
     _rec_name = "name"
     _aeat_number = False
     _period_quarterly = True
@@ -131,9 +132,10 @@ class L10nEsAeatReport(models.AbstractModel):
     representative_vat = fields.Char(
         string="L.R. VAT number",
         size=9,
-        readonly=True,
+        readonly=False,
         help="Legal Representative VAT number.",
-        states={"draft": [("readonly", False)]},
+        compute="_compute_representative_vat",
+        store=True,
     )
     year = fields.Integer(
         default=_default_year,
@@ -176,7 +178,7 @@ class L10nEsAeatReport(models.AbstractModel):
             (
                 "model_id",
                 "=",
-                self.env["ir.model"].search([("model", "=", self._name)]).id,
+                self.env["ir.model"].sudo().search([("model", "=", self._name)]).id,
             )
         ],
         compute="_compute_export_config_id",
@@ -248,6 +250,7 @@ class L10nEsAeatReport(models.AbstractModel):
     error_count = fields.Integer(
         compute="_compute_error_count",
     )
+    tax_agency_ids = fields.Many2many("aeat.tax.agency", string="Tax Agency")
     _sql_constraints = [
         (
             "name_uniq",
@@ -350,6 +353,11 @@ class L10nEsAeatReport(models.AbstractModel):
                         "%s-%s-%s"
                         % (report.year, month, monthrange(report.year, month)[1])
                     )
+
+    @api.depends("company_id")
+    def _compute_representative_vat(self):
+        for report in self:
+            report.representative_vat = report.company_id.representative_vat
 
     @api.depends("date_start")
     def _compute_export_config_id(self):
@@ -533,3 +541,12 @@ class L10nEsAeatReport(models.AbstractModel):
                 rcontext
             )
         return result
+
+    @api.model
+    def _view_move_lines(self, amls):
+        res = self.env.ref("account.action_account_moves_all_a").sudo().read()[0]
+        view = self.env.ref("l10n_es_aeat.view_move_line_tree")
+        res["context"] = {"create": 0}
+        res["views"] = [(view.id, "tree")]
+        res["domain"] = [("id", "in", amls.ids)]
+        return res
