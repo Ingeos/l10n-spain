@@ -6,7 +6,7 @@ from odoo import _, fields
 from odoo.exceptions import UserError
 
 
-class ConfirmingAEF:
+class ConfirmingAEF(object):
     def __init__(self, record):
         self.record = record
         self.partner_bank = record.company_partner_bank_id.partner_id
@@ -38,13 +38,13 @@ class ConfirmingAEF:
                     % line.partner_id.name
                 )
             # Num Factura
-            if len(line.move_line_id.move_id.ref or "") > 15:
+            if line.move_line_id.ref and len(line.move_line_id.ref) > 15:
                 validation_errors.append(
                     _(
                         "- La referencia de factura %s de proveedor no puede ocupar "
                         "más de 15 caracteres."
                     )
-                    % line.move_line_id.move_id.ref
+                    % line.move_line_id.ref
                 )
             # Ciudad
             if not line.partner_id.city:
@@ -62,8 +62,7 @@ class ConfirmingAEF:
             if not line.partner_bank_id.bank_bic:
                 validation_errors.append(
                     _(
-                        "- La cuenta bancaria del Proveedor %s no tiene establecido "
-                        "el SWIFT."
+                        "- La cuenta bancaria del Proveedor %s no tiene establecido el SWIFT."
                     )
                     % line.partner_id.name
                 )
@@ -110,8 +109,7 @@ class ConfirmingAEF:
             vat = vat.replace(self.partner_bank.country_id.code, "")
         text += self._aef_convert_text(vat, 15, "left")
         # 67 - 74 Fecha proceso
-        fecha_proceso = fields.Date.today()
-        text += self._aef_convert_text(str(fecha_proceso).replace("-", ""), 8)
+        text += self._aef_convert_text("", 8)
         # 75 - 82 Fecha remesa
         if self.record.date_prefered == "due":
             fecha_planificada = fields.first(
@@ -127,13 +125,13 @@ class ConfirmingAEF:
         text += self._aef_convert_text(contract_cxb, 20, "left")
         # 103 - 136 Cuenta de cargo
         cuenta = self.record.company_partner_bank_id.acc_number.replace(" ", "")
-        text += self._aef_convert_text(cuenta, 34, "left")
+        if self.record.company_partner_bank_id.acc_type != "bank":
+            cuenta = cuenta[4:]
+        text += self._aef_convert_text(cuenta, 34)
         # 137 - 139 Código divisa
         text += self._aef_convert_text(self.record.company_currency_id.name, 3)
         # 140 - 140 Estandar / Pronto Pago/ Otros
-        text += self._aef_convert_text(
-            self.record.payment_mode_id.aef_confirming_modality or "", 1
-        )
+        text += self._aef_convert_text("", 1)
         # 141 - 170 Referencia/Nombre fichero
         text += self._aef_convert_text("", 30)
         # 171 - 172 Tipo Formato
@@ -232,7 +230,11 @@ class ConfirmingAEF:
         # 1 Valor fijo
         text = "6"
         # 2 - 21 Num factura
-        referencia_factura = line.move_line_id.move_id.ref or line.communication
+        referencia_factura = (
+            str(line.move_line_id.move_id.name)
+            if line.move_line_id.move_id.name
+            else line.communication
+        )
         text += self._aef_convert_text(referencia_factura.replace("-", ""), 20, "left")
         # 22 - 22 signo
         signo_factura = "+" if line.amount_currency >= 0 else "-"

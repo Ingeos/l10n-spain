@@ -1,6 +1,4 @@
-# Copyright 2016 Tecnativa - Antonio Espinosa
-# Copyright 2022 Sygel - Valentín Vinagre
-# Copyright 2021-2024 Tecnativa - Pedro M. Baeza
+# © 2016 Antonio Espinosa <antonio.espinosa@tecnativa.com>
 # License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0
 
 import logging
@@ -43,14 +41,13 @@ class TestL10nEsAeatModBase(common.TransactionCase):
         cls.company = cls.env["res.company"].create(
             {"name": "Spanish test company", "currency_id": cls.env.ref("base.EUR").id}
         )
+        cls.chart = cls.env.ref("l10n_es.account_chart_template_pymes")
         cls.env.ref("base.group_multi_company").write({"users": [(4, cls.env.uid)]})
         cls.env.user.write(
             {"company_ids": [(4, cls.company.id)], "company_id": cls.company.id}
         )
-        chart = cls.env["account.chart.template"]
-        chart.try_loading(
-            template_code="es_pymes", company=cls.company, install_demo=False
-        )
+        chart = cls.env.ref("l10n_es.account_chart_template_pymes")
+        chart.try_loading()
         cls.with_context(company_id=cls.company.id)
         return True
 
@@ -104,14 +101,19 @@ class TestL10nEsAeatModBase(common.TransactionCase):
         taxes = cls.env["account.tax"]
         for desc in descs.split(","):
             parts = desc.split(".")
+            module = parts[0] if len(parts) > 1 else "l10n_es"
             xml_id = parts[1] if len(parts) > 1 else parts[0]
             if xml_id.lower() != xml_id and len(parts) == 1:
                 # shortcut for not changing existing tests with old codes
                 xml_id = "account_tax_template_" + xml_id.lower()
-            tax_id = cls.company._get_tax_id_from_xmlid(xml_id)
-            taxes |= cls.env["account.tax"].browse(tax_id)
-            if not tax_id:
-                _logger.error(f"Tax not found: {desc}")
+            tax_template = cls.env.ref(
+                "{}.{}".format(module, xml_id), raise_if_not_found=False
+            )
+            if tax_template:
+                tax = cls.company.get_taxes_from_templates(tax_template)
+                taxes |= tax
+            if not tax_template or not tax:
+                _logger.error("Tax not found: {}".format(desc))
         return taxes
 
     @classmethod
@@ -129,7 +131,7 @@ class TestL10nEsAeatModBase(common.TransactionCase):
             _logger.debug("{:>14} {:>9}".format("SALE TAX", "PRICE"))
         for desc, values in cls.taxes_sale.items():
             if cls.debug:
-                _logger.debug(f"{desc:>14} {values[0]:>9}")
+                _logger.debug("{:>14} {:>9}".format(desc, values[0]))
             # Allow to duplicate taxes skipping the unique key constraint
             line_data = {
                 "name": "Test for tax(es) %s" % desc,
@@ -164,7 +166,7 @@ class TestL10nEsAeatModBase(common.TransactionCase):
             _logger.debug("{:>14} {:>9}".format("PURCHASE TAX", "PRICE"))
         for desc, values in cls.taxes_purchase.items():
             if cls.debug:
-                _logger.debug(f"{desc:>14} {values[0]:>9}")
+                _logger.debug("{:>14} {:>9}".format(desc, values[0]))
             # Allow to duplicate taxes skipping the unique key constraint
             line_data = {
                 "name": "Test for tax(es) %s" % desc,
@@ -186,7 +188,7 @@ class TestL10nEsAeatModBase(common.TransactionCase):
 
     @classmethod
     def _invoice_refund(cls, invoice, dt):
-        _logger.debug(f"Refund {invoice.move_type} invoice: date = {dt}")
+        _logger.debug("Refund {} invoice: date = {}".format(invoice.move_type, dt))
         default_values_list = [
             {"date": dt, "invoice_date": dt, "invoice_payment_term_id": None}
         ]

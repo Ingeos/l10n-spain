@@ -8,11 +8,11 @@
             <form string="Export AEAT BOE file">
                 <field invisible="1" name="state" />
                 <field name="name" invisible="1" />
-                <div invisible="state != 'open'">
+                <div states="open">
                     <p>Pulse el botón <strong
                         >Exportar</strong> para iniciar el proceso de exportación del archivo BOE de la AEAT.</p>
                 </div>
-                <div invisible="state != 'get'">
+                <div states="get">
                     <h2>Exportación completada</h2>
                     <p>Aquí está el archivo BOE de la AEAT exportado: <field
                             name="data"
@@ -24,7 +24,7 @@
                         >Informativas</strong> o pulsando en el botón <strong
                         >Optativo: Importar datos de fichero</strong> en el formulario on-line.</p>
                 </div>
-                <footer invisible="state != 'open'">
+                <footer states="open">
                     <button
                         name="action_get_file"
                         string="Export"
@@ -38,7 +38,7 @@
                         class="oe_link"
                     />
                 </footer>
-                <footer invisible="state != 'get'">
+                <footer states="get">
                     <button special="cancel" string="Close" type="object" />
                 </footer>
             </form>

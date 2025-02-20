@@ -97,31 +97,6 @@ msgid "Contrato AEF Confirming         (13 o 15 dígitos)"
 msgstr "Contrato AEF Confirmando         (13 o 15 dígitos)"
 
 #. module: l10n_es_payment_order_confirming_aef
-#: model:ir.model.fields.selection,name:l10n_es_payment_order_confirming_aef.selection__account_payment_mode__aef_confirming_modality__1
-msgid "Estandar"
-msgstr ""
-
-#. module: l10n_es_payment_order_confirming_aef
-#: model:ir.model.fields,field_description:l10n_es_payment_order_confirming_aef.field_account_payment_mode__aef_confirming_modality
-msgid "Modalidad remesa"
-msgstr ""
-
-#. module: l10n_es_payment_order_confirming_aef
-#: model:ir.model.fields,help:l10n_es_payment_order_confirming_aef.field_account_payment_mode__aef_confirming_modality
-msgid "Opcional: Consultar con la entidad bancaria"
-msgstr ""
-
-#. module: l10n_es_payment_order_confirming_aef
-#: model:ir.model.fields.selection,name:l10n_es_payment_order_confirming_aef.selection__account_payment_mode__aef_confirming_modality__3
-msgid "Otros"
-msgstr ""
-
-#. module: l10n_es_payment_order_confirming_aef
-#: model:ir.model,name:l10n_es_payment_order_confirming_aef.model_account_payment_method
-msgid "Payment Methods"
-msgstr ""
-
-#. module: l10n_es_payment_order_confirming_aef
 #: model:ir.model,name:l10n_es_payment_order_confirming_aef.model_account_payment_mode
 msgid "Payment Modes"
 msgstr "Métodos de pago"
@@ -132,11 +107,6 @@ msgid "Payment Order"
 msgstr "Orden de pago"
 
 #. module: l10n_es_payment_order_confirming_aef
-#: model:ir.model.fields.selection,name:l10n_es_payment_order_confirming_aef.selection__account_payment_mode__aef_confirming_modality__2
-msgid "Pronto pago"
-msgstr ""
-
-#. module: l10n_es_payment_order_confirming_aef
 #. odoo-python
 #: code:addons/l10n_es_payment_order_confirming_aef/models/confirming_aef.py:0
 #, python-format
@@ -144,14 +114,9 @@ msgid "Se han encontrado los siguientes errores:\n"
 msgstr "Se han encontrado los siguientes errores:\n"
 
 #. module: l10n_es_payment_order_confirming_aef
-#: model_terms:ir.ui.view,arch_db:l10n_es_payment_order_confirming_aef.account_payment_mode_form_aef
+#: model:ir.model.fields,field_description:l10n_es_payment_order_confirming_aef.field_account_payment_mode__aef_confirming_type
 msgid "Tipo de pago"
 msgstr "Tipo de pago"
-
-#. module: l10n_es_payment_order_confirming_aef
-#: model:ir.model.fields,field_description:l10n_es_payment_order_confirming_aef.field_account_payment_mode__aef_confirming_type
-msgid "Tipo de pago (AEF)"
-msgstr ""
 
 #. module: l10n_es_payment_order_confirming_aef
 #: model:ir.model.fields.selection,name:l10n_es_payment_order_confirming_aef.selection__account_payment_mode__aef_confirming_type__t

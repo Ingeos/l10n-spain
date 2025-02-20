@@ -44,9 +44,6 @@ class IntrastatProductDeclaration(models.Model):
             line_vals["partner_vat"] = (
                 inv_line.move_id.partner_shipping_id.vat or "QV999999999999"
             )
-            fiscal_pos = inv_line.move_id.fiscal_position_id
-            if fiscal_pos and fiscal_pos.intrastat == "b2c":
-                return result
             if not inv_line.move_id.partner_shipping_id.vat:
                 msg = _("Missing partner <em>VAT Number</em>")
                 notedict["partner"][inv_line.move_id.partner_id.display_name][msg].add(
@@ -84,7 +81,7 @@ class IntrastatProductDeclaration(models.Model):
         attach_id = super()._attach_xml_file(xml_string, declaration_name)
         self.ensure_one()
         attach = self.env["ir.attachment"].browse(attach_id)
-        filename = f"{self.year_month}_{declaration_name}.csv"
+        filename = "{}_{}.csv".format(self.year_month, declaration_name)
         attach.write({"name": filename})
         return attach.id
 
@@ -197,8 +194,8 @@ class IntrastatProductComputationLine(models.Model):
             vals["partner_vat"] = self.partner_vat
         return vals
 
-    def _prepare_declaration_line(self, line_number):
-        vals = super()._prepare_declaration_line(line_number)
+    def _prepare_declaration_line(self):
+        vals = super()._prepare_declaration_line()
         # Avoid rounding in weight and fiscal value
         vals["weight"] = 0.0
         vals["amount_company_currency"] = 0.0

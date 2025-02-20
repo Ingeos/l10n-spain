@@ -13,7 +13,9 @@
                     type="action"
                     string="Cancel FACe"
                     context="{'default_move_id': id}"
-                    invisible="not l10n_es_facturae_status or l10n_es_facturae_cancellation_status not in ['face-4100', 'face-4400']"
+                    attrs="{'invisible': ['|',
+                        ('l10n_es_facturae_status', '=', False),
+                        ('l10n_es_facturae_cancellation_status', 'not in', ['face-4100', 'face-4400'])]}"
                 />
             </button>
             <field name="facturae_end_date" position="after">

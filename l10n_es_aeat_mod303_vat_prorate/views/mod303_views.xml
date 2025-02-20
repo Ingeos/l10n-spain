@@ -10,32 +10,25 @@
         <field name="arch" type="xml">
             <field name="total_deducir" position="before">
                 <field name="with_vat_prorate" invisible="1" />
-                <field name="with_special_vat_prorate" invisible="1" />
                 <field
                     name="casilla_44"
                     widget="monetary"
                     options="{'currency_field': 'currency_id'}"
-                    invisible="not with_vat_prorate or period_type not in ['4T', '12']"
-                    readonly="state == 'done'"
+                    attrs="{'invisible': ['|', ('with_vat_prorate', '=', False), ('period_type', 'not in', ['4T', '12'])]}"
                 />
             </field>
             <field name="statement_type" position="after">
                 <field
                     name="vat_prorate_percent"
-                    invisible="not with_vat_prorate or period_type not in ['4T', '12']"
-                    required="with_vat_prorate and period_type in ['4T', '12']"
-                    readonly="state != 'draft'"
+                    attrs="{'invisible': ['|', ('with_vat_prorate', '=', False), ('period_type', 'not in', ['4T', '12'])], 'required': [('with_vat_prorate', '=', True), ('period_type', 'in', ['4T', '12'])]}"
                 />
                 <field
                     name="prorate_account_id"
-                    invisible="not with_vat_prorate or period_type not in ['4T', '12']"
-                    required="with_vat_prorate and period_type in ['4T', '12'] and state in ['calculated']"
-                    readonly="state != 'calculated'"
+                    attrs="{'invisible': ['|', ('with_vat_prorate', '=', False), ('period_type', 'not in', ['4T', '12'])], 'required': [('with_vat_prorate', '=', True), ('period_type', 'in', ['4T', '12']), ('state', 'in', 'calculated')]}"
                 />
                 <field
                     name="prorate_analytic_account_id"
-                    invisible="not with_vat_prorate or period_type not in ['4T', '12']"
-                    readonly="state != 'calculated'"
+                    attrs="{'invisible': ['|', ('with_vat_prorate', '=', False), ('period_type', 'not in', ['4T', '12'])]}"
                 />
             </field>
         </field>

@@ -24,7 +24,7 @@ class Mod349(models.Model):
     _period_yearly = True
     _aeat_number = "349"
 
-    frequency_change = fields.Boolean()
+    frequency_change = fields.Boolean(states={"confirmed": [("readonly", True)]})
     total_partner_records = fields.Integer(
         compute="_compute_report_regular_totals",
         string="Partners records",
@@ -55,6 +55,7 @@ class Mod349(models.Model):
         comodel_name="l10n.es.aeat.mod349.partner_record_detail",
         inverse_name="report_id",
         string="Partner record details",
+        states={"confirmed": [("readonly", True)]},
     )
     partner_refund_ids = fields.One2many(
         comodel_name="l10n.es.aeat.mod349.partner_refund",
@@ -66,6 +67,7 @@ class Mod349(models.Model):
         comodel_name="l10n.es.aeat.mod349.partner_refund_detail",
         inverse_name="report_id",
         string="Partner refund details",
+        states={"confirmed": [("readonly", True)]},
     )
     number = fields.Char(default="349")
 
@@ -220,21 +222,27 @@ class Mod349(models.Model):
             # we add all of them to visited, as we don't want to repeat
             visited_details |= original_details
             if original_details:
-                original_amls = move_line_obj.search(
-                    [
-                        ("tax_ids", "in", taxes.ids),
-                        ("l10n_es_aeat_349_operation_key", "=", op_key),
-                        ("move_id", "=", origin_invoice.id),
-                    ]
-                )
                 # There's at least one previous 349 declaration report
                 report = original_details.mapped("report_id")[:1]
+                partner_id = original_details.mapped("partner_id")[:1]
                 original_details = original_details.filtered(
-                    lambda d, report=report: d.report_id == report
+                    lambda d: d.report_id == report
                 )
                 origin_amount = sum(original_details.mapped("amount_untaxed"))
                 period_type = report.period_type
                 year = str(report.year)
+
+                # Sum all details period origin
+                all_details_period = detail_obj.search(
+                    [
+                        ("partner_id", "=", partner_id.id),
+                        ("partner_record_id.operation_key", "=", op_key),
+                        ("report_id", "=", report.id),
+                    ],
+                    order="report_id desc",
+                )
+                origin_amount = sum(all_details_period.mapped("amount_untaxed"))
+
                 # If there are intermediate periods between the original
                 # period and the period where the rectification is taking
                 # place, it's necessary to check if there is any rectification
@@ -242,17 +250,27 @@ class Mod349(models.Model):
                 # happens in this way because the right original_amount
                 # will be the value of the total_operation_amount
                 # corresponding to the last period found in between the periods
-                last_refund_detail = refund_detail_obj.search(
-                    [
-                        ("report_id.date_start", ">", report.date_end),
-                        ("report_id.date_end", "<", self.date_start),
-                        ("move_id", "in", origin_invoice.reversal_move_id.ids),
-                    ],
-                    order="date desc",
-                    limit=1,
+                other_invoice_period = (
+                    all_details_period.mapped("move_id") - origin_invoice
                 )
-                if last_refund_detail:
-                    origin_amount = last_refund_detail.refund_id.total_operation_amount
+                refund_invoice_ids = self.env["account.move"].search(
+                    [("reversed_entry_id", "in", other_invoice_period.ids)]
+                )
+                if refund_invoice_ids:
+                    last_refund_detail = refund_detail_obj.search(
+                        [
+                            ("report_id.date_start", ">", report.date_end),
+                            ("report_id.date_end", "<", self.date_start),
+                            ("move_id", "in", refund_invoice_ids.ids),
+                        ],
+                        order="date desc",
+                        limit=1,
+                    )
+                    if last_refund_detail:
+                        origin_amount = (
+                            last_refund_detail.refund_id.total_operation_amount
+                        )
+
             else:
                 # There's no previous 349 declaration report in Odoo
                 original_amls = move_line_obj.search(
@@ -320,13 +338,10 @@ class Mod349(models.Model):
     def _get_taxes(self):
         """Obtain all the taxes to be considered for 349."""
         map_lines = self.env["aeat.349.map.line"].search([])
-        tax_templates = map_lines.mapped("tax_xmlid_ids")
+        tax_templates = map_lines.mapped("tax_tmpl_ids")
         if not tax_templates:
             raise exceptions.UserError(_("No Tax Mapping was found"))
-        taxes_ids = self.env["aeat.349.map.line"]._get_tax_ids_from_xmlids(
-            tax_templates, self.company_id
-        )
-        return self.env["account.tax"].search([("id", "in", taxes_ids)])
+        return self.get_taxes_from_templates(tax_templates)
 
     def _cleanup_report(self):
         """Remove previous partner records and partner refunds in report."""
@@ -339,33 +354,35 @@ class Mod349(models.Model):
     def calculate(self):
         """Computes the records in report."""
         self.ensure_one()
-        self._cleanup_report()
-        taxes = self._get_taxes()
-        # Get all the account moves
-        move_lines = self.env["account.move.line"].search(
-            self._account_move_line_domain(taxes)
-        )
-        # If the type of presentation is complementary, remove records that
-        # already exist in other presentations
-        if self.statement_type == "C":
-            prev_details = self.partner_record_detail_ids.search(
-                [
-                    ("move_line_id", "in", move_lines.ids),
-                    ("report_id", "!=", self.id),
-                ]
+        with self.env.norecompute():
+            self._cleanup_report()
+            taxes = self._get_taxes()
+            # Get all the account moves
+            move_lines = self.env["account.move.line"].search(
+                self._account_move_line_domain(taxes)
             )
-            move_lines -= prev_details.mapped("move_line_id")
-            prev_details = self.partner_refund_detail_ids.search(
-                [
-                    ("refund_line_id", "in", move_lines.ids),
-                    ("report_id", "!=", self.id),
-                ]
-            )
-            move_lines -= prev_details.mapped("refund_line_id")
-        self._create_349_details(move_lines)
-        self._create_349_invoice_records()
-        self._create_349_refund_records()
-        self.env.flush_all()
+            # If the type of presentation is complementary, remove records that
+            # already exist in other presentations
+            if self.statement_type == "C":
+                prev_details = self.partner_record_detail_ids.search(
+                    [
+                        ("move_line_id", "in", move_lines.ids),
+                        ("report_id", "!=", self.id),
+                    ]
+                )
+                move_lines -= prev_details.mapped("move_line_id")
+                prev_details = self.partner_refund_detail_ids.search(
+                    [
+                        ("refund_line_id", "in", move_lines.ids),
+                        ("report_id", "!=", self.id),
+                    ]
+                )
+                move_lines -= prev_details.mapped("refund_line_id")
+            self._create_349_details(move_lines)
+            self._create_349_invoice_records()
+            self._create_349_refund_records()
+        # Recompute all pending computed fields
+        self.flush_recordset()
         return True
 
     def button_recover(self):
@@ -428,36 +445,6 @@ class Mod349PartnerRecord(models.Model):
             allfields=["l10n_es_aeat_349_operation_key"],
         )["l10n_es_aeat_349_operation_key"]["selection"]
 
-    def _get_and_assign_country_code(self, record):
-        # Get country code from partner in a first place
-        country_code = record.partner_id._parse_aeat_vat_info()[0]
-
-        # Map country code with _map_aeat_country_code
-        # and then to ISO code with _map_aeat_country_iso_code
-        country_code = record.partner_id._map_aeat_country_code(country_code)
-        country = self.env["res.country"].search([("code", "=", country_code)])
-        country_code = record.partner_id._map_aeat_country_iso_code(country)
-
-        # If country code is found, and it's not in the VAT, assign it
-        if country_code and not record.partner_vat.startswith(country_code):
-            vat_number = record.partner_id._parse_aeat_vat_info()[-1]
-            record.partner_vat = country_code + vat_number
-        return country_code
-
-    def _process_vat(self, record, errors):
-        country_code = self._get_and_assign_country_code(record)
-        if not country_code:
-            errors.append(_("VAT without country code"))
-        elif country_code not in record.partner_id._get_aeat_europe_codes():
-            europe = self.env.ref("base.europe", raise_if_not_found=False)
-            map_european_codes = [
-                record.partner_id._map_aeat_country_iso_code(c)
-                for c in europe.country_ids
-            ]
-            if country_code not in map_european_codes:
-                errors.append(_("Country code not found in Europe"))
-        return errors
-
     @api.depends("partner_vat", "country_id", "total_operation_amount")
     def _compute_partner_record_ok(self):
         """Checks if all line fields are filled."""
@@ -469,10 +456,6 @@ class Mod349PartnerRecord(models.Model):
                 errors.append(_("Without Country"))
             if not record.total_operation_amount:
                 errors.append(_("Without Total Operation Amount"))
-            if record.total_operation_amount and record.total_operation_amount < 0.0:
-                errors.append(_("Negative amount"))
-            if record.partner_vat:
-                errors = self._process_vat(record, errors)
             record.partner_record_ok = bool(not errors)
             record.error_text = ", ".join(errors)
 

@@ -20,14 +20,14 @@ class L10nEsVatBook(models.Model):
     _aeat_number = "LIVA"
     _period_yearly = True
 
-    number = fields.Char(default="vat_book", readonly=True)
+    number = fields.Char(default="vat_book", readonly="True")
 
     line_ids = fields.One2many(
         comodel_name="l10n.es.vat.book.line",
         inverse_name="vat_book_id",
         string="Issued/Received invoices",
         copy=False,
-        readonly=True,
+        readonly="True",
     )
 
     issued_line_ids = fields.One2many(
@@ -36,7 +36,7 @@ class L10nEsVatBook(models.Model):
         domain=[("line_type", "=", "issued")],
         string="Issued invoices",
         copy=False,
-        readonly=True,
+        readonly="True",
     )
 
     rectification_issued_line_ids = fields.One2many(
@@ -45,7 +45,7 @@ class L10nEsVatBook(models.Model):
         domain=[("line_type", "=", "rectification_issued")],
         string="Issued Refund Invoices",
         copy=False,
-        readonly=True,
+        readonly="True",
     )
 
     received_line_ids = fields.One2many(
@@ -54,7 +54,7 @@ class L10nEsVatBook(models.Model):
         domain=[("line_type", "=", "received")],
         string="Received invoices",
         copy=False,
-        readonly=True,
+        readonly="True",
     )
 
     rectification_received_line_ids = fields.One2many(
@@ -63,7 +63,7 @@ class L10nEsVatBook(models.Model):
         domain=[("line_type", "=", "rectification_received")],
         string="Received Refund Invoices",
         copy=False,
-        readonly=True,
+        readonly="True",
     )
 
     calculation_date = fields.Date()
@@ -72,7 +72,7 @@ class L10nEsVatBook(models.Model):
         comodel_name="l10n.es.vat.book.tax.summary",
         string="Tax Summary",
         inverse_name="vat_book_id",
-        readonly=True,
+        readonly="True",
     )
 
     issued_tax_summary_ids = fields.One2many(
@@ -80,7 +80,7 @@ class L10nEsVatBook(models.Model):
         string="Issued Tax Summary",
         inverse_name="vat_book_id",
         domain=[("book_type", "=", "issued")],
-        readonly=True,
+        readonly="True",
     )
 
     received_tax_summary_ids = fields.One2many(
@@ -88,14 +88,14 @@ class L10nEsVatBook(models.Model):
         string="Received Tax Summary",
         inverse_name="vat_book_id",
         domain=[("book_type", "=", "received")],
-        readonly=True,
+        readonly="True",
     )
 
     summary_ids = fields.One2many(
         comodel_name="l10n.es.vat.book.summary",
         string="Summary",
         inverse_name="vat_book_id",
-        readonly=True,
+        readonly="True",
     )
 
     issued_summary_ids = fields.One2many(
@@ -103,7 +103,7 @@ class L10nEsVatBook(models.Model):
         string="Issued Summary",
         inverse_name="vat_book_id",
         domain=[("book_type", "=", "issued")],
-        readonly=True,
+        readonly="True",
     )
 
     received_summary_ids = fields.One2many(
@@ -111,11 +111,11 @@ class L10nEsVatBook(models.Model):
         string="Received Summary",
         inverse_name="vat_book_id",
         domain=[("book_type", "=", "received")],
-        readonly=True,
+        readonly="True",
     )
 
     auto_renumber = fields.Boolean(
-        "Auto renumber invoices received",
+        "Auto renumber invoices received", states={"draft": [("readonly", False)]}
     )
 
     error_count = fields.Integer(
@@ -150,8 +150,6 @@ class L10nEsVatBook(models.Model):
                     "tax_id": tax_line.tax_id.id,
                     "vat_book_id": self.id,
                     "special_tax_group": tax_line.special_tax_group,
-                    "base_move_line_ids": tax_line.base_move_line_ids.ids,
-                    "move_line_ids": tax_line.move_line_ids.ids,
                 }
             tax_summary_data_recs[tax_line.tax_id][
                 "base_amount"
@@ -160,12 +158,6 @@ class L10nEsVatBook(models.Model):
             tax_summary_data_recs[tax_line.tax_id][
                 "total_amount"
             ] += tax_line.total_amount
-            tax_summary_data_recs[tax_line.tax_id][
-                "base_move_line_ids"
-            ] += tax_line.base_move_line_ids.ids
-            tax_summary_data_recs[tax_line.tax_id][
-                "move_line_ids"
-            ] += tax_line.move_line_ids.ids
         return tax_summary_data_recs
 
     @api.model
@@ -257,19 +249,13 @@ class L10nEsVatBook(models.Model):
             balance if move_line.tax_ids and not move_line.tax_line_id else 0.0
         )
         fee_amount_untaxed = balance if move_line.tax_line_id else 0.0
-        vals = {
+        return {
             "tax_id": move_line.tax_line_id.id,
             "base_amount": base_amount_untaxed,
             "tax_amount": fee_amount_untaxed,
-            "base_move_line_ids": [],
-            "move_line_ids": [],
+            "move_line_ids": [(4, move_line.id)],
             "special_tax_group": False,
         }
-        if move_line.tax_ids:
-            vals["base_move_line_ids"].append((4, move_line.id))
-        elif move_line.tax_line_id:
-            vals["move_line_ids"].append((4, move_line.id))
-        return vals
 
     def upsert_book_line_tax(self, move_line, vat_book_line, implied_taxes):
         vals = self._prepare_book_line_tax_vals(move_line, vat_book_line)
@@ -293,7 +279,7 @@ class L10nEsVatBook(models.Model):
                 tax_lines[key]["tax_id"] = tax.id
             else:
                 tax_lines[key]["base_amount"] += vals["base_amount"]
-                tax_lines[key]["base_move_line_ids"] += vals["base_move_line_ids"]
+                tax_lines[key]["move_line_ids"] += vals["move_line_ids"]
             # For later matching special taxes
             tax_lines[key]["other_tax_ids"] = (move_line.tax_ids - tax).ids
 
@@ -356,7 +342,7 @@ class L10nEsVatBook(models.Model):
         map_lines = self.env["aeat.vat.book.map.line"].search(domain)
         special_dic = {}
         for map_line in map_lines:
-            for tax in map_line.get_taxes_for_company(self.company_id):
+            for tax in map_line.get_taxes(self):
                 special_dic[tax.id] = {
                     "name": map_line.name,
                     "book_type": map_line.book_type,
@@ -386,7 +372,9 @@ class L10nEsVatBook(models.Model):
             req_vat_identif_types = [
                 s_opt[0]
                 for s_opt in rp_model._fields["aeat_identification_type"].selection
-            ] + [""]  # "" is the identification type for Spain
+            ] + [
+                ""
+            ]  # "" is the identification type for Spain
             # Partner type requires VAT
             if (
                 identifier_type in req_vat_identif_types
@@ -461,10 +449,10 @@ class L10nEsVatBook(models.Model):
                 taxes = self.env["account.tax"]
                 accounts = {}
                 for map_line in map_lines:
-                    line_taxes = map_line.get_taxes_for_company(rec.company_id)
+                    line_taxes = map_line.get_taxes(rec)
                     taxes |= line_taxes
-                    if map_line.account_xmlid_id:
-                        account = map_line.get_accounts_for_company(rec.company_id)
+                    if map_line.tax_account_id:
+                        account = rec.get_account_from_template(map_line.tax_account_id)
                         accounts.update({tax: account for tax in line_taxes})
                 # Filter in all possible data using sets for improving performance
                 if accounts:

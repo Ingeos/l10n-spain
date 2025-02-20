@@ -11,7 +11,7 @@
                 <page
                     name="vat_prorate"
                     string="VAT Prorate"
-                    invisible="not with_vat_prorate"
+                    attrs="{'invisible': [('with_vat_prorate', '=', False)]}"
                 >
                     <field name="vat_prorate_ids" />
                 </page>

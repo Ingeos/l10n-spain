@@ -16,13 +16,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-
-#. module: l10n_es_facturae
-#: model_terms:ir.ui.view,arch_db:l10n_es_facturae.facturae_header
-msgid "&gt;"
-msgstr ""
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 
 #. module: l10n_es_facturae
 #: model_terms:ir.ui.view,arch_db:l10n_es_facturae.facturae_header
@@ -32,22 +27,25 @@ msgstr ""
 #. module: l10n_es_facturae
 #: model_terms:ir.ui.view,arch_db:l10n_es_facturae.facturae_header
 msgid ""
-"&lt;fe:Facturae xmlns:fe=\"http://www.facturae.es/Facturae/2009/v3.2/"
-"Facturae\""
+"&lt;fe:Facturae xmlns:fe=\"http://www.facturae.es/Facturae/2009/v3.2/Facturae"
+"\"\n"
+"            xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\"&gt;"
 msgstr ""
 
 #. module: l10n_es_facturae
 #: model_terms:ir.ui.view,arch_db:l10n_es_facturae.facturae_header
 msgid ""
 "&lt;fe:Facturae xmlns:fe=\"http://www.facturae.es/Facturae/2014/v3.2.1/"
-"Facturae\""
+"Facturae\"\n"
+"            xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\"&gt;"
 msgstr ""
 
 #. module: l10n_es_facturae
 #: model_terms:ir.ui.view,arch_db:l10n_es_facturae.facturae_header
 msgid ""
 "&lt;fe:Facturae xmlns:fe=\"http://www.facturae.gob.es/formato/Versiones/"
-"Facturaev3_2_2.xml\""
+"Facturaev3_2_2.xml\"\n"
+"            xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\"&gt;"
 msgstr ""
 
 #. module: l10n_es_facturae
@@ -66,11 +64,6 @@ msgstr ""
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__res_company__facturae_version__3_2_2
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__res_partner__facturae_version__3_2_2
 msgid "3.2.2"
-msgstr ""
-
-#. module: l10n_es_facturae
-#: model:ir.model,name:l10n_es_facturae.model_account_chart_template
-msgid "Account Chart Template"
 msgstr ""
 
 #. module: l10n_es_facturae
@@ -148,34 +141,6 @@ msgstr ""
 #. odoo-python
 #: code:addons/l10n_es_facturae/models/account_move.py:0
 #, python-format
-msgid "Company city not provided"
-msgstr ""
-
-#. module: l10n_es_facturae
-#. odoo-python
-#: code:addons/l10n_es_facturae/models/account_move.py:0
-#, python-format
-msgid "Company country not provided"
-msgstr ""
-
-#. module: l10n_es_facturae
-#. odoo-python
-#: code:addons/l10n_es_facturae/models/account_move.py:0
-#, python-format
-msgid "Company state not provided"
-msgstr ""
-
-#. module: l10n_es_facturae
-#. odoo-python
-#: code:addons/l10n_es_facturae/models/account_move.py:0
-#, python-format
-msgid "Company street not provided"
-msgstr ""
-
-#. module: l10n_es_facturae
-#. odoo-python
-#: code:addons/l10n_es_facturae/models/account_move.py:0
-#, python-format
 msgid "Company vat is too small"
 msgstr ""
 
@@ -184,13 +149,6 @@ msgstr ""
 #: code:addons/l10n_es_facturae/models/account_move.py:0
 #, python-format
 msgid "Company vat not provided"
-msgstr ""
-
-#. module: l10n_es_facturae
-#. odoo-python
-#: code:addons/l10n_es_facturae/models/account_move.py:0
-#, python-format
-msgid "Company zip not provided"
 msgstr ""
 
 #. module: l10n_es_facturae
@@ -210,7 +168,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/l10n_es_facturae/models/res_partner.py:0
 #, python-format
-msgid "Country must be defined for factura-e enabled partners."
+msgid "Country must be defined"
 msgstr ""
 
 #. module: l10n_es_facturae
@@ -338,6 +296,7 @@ msgstr ""
 #. module: l10n_es_facturae
 #: model:ir.model.fields,field_description:l10n_es_facturae.field_account_payment_mode__facturae_code
 #: model:ir.model.fields,field_description:l10n_es_facturae.field_account_tax__facturae_code
+#: model:ir.model.fields,field_description:l10n_es_facturae.field_account_tax_template__facturae_code
 msgid "Facturae Code"
 msgstr ""
 
@@ -362,10 +321,7 @@ msgid "Facturae File Date"
 msgstr ""
 
 #. module: l10n_es_facturae
-#: model:ir.model.fields,field_description:l10n_es_facturae.field_account_bank_statement_line__facturae_file_reference
-#: model:ir.model.fields,field_description:l10n_es_facturae.field_account_move__facturae_file_reference
 #: model:ir.model.fields,field_description:l10n_es_facturae.field_account_move_line__facturae_file_reference
-#: model:ir.model.fields,field_description:l10n_es_facturae.field_account_payment__facturae_file_reference
 msgid "Facturae File Reference"
 msgstr ""
 
@@ -395,10 +351,7 @@ msgid "Facturae Receiver Contract Date"
 msgstr ""
 
 #. module: l10n_es_facturae
-#: model:ir.model.fields,field_description:l10n_es_facturae.field_account_bank_statement_line__facturae_receiver_contract_reference
-#: model:ir.model.fields,field_description:l10n_es_facturae.field_account_move__facturae_receiver_contract_reference
 #: model:ir.model.fields,field_description:l10n_es_facturae.field_account_move_line__facturae_receiver_contract_reference
-#: model:ir.model.fields,field_description:l10n_es_facturae.field_account_payment__facturae_receiver_contract_reference
 msgid "Facturae Receiver Contract Reference"
 msgstr ""
 
@@ -408,10 +361,7 @@ msgid "Facturae Receiver Transaction Date"
 msgstr ""
 
 #. module: l10n_es_facturae
-#: model:ir.model.fields,field_description:l10n_es_facturae.field_account_bank_statement_line__facturae_receiver_transaction_reference
-#: model:ir.model.fields,field_description:l10n_es_facturae.field_account_move__facturae_receiver_transaction_reference
 #: model:ir.model.fields,field_description:l10n_es_facturae.field_account_move_line__facturae_receiver_transaction_reference
-#: model:ir.model.fields,field_description:l10n_es_facturae.field_account_payment__facturae_receiver_transaction_reference
 msgid "Facturae Receiver Transaction Reference"
 msgstr ""
 
@@ -497,14 +447,8 @@ msgid "First"
 msgstr ""
 
 #. module: l10n_es_facturae
-#: model:ir.model.fields,field_description:l10n_es_facturae.field_res_company__facturae_hide_discount
-#: model:ir.model.fields,field_description:l10n_es_facturae.field_res_partner__facturae_hide_discount
-#: model:ir.model.fields,field_description:l10n_es_facturae.field_res_users__facturae_hide_discount
-msgid "Hide Facturae discount"
-msgstr ""
-
-#. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__12
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__12
 msgid "ICIO: Impuesto sobre las construcciones, instalaciones y obras"
 msgstr ""
 
@@ -516,11 +460,13 @@ msgstr "ID"
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__07
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__07
 msgid "IE: Impuestos especiales"
 msgstr ""
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__10
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__10
 msgid ""
 "IECDPCAC: Impuesto especial sobre los combustibles derivados del petróleo en "
 "la Comunidad Autonoma Canaria"
@@ -528,11 +474,13 @@ msgstr ""
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__03
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__03
 msgid "IGIC: Impuesto general indirecto de Canarias"
 msgstr ""
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__09
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__09
 msgid ""
 "IGTECM: Impuesto general sobre el tráfico de empresas que se aplica en Ceuta "
 "y Melilla"
@@ -540,6 +488,7 @@ msgstr ""
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__11
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__11
 msgid ""
 "IIIMAB: Impuesto sobre las instalaciones que inciden sobre el medio ambiente "
 "en la Baleares"
@@ -547,36 +496,43 @@ msgstr ""
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__15
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__15
 msgid "IMGSN: Impuesto municipal sobre gastos suntuarios en Navarra"
 msgstr ""
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__16
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__16
 msgid "IMPN: Impuesto municipal sobre publicidad en Navarra"
 msgstr ""
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__14
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__14
 msgid "IMSN: Impuesto municipal sobre solares en Navarra"
 msgstr ""
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__13
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__13
 msgid "IMVDN: Impuesto municipal sobre las viviendas desocupadas en Navarra"
 msgstr ""
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__02
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__02
 msgid "IPSI: Impuesto sobre la producción, los servicios y la importación"
 msgstr ""
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__04
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__04
 msgid "IRPF: Impuesto sobre la Renta de las personas físicas"
 msgstr ""
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__06
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__06
 msgid ""
 "ITPAJD: Impuesto sobre transmisiones patrimoniales y actos jurídicos "
 "documentados"
@@ -584,6 +540,7 @@ msgstr ""
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__01
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__01
 msgid "IVA: Impuesto sobre el valor añadido"
 msgstr ""
 
@@ -607,11 +564,6 @@ msgid "Invoice %s"
 msgstr ""
 
 #. module: l10n_es_facturae
-#: model_terms:ir.ui.view,arch_db:l10n_es_facturae.view_move_form
-msgid "Invoicing Period"
-msgstr ""
-
-#. module: l10n_es_facturae
 #: model:ir.model,name:l10n_es_facturae.model_account_move
 msgid "Journal Entry"
 msgstr ""
@@ -627,6 +579,12 @@ msgstr ""
 #: model:ir.model.fields,field_description:l10n_es_facturae.field_account_payment__l10n_es_facturae_attachment_ids
 msgid "L10N Es Facturae Attachment"
 msgstr ""
+
+#. module: l10n_es_facturae
+#: model:ir.model.fields,field_description:l10n_es_facturae.field_create_facturae____last_update
+#: model:ir.model.fields,field_description:l10n_es_facturae.field_l10n_es_facturae_attachment____last_update
+msgid "Last Modified on"
+msgstr "Zadnje modificirano"
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields,field_description:l10n_es_facturae.field_create_facturae__write_uid
@@ -681,26 +639,21 @@ msgid "Oficina Contable"
 msgstr ""
 
 #. module: l10n_es_facturae
-#. odoo-python
-#: code:addons/l10n_es_facturae/models/account_move.py:0
-#, python-format
-msgid "Oficina Contable not provided"
-msgstr ""
-
-#. module: l10n_es_facturae
 #: model:ir.model.fields,field_description:l10n_es_facturae.field_res_partner__organo_gestor
 #: model:ir.model.fields,field_description:l10n_es_facturae.field_res_users__organo_gestor
 msgid "Organo Gestor"
 msgstr ""
 
 #. module: l10n_es_facturae
-#: model_terms:ir.ui.view,arch_db:l10n_es_facturae.view_move_form
-msgid "Other facturae fields"
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__05
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__05
+msgid "Otro"
 msgstr ""
 
 #. module: l10n_es_facturae
-#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__05
-msgid "Otro"
+#: model:ir.model.fields,field_description:l10n_es_facturae.field_res_partner__parent_facturae
+#: model:ir.model.fields,field_description:l10n_es_facturae.field_res_users__parent_facturae
+msgid "Parent Facturae"
 msgstr ""
 
 #. module: l10n_es_facturae
@@ -708,13 +661,6 @@ msgstr ""
 #: code:addons/l10n_es_facturae/models/account_move.py:0
 #, python-format
 msgid "Partner state not provided"
-msgstr ""
-
-#. module: l10n_es_facturae
-#. odoo-python
-#: code:addons/l10n_es_facturae/models/account_move.py:0
-#, python-format
-msgid "Partner street address is not provided"
 msgstr ""
 
 #. module: l10n_es_facturae
@@ -751,21 +697,25 @@ msgstr ""
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__18
-msgid "REIGIC: Régimen especial de IGIC: para agencias de viajes"
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__18
+msgid "REIGIC: Régimen especial de IGIC: para agencias deviajes"
 msgstr ""
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__19
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__19
 msgid "REIPSI: Régimen especial de IPSI para agencias de viajes"
 msgstr ""
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__17
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__17
 msgid "REIVA: Régimen especial de IVA para agencias de viajes"
 msgstr ""
 
 #. module: l10n_es_facturae
 #: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax__facturae_code__08
+#: model:ir.model.fields.selection,name:l10n_es_facturae.selection__account_tax_template__facturae_code__08
 msgid "Ra: Renta aduanas"
 msgstr ""
 
@@ -839,14 +789,7 @@ msgstr "Status"
 #. odoo-python
 #: code:addons/l10n_es_facturae/models/res_partner.py:0
 #, python-format
-msgid "State must be defined for factura-e enabled partners."
-msgstr ""
-
-#. module: l10n_es_facturae
-#. odoo-python
-#: code:addons/l10n_es_facturae/models/res_partner.py:0
-#, python-format
-msgid "Street must be defined for factura-e enabled partners."
+msgid "State must be defined"
 msgstr ""
 
 #. module: l10n_es_facturae
@@ -862,6 +805,11 @@ msgid "Taxes not provided in move line %s"
 msgstr ""
 
 #. module: l10n_es_facturae
+#: model:ir.model,name:l10n_es_facturae.model_account_tax_template
+msgid "Templates for Taxes"
+msgstr ""
+
+#. module: l10n_es_facturae
 #. odoo-python
 #: code:addons/l10n_es_facturae/reports/report_facturae.py:0
 #, python-format
@@ -870,20 +818,6 @@ msgid ""
 "Definition. The generated XML file and the full error have been written in "
 "the server logs. Here is the error, which may give you an idea on the cause "
 "of the problem : %s"
-msgstr ""
-
-#. module: l10n_es_facturae
-#. odoo-python
-#: code:addons/l10n_es_facturae/reports/report_facturae.py:0
-#, python-format
-msgid "The provided certificate is not found in the system."
-msgstr ""
-
-#. module: l10n_es_facturae
-#: model:ir.model.fields,help:l10n_es_facturae.field_res_company__facturae_hide_discount
-#: model:ir.model.fields,help:l10n_es_facturae.field_res_partner__facturae_hide_discount
-#: model:ir.model.fields,help:l10n_es_facturae.field_res_users__facturae_hide_discount
-msgid "The unit price will be recalculated applying the discount"
 msgstr ""
 
 #. module: l10n_es_facturae
@@ -899,16 +833,9 @@ msgstr ""
 
 #. module: l10n_es_facturae
 #. odoo-python
-#: code:addons/l10n_es_facturae/models/account_move.py:0
-#, python-format
-msgid "Unidad Tramitadora not provided"
-msgstr ""
-
-#. module: l10n_es_facturae
-#. odoo-python
 #: code:addons/l10n_es_facturae/models/res_partner.py:0
 #, python-format
-msgid "Vat must be defined for factura-e enabled partners."
+msgid "Vat must be defined"
 msgstr ""
 
 #. module: l10n_es_facturae
@@ -1025,9 +952,6 @@ msgstr ""
 #: model:ir.model.fields,field_description:l10n_es_facturae.field_res_users__organo_proponente
 msgid "Órgano proponente"
 msgstr ""
-
-#~ msgid "Last Modified on"
-#~ msgstr "Zadnje modificirano"
 
 #~ msgid "Cancel"
 #~ msgstr "Odustani"

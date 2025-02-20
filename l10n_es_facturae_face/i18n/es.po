@@ -129,6 +129,7 @@ msgstr "FACe"
 
 #. module: l10n_es_facturae_face
 #: model:ir.actions.server,name:l10n_es_facturae_face.update_face_job_ir_actions_server
+#: model:ir.cron,cron_name:l10n_es_facturae_face.update_face_job
 msgid "FACe update Job"
 msgstr "Actualizar estados FACe"
 
@@ -201,6 +202,11 @@ msgid "Journal Entry"
 msgstr "Asiento contable"
 
 #. module: l10n_es_facturae_face
+#: model:ir.model.fields,field_description:l10n_es_facturae_face.field_edi_l10n_es_facturae_face_cancel____last_update
+msgid "Last Modified on"
+msgstr "Última modificación el"
+
+#. module: l10n_es_facturae_face
 #: model:ir.model.fields,field_description:l10n_es_facturae_face.field_edi_l10n_es_facturae_face_cancel__write_uid
 msgid "Last Updated by"
 msgstr "actualizado por última vez por"
@@ -229,13 +235,6 @@ msgstr "No solicitado"
 #: model_terms:ir.ui.view,arch_db:l10n_es_facturae_face.edi_l10n_es_facturae_face_cancel_form_view
 msgid "OK"
 msgstr "Aceptar"
-
-#. module: l10n_es_facturae_face
-#. odoo-python
-#: code:addons/l10n_es_facturae_face/models/account_move.py:0
-#, python-format
-msgid "Organo Gestor not provided"
-msgstr "El Organo Gestor es obligatorio"
 
 #. module: l10n_es_facturae_face
 #: model:ir.model.fields.selection,name:l10n_es_facturae_face.selection__account_move__l10n_es_facturae_status__face-2500
@@ -278,6 +277,3 @@ msgstr ""
 #, python-format
 msgid "Vat must be defined in order to send to FACe"
 msgstr "El identificador fiscal debe estar definido para poder enviar por FACe"
-
-#~ msgid "Last Modified on"
-#~ msgstr "Última modificación el"

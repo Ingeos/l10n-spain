@@ -21,7 +21,6 @@
                             string="Razón social"
                             options="{'no_create_edit': True}"
                         />
-                        <field name="state" invisible="1" />
                     </group>
                     <group>
                         <group>
@@ -45,7 +44,7 @@
                             <field
                                 name="aeat_perception_subkey_id"
                                 domain="[('aeat_perception_key_id', '=', aeat_perception_key_id)]"
-                                invisible="not aeat_perception_key_id"
+                                attrs="{'invisible': [('aeat_perception_key_id', '=', False)]}"
                                 string="Subclave"
                                 options="{'no_create_edit': True, 'no_open': True}"
                             />
@@ -85,7 +84,6 @@
                             <field
                                 name="ingresos_a_cuenta_repercutidos"
                                 string="Ingresos a cuenta repercutidos"
-                                readonly="state!='calculated'"
                             />
                         </group>
                         <group
@@ -114,12 +112,11 @@
                             <field
                                 name="ingresos_a_cuenta_repercutidos_incap"
                                 string="Ingresos a cuenta en especie"
-                                readonly="state!='calculated'"
                             />
                         </group>
                     </group>
                     <field name="ad_required" invisible="1" />
-                    <notebook invisible="ad_required&lt;2">
+                    <notebook attrs="{'invisible': [('ad_required', '&lt;', 2)]}">
                         <page string="Datos adicionales">
                             <group>
                                 <group>
@@ -133,7 +130,6 @@
                                         string="Movilidad geográfica"
                                     />
                                 </group>
-                                <!-- TODO: Limitar a las claves A, B.01, B.03 y C-->
                                 <group>
                                     <field
                                         name="situacion_familiar"
@@ -178,7 +174,6 @@
                                 </group>
                             </group>
                         </page>
-                        <!-- TODO: Limitar a las claves A, B.01, B.03 y C-->
                         <page string="Decendents">
                             <group col="3">
                                 <group string="Lower than 3 years">

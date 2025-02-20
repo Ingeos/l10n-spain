@@ -28,15 +28,15 @@
                                     <field name="special_tax_group" invisible="1" />
                                     <field
                                         name="special_tax_id"
-                                        column_invisible="not parent.special_tax_group"
+                                        attrs="{'column_invisible': [('parent.special_tax_group', '=', False)]}"
                                     />
                                     <field
                                         name="special_tax_amount"
-                                        column_invisible="not parent.special_tax_group"
+                                        attrs="{'column_invisible': [('parent.special_tax_group', '=', False)]}"
                                     />
                                     <field
                                         name="total_amount_special_include"
-                                        column_invisible="not parent.special_tax_group"
+                                        attrs="{'column_invisible': [('parent.special_tax_group', '=', False)]}"
                                     />
                                 </tree>
                                 <form>
@@ -47,7 +47,9 @@
                                             <field name="tax_amount" />
                                             <field name="total_amount" />
                                         </group>
-                                        <group invisible="not parent.special_tax_group">
+                                        <group
+                                            attrs="{'invisible': [('parent.special_tax_group', '=', False)]}"
+                                        >
                                             <field name="special_tax_group" />
                                             <field name="special_tax_id" />
                                             <field name="special_tax_amount" />

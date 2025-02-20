@@ -228,7 +228,7 @@ msgstr "Estado de la actividad"
 #. module: l10n_es_aeat_mod303
 #: model:ir.model.fields,field_description:l10n_es_aeat_mod303.field_l10n_es_aeat_mod303_report__activity_type_icon
 msgid "Activity Type Icon"
-msgstr "Icono del tipo de actividad"
+msgstr "Icono de Tipo de actividad"
 
 #. module: l10n_es_aeat_mod303
 #: model:ir.model.fields,field_description:l10n_es_aeat_mod303.field_l10n_es_aeat_mod303_report_activity_code__code
@@ -243,7 +243,7 @@ msgstr "Nombre de la actividad"
 #. module: l10n_es_aeat_mod303
 #: model:ir.model.fields,field_description:l10n_es_aeat_mod303.field_l10n_es_aeat_mod303_report__allow_posting
 msgid "Allow Posting"
-msgstr "Permitir la publicación"
+msgstr "Permitir publicar"
 
 #. module: l10n_es_aeat_mod303
 #: model:ir.model.fields,field_description:l10n_es_aeat_mod303.field_l10n_es_aeat_mod303_report__message_attachment_count
@@ -595,6 +595,12 @@ msgid "L.R. VAT number"
 msgstr "NIF del representante legal"
 
 #. module: l10n_es_aeat_mod303
+#: model:ir.model.fields,field_description:l10n_es_aeat_mod303.field_l10n_es_aeat_mod303_report____last_update
+#: model:ir.model.fields,field_description:l10n_es_aeat_mod303.field_l10n_es_aeat_mod303_report_activity_code____last_update
+msgid "Last Modified on"
+msgstr "Última modificación en"
+
+#. module: l10n_es_aeat_mod303
 #: model:ir.model.fields,field_description:l10n_es_aeat_mod303.field_l10n_es_aeat_mod303_report__return_last_period
 msgid "Last Period Return"
 msgstr "Devolución último período"
@@ -615,6 +621,11 @@ msgstr "Última actualización el"
 #: model:ir.model.fields,help:l10n_es_aeat_mod303.field_l10n_es_aeat_mod303_report__representative_vat
 msgid "Legal Representative VAT number."
 msgstr "NIF del representante legal."
+
+#. module: l10n_es_aeat_mod303
+#: model:ir.model.fields,field_description:l10n_es_aeat_mod303.field_l10n_es_aeat_mod303_report__message_main_attachment_id
+msgid "Main Attachment"
+msgstr "Adjunto Principal"
 
 #. module: l10n_es_aeat_mod303
 #: model:ir.model.fields,field_description:l10n_es_aeat_mod303.field_l10n_es_aeat_mod303_report__marca_sepa
@@ -759,11 +770,6 @@ msgid "Previous declaration number"
 msgstr "Número de declaración anterior"
 
 #. module: l10n_es_aeat_mod303
-#: model:ir.model.fields,field_description:l10n_es_aeat_mod303.field_l10n_es_aeat_mod303_report__rating_ids
-msgid "Ratings"
-msgstr ""
-
-#. module: l10n_es_aeat_mod303
 #: model:ir.model.fields,help:l10n_es_aeat_mod303.field_l10n_es_aeat_mod303_report__devolucion_mensual
 msgid "Registered in the Register of Monthly Return"
 msgstr "Inscrito en el Registro de Devolución Mensual"
@@ -810,8 +816,6 @@ msgid ""
 "Si está suscrito a la cuenta corriente en materia tributaria, active esta "
 "opción para usarla en el ingreso o devolución."
 msgstr ""
-"Si está suscrito a la cuenta corriente en materia tributaria, active esta "
-"opción para usarla en el ingreso o devolución."
 
 #. module: l10n_es_aeat_mod303
 #: model:ir.model.fields,field_description:l10n_es_aeat_mod303.field_l10n_es_aeat_mod303_report__date_start
@@ -931,7 +935,7 @@ msgstr "Tipo de actividad de excepción registrada."
 #. module: l10n_es_aeat_mod303
 #: model:ir.model.fields,field_description:l10n_es_aeat_mod303.field_l10n_es_aeat_mod303_report__use_aeat_account
 msgid "Usar cuenta corriente tributaria"
-msgstr "Usar cuenta corriente tributaria"
+msgstr ""
 
 #. module: l10n_es_aeat_mod303
 #: model:ir.model.fields,field_description:l10n_es_aeat_mod303.field_l10n_es_aeat_mod303_report__company_vat

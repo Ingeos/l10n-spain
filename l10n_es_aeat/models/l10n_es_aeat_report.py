@@ -86,12 +86,16 @@ class L10nEsAeatReport(models.AbstractModel):
         comodel_name="res.company",
         string="Company",
         required=True,
+        readonly=True,
         default=lambda self: self.env.company,
+        states={"draft": [("readonly", False)]},
     )
     company_vat = fields.Char(
         string="VAT number",
         size=9,
         required=True,
+        readonly=True,
+        states={"draft": [("readonly", False)]},
     )
     number = fields.Char(
         string="Model number",
@@ -103,6 +107,7 @@ class L10nEsAeatReport(models.AbstractModel):
     previous_number = fields.Char(
         string="Previous declaration number",
         size=13,
+        states={"done": [("readonly", True)]},
     )
     contact_name = fields.Char(
         string="Full Name",
@@ -110,33 +115,47 @@ class L10nEsAeatReport(models.AbstractModel):
         help="Must have name and surname.",
         required=True,
         readonly=True,
+        states={"draft": [("readonly", False)]},
     )
     contact_phone = fields.Char(
         string="Phone",
         size=9,
         required=True,
+        readonly=True,
+        states={"draft": [("readonly", False)]},
     )
     contact_email = fields.Char(
         size=50,
+        readonly=True,
+        states={"draft": [("readonly", False)]},
     )
     representative_vat = fields.Char(
         string="L.R. VAT number",
         size=9,
+        readonly=False,
         help="Legal Representative VAT number.",
+        compute="_compute_representative_vat",
+        store=True,
     )
     year = fields.Integer(
         default=_default_year,
         required=True,
+        readonly=True,
+        states={"draft": [("readonly", False)]},
     )
     statement_type = fields.Selection(
         selection=[("N", "Normal"), ("C", "Complementary"), ("S", "Substitutive")],
         default="N",
+        readonly=True,
         required=True,
+        states={"draft": [("readonly", False)]},
     )
     support_type = fields.Selection(
         selection=[("C", "DVD"), ("T", "Telematics")],
         default="T",
+        readonly=True,
         required=True,
+        states={"draft": [("readonly", False)]},
     )
     calculation_date = fields.Datetime()
     state = fields.Selection(
@@ -176,18 +195,24 @@ class L10nEsAeatReport(models.AbstractModel):
         selection="get_period_type_selection",
         required=True,
         default=_default_period_type,
+        readonly=True,
+        states={"draft": [("readonly", False)]},
     )
     date_start = fields.Date(
         string="Starting date",
         required=True,
+        readonly=True,
         store=True,
         compute="_compute_dates",
+        states={"draft": [("readonly", False)]},
     )
     date_end = fields.Date(
         string="Ending date",
         required=True,
+        readonly=True,
         store=True,
         compute="_compute_dates",
+        states={"draft": [("readonly", False)]},
     )
     allow_posting = fields.Boolean(compute="_compute_allow_posting")
     counterpart_account_id = fields.Many2one(
@@ -202,6 +227,7 @@ class L10nEsAeatReport(models.AbstractModel):
         domain="[('type', '=', 'general'), ('company_id', '=', company_id)]",
         default=_default_journal,
         help="Journal in which post the move.",
+        states={"done": [("readonly", True)]},
     )
     move_id = fields.Many2one(
         comodel_name="account.move",
@@ -252,6 +278,14 @@ class L10nEsAeatReport(models.AbstractModel):
                     )
                 )
 
+    def get_taxes_from_templates(self, tax_templates):
+        company = self.company_id or self.env.user.company_id
+        return company.get_taxes_from_templates(tax_templates)
+
+    def get_account_from_template(self, account_template):
+        company = self.company_id or self.env.user.company_id
+        return company.get_account_from_template(account_template)
+
     @api.onchange("company_id")
     def onchange_company_id(self):
         """Load some company data (the VAT number) when company changes."""
@@ -286,11 +320,15 @@ class L10nEsAeatReport(models.AbstractModel):
                     starting_month = 1 + (int(report.period_type[0]) - 1) * 3
                     ending_month = starting_month + 2
                     report.date_start = fields.Date.to_date(
-                        f"{report.year}-{starting_month}-01"
+                        "{}-{}-01".format(report.year, starting_month)
                     )
                     report.date_end = fields.Date.to_date(
-                        f"{report.year}-{ending_month}-"
-                        f"{monthrange(report.year, ending_month)[1]}"
+                        "%s-%s-%s"
+                        % (
+                            report.year,
+                            ending_month,
+                            monthrange(report.year, ending_month)[1],
+                        )
                     )
                 elif report.period_type in (
                     "01",
@@ -308,10 +346,18 @@ class L10nEsAeatReport(models.AbstractModel):
                 ):
                     # Mensual
                     month = int(report.period_type)
-                    report.date_start = fields.Date.to_date(f"{report.year}-{month}-01")
-                    report.date_end = fields.Date.to_date(
-                        f"{report.year}-{month}-{monthrange(report.year, month)[1]}"
+                    report.date_start = fields.Date.to_date(
+                        "{}-{}-01".format(report.year, month)
                     )
+                    report.date_end = fields.Date.to_date(
+                        "%s-%s-%s"
+                        % (report.year, month, monthrange(report.year, month)[1])
+                    )
+
+    @api.depends("company_id")
+    def _compute_representative_vat(self):
+        for report in self:
+            report.representative_vat = report.company_id.representative_vat
 
     @api.depends("date_start")
     def _compute_export_config_id(self):

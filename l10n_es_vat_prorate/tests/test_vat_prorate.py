@@ -18,7 +18,7 @@ from odoo.addons.account.tests.common import AccountTestInvoicingCommon
 class TestVatProrate(AccountTestInvoicingCommon):
     @classmethod
     def setUpClass(cls):
-        super().setUpClass(chart_template_ref="es_pymes")
+        super().setUpClass(chart_template_ref="l10n_es.account_chart_template_pymes")
         cls.env = cls.env(
             context=dict(
                 cls.env.context,
@@ -56,18 +56,10 @@ class TestVatProrate(AccountTestInvoicingCommon):
     # gets incoherent after returning from the SQL constraint violation
     @mute_logger("odoo.sql_db")
     def test_zzz_company_vat_prorate_out_of_range(self):
-        vat_prorate_line = self.env.company.vat_prorate_ids[0]
         with self.assertRaises(IntegrityError):
-            vat_prorate_line.vat_prorate = 200
-
-    def test_company_special_vat_prorate_out_of_range(self):
-        # A error should be displayed if special prorates are 100%
-        prorate_id = self.env.company.vat_prorate_ids[0]
-        with self.assertRaises(exceptions.ValidationError):
-            prorate_id.write({"type": "special", "vat_prorate": 100})
+            self.env.company.vat_prorate_ids[0].vat_prorate = 200
 
     def test_no_company_vat_prorate_information(self):
-        self.assertTrue(self.env.company.vat_prorate_ids)
         with self.assertRaises(exceptions.ValidationError):
             self.env.company.write({"vat_prorate_ids": False})
 
@@ -98,17 +90,6 @@ class TestVatProrate(AccountTestInvoicingCommon):
                 )
             ),
         )
-
-    def test_prorate_tax_with_prorate_account(self):
-        # 21% EU S (Services) tax
-        tax = self.env.ref(
-            f"account.{self.env.company.id}_account_tax_template_p_iva21_sp_in"
-        )
-        invoice = self.init_invoice(
-            "in_invoice", products=[self.product_a, self.product_b], taxes=[tax]
-        )
-        self.assertEqual(7, len(invoice.line_ids))
-        self.assertEqual(4, len(invoice.line_ids.filtered(lambda r: r.tax_line_id)))
 
     def test_prorate_same_accounts_in_invoice(self):
         self.product_b.property_account_expense_id = self.company_data[
@@ -200,54 +181,3 @@ class TestVatProrate(AccountTestInvoicingCommon):
         self.assertEqual(len(tax_lines), 2)
         # One of the tax lines should have expense account and the other the tax account
         self.assertNotEqual(tax_lines[0].account_id, tax_lines[1].account_id)
-
-    def test_special_prorate_default_true(self):
-        self.env.company.vat_prorate_ids[0].write(
-            {
-                "type": "special",
-                "special_vat_prorate_default": True,
-            }
-        )
-        invoice = self.init_invoice(
-            "in_invoice", products=[self.product_a, self.product_b]
-        )
-        self.assertEqual(6, len(invoice.line_ids))
-        self.assertEqual(2, len(invoice.line_ids.filtered("vat_prorate")))
-
-    def test_special_prorate_default_false(self):
-        self.env.company.vat_prorate_ids[0].write(
-            {
-                "type": "special",
-                "special_vat_prorate_default": False,
-            }
-        )
-        invoice = self.init_invoice(
-            "in_invoice", products=[self.product_a, self.product_b]
-        )
-        self.assertEqual(4, len(invoice.line_ids))
-        self.assertEqual(0, len(invoice.line_ids.filtered("vat_prorate")))
-
-    def test_special_prorate_mixed(self):
-        self.env.company.vat_prorate_ids[0].write(
-            {
-                "type": "special",
-                "special_vat_prorate_default": True,
-            }
-        )
-        invoice = self.init_invoice(
-            "in_invoice", products=[self.product_a, self.product_b]
-        )
-        invoice.invoice_line_ids.filtered(
-            lambda r: r.product_id == self.product_a
-        ).with_vat_prorate = False
-        self.assertEqual(5, len(invoice.line_ids))
-        self.assertEqual(1, len(invoice.line_ids.filtered("vat_prorate")))
-        inv_line_b = invoice.line_ids.filtered(lambda r: r.product_id == self.product_b)
-        prorate_id = self.env.company.vat_prorate_ids[0]
-        self.assertAlmostEqual(
-            invoice.line_ids.filtered("vat_prorate").debit,
-            inv_line_b.price_subtotal
-            * inv_line_b.tax_ids[:1].amount
-            * (100 - prorate_id.vat_prorate)
-            / 10000,
-        )

@@ -16,7 +16,7 @@ from cryptography.hazmat.primitives.serialization import Encoding
 from lxml import etree
 
 from odoo import _, api, models, tools
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -27,7 +27,7 @@ class ReportFacturae(models.AbstractModel):
     _description = "Account Move Facturae Signed"
 
     def _get_report_values(self, docids, data=None):
-        result = super()._get_report_values(docids, data=data)
+        result = super(ReportFacturae, self)._get_report_values(docids, data=data)
         result["docs"] = self.env["account.move"].browse(docids)
         return result
 
@@ -63,6 +63,7 @@ class ReportFacturae(models.AbstractModel):
             etree.parse(self._get_facturae_schema_file(move))
         )
         try:
+
             facturae_schema.assertValid(etree.fromstring(xml_string))
         except Exception as e:
             _logger.warning("The XML file is invalid against the XML Schema Definition")
@@ -109,15 +110,10 @@ class ReportFacturae(models.AbstractModel):
         x509_data = xmlsig.template.add_x509_data(key_info)
         xmlsig.template.x509_data_add_certificate(x509_data)
         xmlsig.template.add_key_value(key_info)
-        try:
-            with open(public_cert, "rb") as f:
-                certificate = x509.load_pem_x509_certificate(
-                    f.read(), backend=default_backend()
-                )
-        except FileNotFoundError as e:
-            raise ValidationError(
-                _("The provided certificate is not found in the system.")
-            ) from e
+        with open(public_cert, "rb") as f:
+            certificate = x509.load_pem_x509_certificate(
+                f.read(), backend=default_backend()
+            )
         xmlsig.template.add_reference(
             sign,
             xmlsig.constants.TransformSha1,

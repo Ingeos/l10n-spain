@@ -9,15 +9,14 @@
 
 {
     "name": "AEAT modelo 349",
-    "version": "17.0.1.1.0",
+    "version": "16.0.1.1.1",
     "author": "Tecnativa, ForgeFlow, Odoo Community Association (OCA)",
     "license": "AGPL-3",
     "category": "Localisation/Accounting",
     "website": "https://github.com/OCA/l10n-spain",
     "depends": ["l10n_es_aeat", "l10n_es"],
     "data": [
-        "data/l10n.es.aeat.map.tax.line.tax.csv",
-        "data/aeat.349.map.line.csv",
+        "data/aeat_349_map_data.xml",
         "data/aeat_export_mod349_partner_refund_data.xml",
         "data/aeat_export_mod349_partner_data.xml",
         "data/aeat_export_mod349_data.xml",

@@ -22,32 +22,36 @@
                     type="object"
                     name="button_print"
                     icon="fa-print"
-                    title="Print"
+                    string="Print"
                 />
                 <button
                     type="object"
                     name="action_send"
                     icon="fa-envelope"
-                    invisible="state != 'pending'"
-                    title="Send email"
+                    states="pending"
+                    string="Send email"
                 />
                 <field name="state" />
                 <button
                     type="object"
                     name="action_confirm"
                     icon="fa-check"
-                    invisible="state not in ('pending', 'sent', 'exception')"
-                    title="Confirm as valid"
+                    states="pending,sent,exception"
+                    string="Confirm as valid"
                 />
                 <button
                     type="object"
                     name="action_exception"
                     icon="fa-times"
-                    invisible="state not in ('pending', 'sent', 'confirmed')"
-                    title="Set to invalid"
+                    states="pending,sent,confirmed"
+                    string="Set to invalid"
                 />
                 <field name="check_ok" />
-                <field name="error_text" optional="show" invisible="check_ok" />
+                <field
+                    name="error_text"
+                    optional="show"
+                    attrs="{'invisible': [('check_ok', '=', True)]}"
+                />
             </tree>
         </field>
     </record>
@@ -61,29 +65,29 @@
                         name="button_recompute"
                         string="Recompute"
                         type="object"
-                        invisible="operation_key not in ('A', 'B')"
+                        attrs="{'invisible': [('operation_key', 'not in', ('A', 'B'))]}"
                     />
                     <button
                         name="action_exception"
-                        invisible="state not in ('pending', 'sent', 'confirmed')"
+                        states="pending,sent,confirmed"
                         string="Set to invalid"
                         type="object"
                     />
                     <button
                         name="action_send"
-                        invisible="state not in ('pending', 'exception')"
+                        states="pending,exception"
                         string="Send"
                         type="object"
                     />
                     <button
                         name="action_confirm"
-                        invisible="state not in ('pending', 'sent')"
+                        states="pending,sent"
                         string="Confirm as valid"
                         type="object"
                     />
                     <button
                         name="action_pending"
-                        invisible="state not in ('exception', 'sent', 'confirmed')"
+                        states="exception,sent,confirmed"
                         string="Set to Pending"
                         type="object"
                     />
@@ -102,7 +106,7 @@
                                     <field name="check_ok" invisible="1" />
                                     <field
                                         name="error_text"
-                                        invisible="check_ok"
+                                        attrs="{'invisible': [('check_ok', '=', True)]}"
                                         class="text-danger"
                                     />
                                     <field name="partner_vat" select="1" />
@@ -161,18 +165,18 @@
                             </group>
                         </page>
                         <page string="Details">
-                            <div invisible="operation_key != 'B'">
+                            <div attrs="{'invisible': [('operation_key', '!=', 'B')]}">
                                 <strong>Color codes: </strong> <span
                                     class="text-info"
                                 >Normal invoices</span> - Refund invoices
                             </div>
-                            <div invisible="operation_key == 'B'">
+                            <div attrs="{'invisible': [('operation_key', '=', 'B')]}">
                                 <strong>Color codes: </strong> <span
                                     class="text-info"
                                 >Refund invoices</span> - Normal invoices</div>
                             <field
                                 name="move_record_ids"
-                                context="{'partner_record_id': id}"
+                                context="{'partner_record_id': active_id}"
                                 readonly="True"
                             >
                                 <tree
@@ -191,7 +195,7 @@
                             </field>
                             <field
                                 name="cash_record_ids"
-                                context="{'partner_record_id': id}"
+                                context="{'partner_record_id': active_id}"
                                 readonly="True"
                             >
                                 <tree>
@@ -279,7 +283,7 @@
                 <field
                     name="error_text"
                     optional="show"
-                    invisible="check_ok or not partner_id"
+                    attrs="{'invisible': ['|', ('check_ok', '=', True), ('partner_id', '=', False)]}"
                 />
             </tree>
         </field>
@@ -295,7 +299,7 @@
                         <field name="check_ok" invisible="1" />
                         <field
                             name="error_text"
-                            invisible="check_ok"
+                            attrs="{'invisible': [('check_ok', '=', True)]}"
                             class="text-danger"
                         />
                     </group>
@@ -386,27 +390,11 @@
                     name="button_send_mails"
                     type="object"
                     string="Send emails"
-                    invisible="state != 'calculated'"
+                    states="calculated"
                     confirm="This will enqueue all the pending confirmation emails for this report for sending to the invoicing contact. Are you sure you want to continue?"
                     icon="fa-envelope"
                 />
             </button>
-            <sheet position="inside">
-                <div class="oe_button_box" name="button_box">
-                    <button
-                        class="oe_stat_button"
-                        name="btn_list_records"
-                        type="object"
-                        icon="fa-file"
-                    >
-                        <field
-                            name="total_partner_records"
-                            widget="statinfo"
-                            string="Records"
-                        />
-                    </button>
-                </div>
-            </sheet>
             <field name="partner_bank_id" position="attributes">
                 <attribute name="invisible">1</attribute>
             </field>
@@ -417,16 +405,16 @@
                             <group string="Calculation parameters">
                                 <field
                                     name="operations_limit"
-                                    readonly="state != 'draft'"
+                                    attrs="{'readonly': [('state', '!=', 'draft')]}"
                                 />
                                 <field
                                     name="received_cash_limit"
-                                    readonly="state != 'draft'"
+                                    attrs="{'readonly': [('state', '!=', 'draft')]}"
                                 />
                             </group>
                             <group
                                 string="Summary"
-                                invisible="state in ('draft', 'cancelled')"
+                                attrs="{'invisible': [('state', 'in', ('draft', 'cancelled'))]}"
                             >
                                 <field name="total_partner_records" />
                                 <field name="total_amount" />
@@ -437,13 +425,27 @@
                     </page>
                     <page
                         string="Partner records"
-                        invisible="state in ('draft', 'cancelled')"
+                        attrs="{'invisible': [('state', 'in', ('draft', 'cancelled'))]}"
                     >
+                        <div class="oe_button_box" name="button_box">
+                            <button
+                                class="oe_stat_button"
+                                name="btn_list_records"
+                                type="object"
+                                icon="fa-file"
+                            >
+                                <field
+                                    name="total_partner_records"
+                                    widget="statinfo"
+                                    string="Records"
+                                />
+                            </button>
+                        </div>
                         <field name="partner_record_ids" nolabel="1" />
                     </page>
                     <page
                         string="Real Estate records"
-                        invisible="state in ('draft', 'cancelled')"
+                        attrs="{'invisible': [('state', 'in', ('draft', 'cancelled'))]}"
                     >
                         <div
                             class="alert alert-info"

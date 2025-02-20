@@ -13,35 +13,23 @@ class ResPartner(models.Model):
     display_name = fields.Char(compute="_compute_display_name")
 
     @api.depends("comercial")
-    @api.depends_context("no_display_commercial")
     def _compute_display_name(self):
-        """
-        We are enforcing the new context,
-        because complete name field will remove the context
-        """
-        return super(
-            ResPartner,
-            self.with_context(
-                display_commercial=not self.env.context.get(
-                    "no_display_commercial", False
-                )
-            ),
-        )._compute_display_name()
+        return super()._compute_display_name()
 
-    def _get_complete_name(self):
-        name = super()._get_complete_name()
-        if self.env.context.get("display_commercial") and self.comercial:
-            name_pattern = (
-                self.env["ir.config_parameter"]
-                .sudo()
-                .get_param("l10n_es_partner.name_pattern", default="")
-            )
-            if name_pattern:
-                name = name_pattern % {
-                    "name": name,
-                    "comercial_name": self.comercial,
-                }
-        return name
+    def _get_name(self):
+        name_pattern = (
+            self.env["ir.config_parameter"]
+            .sudo()
+            .get_param("l10n_es_partner.name_pattern", default="")
+        )
+        origin = super()._get_name()
+        if (
+            self.env.context.get("no_display_commercial", False)
+            or not name_pattern
+            or not self.comercial
+        ):
+            return origin
+        return name_pattern % {"name": origin, "comercial_name": self.comercial}
 
     @api.model
     def _commercial_fields(self):

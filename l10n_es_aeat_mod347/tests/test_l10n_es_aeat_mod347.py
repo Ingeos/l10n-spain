@@ -145,7 +145,7 @@ class TestL10nEsAeatMod347(TestL10nEsAeatModBase):
         )
         for vals in partner_record_vals:
             partner_record = self.model347.partner_record_ids.filtered(
-                lambda x, v=vals: x.partner_id == v[1]
+                lambda x: x.partner_id == vals[1]
             )
             self.assertEqual(partner_record.operation_key, vals[0])
             self.assertAlmostEqual(partner_record.amount, vals[2])
@@ -185,24 +185,3 @@ class TestL10nEsAeatMod347(TestL10nEsAeatModBase):
         for xml_id in export_config_xml_ids:
             export_config = self.env.ref(xml_id)
             self.assertTrue(export_to_boe._export_config(self.model347, export_config))
-
-    def test_partner_record_ids_states(self):
-        self.model347.button_calculate()
-        first_partner_mod347_record = self.model347.partner_record_ids[0]
-        first_partner = first_partner_mod347_record.partner_id
-        self.assertFalse(first_partner.email)
-
-        second_partner_mod347_record = self.model347.partner_record_ids[1]
-        second_partner = second_partner_mod347_record.partner_id
-        second_partner.email = "test@email.com"
-
-        self.model347.button_send_mails()
-        self.assertTrue(first_partner_mod347_record.state, "pending")
-        self.assertTrue(second_partner_mod347_record.state, "sent")
-
-        self.model347.button_send_mails()
-        self.assertTrue(first_partner_mod347_record.state, "pending")
-
-        first_partner.email = "test1@email.com"
-        self.model347.button_send_mails()
-        self.assertTrue(first_partner_mod347_record.state, "sent")

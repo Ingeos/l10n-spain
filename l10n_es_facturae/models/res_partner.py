@@ -1,22 +1,19 @@
 # Copyright 2015 Omar Castiñeira (Comunitea)
 # Copyright 2017 Creu Blanca
-# Copyright 2023 QubiQ - Jan Tugores (jan.tugores@qubiq.es)
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 
-from odoo import _, api, fields, models
-from odoo.exceptions import ValidationError
+from odoo import _, api, exceptions, fields, models
 
 
 class ResPartner(models.Model):
     _inherit = "res.partner"
 
-    facturae = fields.Boolean("Factura electrónica", copy=False)
+    facturae = fields.Boolean("Factura electrónica")
+    parent_facturae = fields.Boolean(
+        related="commercial_partner_id.facturae", string="Parent Facturae"
+    )
     facturae_version = fields.Selection(
         [("3_2", "3.2"), ("3_2_1", "3.2.1"), ("3_2_2", "3.2.2")]
-    )
-    facturae_hide_discount = fields.Boolean(
-        string="Hide Facturae discount",
-        help="The unit price will be recalculated applying the discount",
     )
     organo_gestor = fields.Char(size=10)
     unidad_tramitadora = fields.Char(size=10)
@@ -34,28 +31,14 @@ class ResPartner(models.Model):
                 return "U"
         return "E"
 
-    @api.constrains("facturae", "vat", "state_id", "country_id", "street")
+    @api.constrains("facturae", "vat", "state_id", "country_id")
     def check_facturae(self):
         for record in self:
             if record.facturae:
                 if not record.vat:
-                    raise ValidationError(
-                        _("Vat must be defined for factura-e enabled partners.")
-                    )
-                if not record.street:
-                    raise ValidationError(
-                        _("Street must be defined for factura-e enabled partners.")
-                    )
+                    raise exceptions.ValidationError(_("Vat must be defined"))
                 if not record.country_id:
-                    raise ValidationError(
-                        _("Country must be defined for factura-e enabled partners.")
-                    )
+                    raise exceptions.ValidationError(_("Country must be defined"))
                 if record.country_id.code_alpha3 == "ESP":
                     if not record.state_id:
-                        raise ValidationError(
-                            _("State must be defined for factura-e enabled partners.")
-                        )
-
-    @api.model
-    def _commercial_fields(self):
-        return super()._commercial_fields() + ["facturae"]
+                        raise exceptions.ValidationError(_("State must be defined"))

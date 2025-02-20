@@ -7,14 +7,12 @@
 # Copyright 2018 PESOL - Angel Moya <info@pesol.es>
 # Copyright 2019 Tecnativa - Carlos Dauden
 # Copyright 2014-2022 Tecnativa - Pedro M. Baeza
-# Copyright 2023 FactorLibre - Alejandro Ji Cheung
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 import datetime
 from calendar import monthrange
 
 from odoo import _, api, exceptions, fields, models
-from odoo.tools import float_compare
 
 KEY_TAX_MAPPING = {
     "A": "l10n_es_aeat_mod347.aeat_mod347_map_a",
@@ -173,7 +171,7 @@ class L10nEsAeatMod347Report(models.Model):
                 error += "\n".join(real_state_errors)
             if partner_errors or real_state_errors:
                 raise exceptions.ValidationError(error)
-        return super().button_confirm()
+        return super(L10nEsAeatMod347Report, self).button_confirm()
 
     def button_send_mails(self):
         self.partner_record_ids.filtered(
@@ -206,6 +204,15 @@ class L10nEsAeatMod347Report(models.Model):
         ]
 
     @api.model
+    def _get_taxes(self, map_rec):
+        """Obtain all the taxes to be considered for 347."""
+        self.ensure_one()
+        tax_templates = map_rec.mapped("tax_ids")
+        if not tax_templates:
+            raise exceptions.UserError(_("No Tax Mapping was found"))
+        return self.get_taxes_from_templates(tax_templates)
+
+    @api.model
     def _get_partner_347_identification(self, partner):
         country_code, _, vat = partner._parse_aeat_vat_info()
         if country_code == "ES":
@@ -231,7 +238,7 @@ class L10nEsAeatMod347Report(models.Model):
         partner_record_obj = self.env["l10n.es.aeat.mod347.partner_record"]
         partner_obj = self.env["res.partner"]
         map_line = self.env.ref(map_ref)
-        taxes = map_line.get_taxes_for_company(self.company_id)
+        taxes = self._get_taxes(map_line)
         domain = self._account_move_line_domain(taxes)
         if partner_record:
             domain += [("partner_id", "=", partner_record.partner_id.id)]
@@ -332,9 +339,10 @@ class L10nEsAeatMod347Report(models.Model):
         for report in self:
             # Delete previous partner records
             report.partner_record_ids.unlink()
-            self._create_partner_records("A", KEY_TAX_MAPPING["A"])
-            self._create_partner_records("B", KEY_TAX_MAPPING["B"])
-            self._create_cash_moves()
+            with self.env.norecompute():
+                self._create_partner_records("A", KEY_TAX_MAPPING["A"])
+                self._create_partner_records("B", KEY_TAX_MAPPING["B"])
+                self._create_cash_moves()
             self.env.flush_all()
             report.partner_record_ids.calculate_quarter_totals()
         return True
@@ -372,7 +380,6 @@ class L10nEsAeatMod347PartnerRecord(models.Model):
             ("exception", "Exception"),
         ],
         default="pending",
-        tracking=True,
     )
     operation_key = fields.Selection(
         selection=[
@@ -574,20 +581,17 @@ class L10nEsAeatMod347PartnerRecord(models.Model):
         self.ensure_one()
         return self._notify_get_action_link("controller", controller="/mod347/reject")
 
-    @api.model
-    def _get_partner_report_email_template(self):
-        return self.env.ref("l10n_es_aeat_mod347.email_template_347")
-
     def action_confirm(self):
         self.write({"state": "confirmed"})
 
     def action_send(self):
+        self.write({"state": "sent"})
         self.ensure_one()
-        template = self._get_partner_report_email_template()
+        template = self.env.ref("l10n_es_aeat_mod347.email_template_347")
         compose_form = self.env.ref("mail.email_compose_message_wizard_form")
         ctx = dict(
             default_model=self._name,
-            default_res_ids=self.ids,
+            default_res_id=self.id,
             default_use_template=bool(template),
             default_template_id=template and template.id or False,
             default_composition_mode="comment",
@@ -611,24 +615,19 @@ class L10nEsAeatMod347PartnerRecord(models.Model):
         self.ensure_one()
         if self.operation_key not in ("A", "B"):
             return
-        prev_amount = self.amount
         self.report_id._create_partner_records(
             self.operation_key,
             KEY_TAX_MAPPING[self.operation_key],
             partner_record=self,
         )
         self.calculate_quarter_totals()
-        if float_compare(self.amount, prev_amount, 2) != 0:
-            self.action_pending()
+        self.action_pending()
 
     def send_email_direct(self):
-        template = self._get_partner_report_email_template()
-        for rec in self:
-            address_id = rec.partner_id.address_get(["invoice"])["invoice"]
-            address = self.env["res.partner"].browse(address_id)
-            if address.email:
-                template.send_mail(rec.id)
-                rec.state = "sent"
+        template = self.env.ref("l10n_es_aeat_mod347.email_template_347")
+        for record in self:
+            template.send_mail(record.id)
+        self.write({"state": "sent"})
 
     def action_pending(self):
         self.write({"state": "pending"})
