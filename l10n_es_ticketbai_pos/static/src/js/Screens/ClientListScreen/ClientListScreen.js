@@ -55,6 +55,9 @@ odoo.define("l10n_es_ticketbai_pos.ClientListScreen", function (require) {
                         super.clickClient(event);
                     }
                 }
+                else {
+                    super.clickClient(event);
+                }
             }
         };
     Registries.Component.extend(ClientListScreen, L10nEsTicketBaiClientListScreen);

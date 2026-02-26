@@ -20,12 +20,6 @@ from odoo.addons.l10n_es_ticketbai_api_batuz.models.lroe_operation import (
     LROEOperationEnum,
 )
 
-LROE_COUNTRY_CODE_MAPPING = {
-    "RE": "FR",
-    "GP": "FR",
-    "MQ": "FR",
-    "GF": "FR",
-}
 LROE_STATES = [
     ("not_sent", "Not recorded"),
     ("pending", "Registration in LROE planned"),
@@ -190,14 +184,6 @@ class AccountMove(models.Model):
             )
             return chapter.code, subchapter.code
 
-    def _get_lroe_country_code(self):
-        self.ensure_one()
-        country_code = (
-            self.partner_id.commercial_partner_id.country_id.code
-            or (self.partner_id.vat or "")[:2]
-        ).upper()
-        return LROE_COUNTRY_CODE_MAPPING.get(country_code, country_code)
-
     def _get_batuz_description(self):
         """Concatenamos la referencia/descripción de la factura con el
         número interno de la misma. De esta forma es más sencillo identificarla
@@ -228,13 +214,11 @@ class AccountMove(models.Model):
             vat = "".join(e for e in partner.vat if e.isalnum()).upper()
         else:
             vat = "NO_DISPONIBLE"
-        country_code = self._get_lroe_country_code()
+        country_code = partner._parse_aeat_vat_info()[0]
         if idtype == TicketBaiCustomerIdType.T02.value:
             if country_code != "ES":
                 id_type = "06" if vat == "NO_DISPONIBLE" else "02"
-                res["IDOtro"] = OrderedDict(
-                    [("CodigoPais", country_code), ("IDType", id_type), ("ID", vat)]
-                )
+                res["IDOtro"] = OrderedDict([("IDType", id_type), ("ID", vat)])
             else:
                 res["NIF"] = vat[2:] if vat.startswith(country_code) else vat
         elif idtype:
@@ -327,7 +311,10 @@ class AccountMove(models.Model):
                         vals.append(("SerieFactura", refund_origin_id.number_prefix))
                     vals.append(("NumFactura", refund_origin_id.number))
                     vals.append(
-                        ("FechaExpedicionFactura", refund_origin_id.expedition_date)
+                        (
+                            "FechaExpedicionFactura",
+                            self._change_date_format(refund_origin_id.expedition_date),
+                        )
                     )
 
                     origins.append(
@@ -384,6 +371,18 @@ class AccountMove(models.Model):
             )
         return re_tax
 
+    def _get_lroe_concept_group_account(self, tax_line):
+        concepto = ""
+        lines_with_tax = self.line_ids.filtered(
+            lambda l: tax_line["tax"].id in l.tax_ids.ids
+        )
+        if lines_with_tax:
+            for line in lines_with_tax:
+                concepto = line.account_id.group_id.code_prefix_start
+                if concepto:
+                    break
+        return concepto
+
     @api.model
     def _get_lroe_tax_dict(self, tax_line, tax_lines, deductible=True):
         """Get the LROE tax dictionary for the passed tax line.
@@ -413,11 +412,12 @@ class AccountMove(models.Model):
                 ]
             )
         else:
+            concept = self._get_lroe_concept_group_account(tax_line)
             tax_dict = OrderedDict(
                 [
                     ("Epigrafe", self.company_id.main_activity_iae),
                     # TODO: 140 - BienAfectoIRPFYOIVA --> valor por defecto "N"
-                    # TODO: 140 - Concepto --> grupo de cuenta contable L20
+                    ("Concepto", concept),
                     # TODO: 140 - ReferenciaBien
                     ("InversionSujetoPasivo", "N"),
                     # TODO: 140 - OperacionEnRecargoDeEquivalenciaORegimenSimplificado
@@ -425,7 +425,7 @@ class AccountMove(models.Model):
                     ("TipoImpositivo", str(tax_type)),
                     ("CuotaIVASoportada", cuota),
                     ("CuotaIVADeducible", cuota * int(deductible)),
-                    # TODO: 140 - ImporteGastoIRPF
+                    ("ImporteGastoIRPF", base),
                     # TODO: 140 - CriterioCobrosYPagos
                 ]
             )

@@ -55,16 +55,27 @@ odoo.define("l10n_es_ticketbai_pos.tbai_models", function (require) {
             // Addon l10n_es_pos -> Order.export_as_JSON()
             var simplified_invoice = null;
             var tbai_json = null;
-
             this.previous_tbai_invoice = this.pos.get_tbai_last_invoice_data();
             this.expedition_date = new Date();
-            simplified_invoice =
-                this.order.simplified_invoice ||
-                this.pos.config.l10n_es_simplified_invoice_prefix +
+            if (!this.pos.config.pos_sequence_by_device) {
+                this.number_prefix = this.pos.config.l10n_es_simplified_invoice_prefix;
+                simplified_invoice =
+                    this.order.simplified_invoice ||
+                    this.number_prefix +
+                        this.pos.get_padding_simple_inv(
+                            this.pos.config.l10n_es_simplified_invoice_number,
+                            this.pos.config.l10n_es_simplified_invoice_padding
+                        );
+            } else {
+                this.number_prefix =
+                    this.pos.get_device().device_simplified_invoice_prefix;
+                simplified_invoice =
+                    this.number_prefix +
                     this.pos.get_padding_simple_inv(
-                        this.pos.config.l10n_es_simplified_invoice_number
+                        this.pos.get_device().device_simplified_invoice_number,
+                        this.pos.get_device().device_simplified_invoice_padding
                     );
-            this.number_prefix = this.pos.config.l10n_es_simplified_invoice_prefix;
+            }
             this.number = simplified_invoice.slice(this.number_prefix.length);
 
             if (this.order.fiscal_position) {
@@ -168,6 +179,14 @@ odoo.define("l10n_es_ticketbai_pos.tbai_models", function (require) {
         },
         get_tbai_partner_vat: function (partner_id) {
             var partner = this.pos.db.get_partner_by_id(partner_id);
+            if(!partner){
+                var company = this.pos.company;
+                var country_code = "ES";
+                if (country_code === "ES" || company.tbai_partner_idtype === "02") {
+                    return this.get_vat_without_country_code(company.vat, country_code);
+                }
+                return this.get_vat_without_country_code(company.vat, country_code);
+            }
             var country_code = this.pos.get_country_code_by_id(partner.country_id[0]);
             if (country_code === "ES" || partner.tbai_partner_idtype === "02") {
                 return this.get_vat_without_country_code(partner.vat, country_code);
@@ -181,6 +200,7 @@ odoo.define("l10n_es_ticketbai_pos.tbai_models", function (require) {
             var company = this.pos.company;
             var vat_keys = [this.vat_regime_key];
             var self = this;
+            var simplified = "N";
 
             if (
                 order_json !== null &&
@@ -192,6 +212,9 @@ odoo.define("l10n_es_ticketbai_pos.tbai_models", function (require) {
                 }
                 if (this.vat_regime_key3 !== null) {
                     vat_keys.push(this.vat_regime_key3);
+                }
+                if (company.tbai_vat_regime_simplified) {
+                    simplified = "S";
                 }
                 tbai_json.Invoice = {
                     simple: true,
@@ -213,6 +236,7 @@ odoo.define("l10n_es_ticketbai_pos.tbai_models", function (require) {
                         self.pos.format_currency_no_symbol(order_json.amount_total)
                     ),
                     vatKeys: vat_keys,
+                    simplified: simplified,
                 };
                 tbai_json.Invoice.vatLines =
                     this.get_tbai_vat_lines_from_json(order_json);
@@ -257,7 +281,7 @@ odoo.define("l10n_es_ticketbai_pos.tbai_models", function (require) {
                         company.tbai_developer_id[0]
                     ),
                     name: company.tbai_software_name,
-                    version: this.pos.tbai_version,
+                    version: company.tbai_software_version,
                 };
             }
             return tbai_json;
